@@ -51,8 +51,9 @@ Never guess a Moodle API, hook, callback, template name or SCSS variable.
 ## Coding rules
 
 - Boost child theme: inherit layouts, templates and renderers. The only overrides are
-  `core_renderer::course_header()` and the hooks in `db/hooks.php`. Every new override
-  must be justified in `docs/architecture.md` and checked on all branches.
+  `core_renderer::course_header()`, `core_renderer::course_content_header()` and the hooks in
+  `db/hooks.php`. Every new override must be justified in `docs/architecture.md` and checked
+  on all branches.
 - Hook and `lib.php` callbacks run for every theme: always check `local\theme::is_active()`
   or `can_decorate()` first.
 - Moodle coding style (moodle-cs), PHPDoc on everything, 4 spaces, no tabs (except Makefile),

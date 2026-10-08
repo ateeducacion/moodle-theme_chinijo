@@ -10,7 +10,7 @@ the override surface as small as possible, so that Moodle upgrades stay cheap.
 |---|---|---|
 | `config.php` (`$THEME->parents = ['boost']`) | Inherit every Boost layout, template and renderer. Only the SCSS callbacks and the renderer factory are Chinijo's own. | Boost's `config.php` is identical on MOODLE_405_STABLE and MOODLE_503_STABLE, so the child declares the same properties. |
 | SCSS: `theme_chinijo_get_main_scss_content()` | `scss/pre.scss` (variables) + Boost's `preset/default.scss` + `scss/post.scss` (rules). | Standard child-theme pattern; the Boost preset keeps the 5.3 colour-mode import order (`moodle/dark` last). |
-| `classes/output/core_renderer.php` | Overrides **only** `course_header()` to add the progress indicator, the pictogram data and the completion feedback script. | `course_header()` is rendered by Boost's `full_header()` on every course page, in the course header region, on all branches. No template is copied. |
+| `classes/output/core_renderer.php` | Overrides **only** `course_header()` (greeting on the course page, pictogram data, completion feedback script) and `course_content_header()` ("Next" and "My path" on the course page; the activity bar with "Back to the course", the progress and "Listen" on activity pages). Both call the parent first and add to its output. | Boost prints `course_header()` from `full_header()` above the page heading, and `course_content_header()` at the top of the main region (`drawers.mustache`), on every branch from 4.5 to 5.3. The parent's "already printed" guard is respected. No template is copied. |
 | Hooks (`db/hooks.php`, `classes/hook_callbacks.php`) | `before_html_attributes` (display preferences, priority 0 so it runs after Boost's colour mode listener), `before_standard_top_of_body_html_generation` (toolbar on the login page), `after_standard_main_region_html_generation` (FEDER notice, pictogram credits), `before_footer_html_generation` (FEDER notice on the login page). | Hooks API, available on all supported branches (4.4+). Every callback checks that Chinijo renders the page. |
 | `lib.php` callbacks | `render_navbar_output` (display settings control), `user_preferences` (validation of the preferences by core_user), `pluginfile` (FEDER emblem, pictograms), `extend_navigation_course` (Pictograms page), `extend_navigation_user_settings` (link in Preferences). | Documented plugin callbacks still used by core on 4.5–5.3; no hook replaces them. |
 | `db/events.php` | Remove pictograms when their course, section or activity is deleted. | Events API. |
@@ -27,9 +27,10 @@ classes/
 ├── local/preferences_ui.php   Template data for the control and the form
 ├── local/pictograms.php       Pictogram records, files, permissions, visibility, credits, file serving
 ├── local/course_progress.php  Progress from Moodle's completion API (per-branch compatible)
+├── local/learning_path.php    The learner's path: counted activities in course order, their state and the next one
 ├── local/feder.php            EU funding notice from the admin settings
 ├── local/theme.php            "Is Chinijo rendering this page?" checks
-├── output/core_renderer.php   course_header() only
+├── output/core_renderer.php   course_header() and course_content_header()
 ├── hook_callbacks.php         Output hooks
 ├── observer.php               Deletion events
 ├── form/pictogram_form.php    Moodle form for one pictogram
@@ -49,7 +50,15 @@ JavaScript (`amd/src`, built with Moodle's own Grunt into `amd/build`):
   course format re-renders.
 - `theme_chinijo/completion_feedback` listens to core_course's
   `manualcompletiontoggled` event (dispatched after the server confirmed the
-  change), shows a polite toast and updates the progress indicator.
+  change), updates the progress, "My path" and "Next" by the same step, and shows
+  a message of encouragement in a `role="status"` region inside the main
+  landmark. It never takes the focus; while it is shown the page keeps focused
+  elements clear of it (scroll padding, WCAG 2.4.11). With the "Sounds" setting
+  on, it plays a short chime made with the Web Audio API (no sound file).
+- `theme_chinijo/read_aloud` shows the "Listen" button on activity pages only
+  when the browser has a voice installed on the device (`localService`) for the
+  page language, and reads the main region without controls or hidden text.
+  Network voices are never used, so no text leaves the device.
 
 ## Display preferences
 

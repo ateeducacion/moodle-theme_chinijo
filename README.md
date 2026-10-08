@@ -13,12 +13,14 @@ years of Primary Education and for learners with specific educational support
 needs (NEAE): calm pages, larger text and targets, personal display settings,
 course progress and pictogram support, while keeping every Moodle feature.
 
-![Chinijo on Moodle 5.3: a demo course with the learner's progress, pictograms next to sections and activities, and the "Display settings" control in the navbar](docs/screenshots/chinijo-course.png)
+![Chinijo on Moodle 5.3: a demo course page greeting the learner, with "Next" (the next activity and a large Start button), "My path" for the current section with pictograms and the state of each activity, and the "Display settings" control in the navbar](docs/screenshots/chinijo-course.png)
 
 *Real screenshot of the theme on Moodle 5.3 with synthetic demo data
 (`make seed`, `make screenshot`). More:
+[activity page](docs/screenshots/chinijo-activity.png),
+[encouragement after marking an activity as done](docs/screenshots/chinijo-encouragement.png),
 [display settings dialogue](docs/screenshots/chinijo-display-settings.png),
-[high contrast with large text and the easy-to-read typeface](docs/screenshots/chinijo-course-high-contrast.png).*
+[high contrast with large text and school letters](docs/screenshots/chinijo-course-high-contrast.png).*
 
 > **Status:** development version 0.1.0 (alpha). Automated checks pass locally
 > and in GitHub Actions on Moodle 4.5 to 5.3 (see [Verification](#verification)). Manual
@@ -29,9 +31,10 @@ course progress and pictogram support, while keeping every Moodle feature.
 
 | Feature | Status |
 |---|---|
-| **Display settings** for each person: high contrast; text size (normal, large, extra large, huge); easy-to-read typeface (Atkinson Hyperlegible); space between letters, words and lines up to the WCAG 2.2 text-spacing values; reduce animations (the system `prefers-reduced-motion` is always honoured). Stored as the user's own Moodle preferences, session-only for guests; nobody can set them for someone else. Keyboard-accessible dialogue from the navbar (and the login page), and a page that works without JavaScript. | Implemented |
-| **Course progress** ("3 of 8 activities completed") from Moodle's completion data, the same figures as the dashboard; updated only after Moodle confirms a change. | Implemented |
-| **Gentle feedback**: a polite message after marking an activity as done. | Implemented |
+| **Display settings** for each person: ready-made combinations (as usual, easier to read, easier to see, calmer); high contrast; text size (normal, large, extra large, huge); easy-to-read typeface (Atkinson Hyperlegible) or school letters (Andika); space between letters, words and lines up to the WCAG 2.2 text-spacing values; reduce animations (the system `prefers-reduced-motion` is always honoured); sounds (off by default). Large tiles that show what each choice does. Stored as the user's own Moodle preferences, session-only for guests; nobody can set them for someone else. Keyboard-accessible dialogue from the navbar (and the login page), and a page that works without JavaScript. | Implemented |
+| **Course page for learners**: a greeting, **Next** (the next activity to do, with a large Start link) and **My path** (the activities in course order with their pictograms and their state: done, now, to do, not yet), from Moodle's completion data, the same figures as the dashboard; updated only after Moodle confirms a change. Rounder section cards, large activity rows and completion buttons outside edit mode. | Implemented |
+| **Activity pages**: a large "Back to the course" link, the progress and a **Listen** button that reads the page with a voice installed on the device (hidden when there is none; nothing is sent anywhere). | Implemented |
+| **Encouragement** after marking an activity as done, with a link to the next one; it does not take the focus or block the page; a short chime only if the learner turned sounds on. | Implemented |
 | **Pictograms** that teachers add to sections and activities (PNG, JPEG or WebP; text alternative; author and licence shown as credits; included in course backups). Names are always kept. No pictogram is bundled. | Implemented (sections and activities; not for buttons) |
 | **EU (FEDER) funding notice**: approved emblem, text alternative and acknowledgement, on landing pages or every page. | Implemented; approved assets pending |
 | Accessible defaults: 16 px text, 44 px targets, visible focus ring, underlined links in text, emphasised primary buttons, clear error messages, course index names that wrap, forced-colours support. | Implemented |
@@ -39,7 +42,8 @@ course progress and pictogram support, while keeping every Moodle feature.
 
 What the theme does **not** do: it does not change Moodle's permissions,
 forms, gradebook, messaging or editing; it does not add services, external
-requests, tracking or audio; it does not store anything about a person's needs.
+requests or tracking; it plays no sound unless the learner turns sounds on; it
+does not store anything about a person's needs.
 
 ## Compatibility
 
@@ -166,27 +170,27 @@ Read [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md) before changi
 
 ## Verification
 
-Results of the runs made for this version (2026-10-08): local runs and GitHub
-Actions on pull request #1.
+Version 0.2.0 (2026-10-08, branch `feature/kid-friendly-ui`): local runs; it has
+not been pushed, so GitHub Actions have not run on it yet. Version 0.1.0 passed
+GitHub Actions on pull request #1 (last row).
 
 | Check | Moodle / PHP / DB | Result | Evidence |
 |---|---|---|---|
 | `make lint` | 5.3 / 8.4 / PostgreSQL 17 | Pass (PHPMD: advisory notes only) | `build/lint-53.log` |
-| `make lint` | 5.2.4, 5.1.8, 5.0.11 / 8.3 / PostgreSQL 17 | Pass (PHPMD: advisory notes only) | `build/lint-52.log`, `lint-51.log`, `lint-50.log` |
 | `make lint` | 4.5.15 / 8.3 / PostgreSQL 17 | Pass (PHPMD: advisory notes only) | `build/lint-45.log` |
-| `make coverage` (PHPUnit 11.5 with PCOV) | 5.3 / 8.4 / PostgreSQL 17 | 72 tests, 621 assertions, pass; 95.57 % of 519 lines (`classes/`, `backup/`, `lib.php`) | `build/coverage-53.log`, `build/coverage/` |
-| `make coverage` (PHPUnit 9.6 with PCOV) | 4.5.15 / 8.3 / PostgreSQL 17 | 72 tests, 619 assertions, 1 skipped (Boost colour modes exist only in 5.3), pass; 95.57 % | `build/coverage-45.log` |
-| `make test-unit` | 5.2.4, 5.1.8, 5.0.11 / 8.3 / PostgreSQL 17 | 72 tests, 619 assertions, 1 skipped (same test), pass on each | `build/test-unit-5{0,1,2}.log` |
-| `make test-behat` (includes the axe-core scenarios) | 5.3 / 8.4 / PostgreSQL 17 / Chromium 152 | 32 scenarios, 432 steps, pass without reruns | `build/behat-53.log` |
-| `make test-behat` (includes the axe-core scenarios) | 4.5.15 / 8.3 / PostgreSQL 17 / Chromium 152 | 32 scenarios, 432 steps, pass without reruns | `build/behat-45.log` |
-| `make security` | — | Semgrep 1.180.0: 0 findings (171 rules); gitleaks 8.30.1: no leaks | `build/security/` |
-| `make validate-blueprint` | — | Both blueprints valid (official schema; alpine-moodle validator) | console |
-| `make package` | — | Clean ZIP, single `chinijo/` directory, runtime files only; the ZIP installed on a fresh Moodle 5.3 site | `build/*.zip` |
-| `make up`, `make seed`, `make reset` | 5.3 (`erseco/alpine-moodle:v5.3.0`) and 4.5 (`v4.5.15`) | Pass | console |
-| GitHub Actions (`ci.yml`, `security.yml`, `playground-preview.yml`) | 4.5 to 5.3; PostgreSQL 17 and MariaDB 11.8; PHP 8.3 and 8.4 | All 21 checks pass. The first run found three CI-only problems, fixed before merging: two PHPUnit tests on MariaDB, JIT with PCOV on PHP 8.4, and the axe step's polling time on the 4.5 runner | pull request #1 |
+| `make coverage` (PHPUnit 11.5 with PCOV) | 5.3 / 8.4 / PostgreSQL 17 | 79 tests, 819 assertions, pass; 96.14 % of 674 lines (`classes/`, `backup/`, `lib.php`) | `build/coverage-53.log`, `build/coverage/` |
+| `make coverage` (PHPUnit 9.6 with PCOV) | 4.5.15 / 8.3 / PostgreSQL 17 | 79 tests, 817 assertions, 1 skipped (Boost colour modes exist only in 5.3), pass; 96.14 % | `build/coverage-45.log` |
+| `make test-unit` | 5.2.4, 5.1.8, 5.0.11 / 8.3 / PostgreSQL 17 | 79 tests, 817 assertions, 1 skipped (same test), pass on each | `build/test-unit-5{0,1,2}.log` |
+| `make test-behat` (includes the axe-core scenarios) | 5.3 / 8.4 / PostgreSQL 17 / Chromium 152 | 36 scenarios, 510 steps, pass without reruns | `build/behat-53.log` |
+| `make test-behat` (includes the axe-core scenarios) | 4.5.15 / 8.3 / PostgreSQL 17 / Chromium 152 | 36 scenarios, 510 steps, pass without reruns (after fixing F-05, see the audit) | `build/behat-45.log` |
+| `make security` | — | Semgrep 1.180.0: 0 findings (171 rules, 108 files); gitleaks 8.30.1: no leaks | `build/security/` |
+| `make validate-blueprint` | — | Both blueprints valid (official schema; alpine-moodle validator) | `build/lint-53.log` |
+| `make package` | — | 78 files, single `chinijo/` directory; the ZIP installed on a fresh Moodle 5.3 site (version 2026100801, login page, styles) | `build/*.zip` |
+| `make up`, `make seed`, `make install` | 5.3 (`erseco/alpine-moodle:v5.3.0`) and 4.5 (`v4.5.15`) | Pass | console |
+| GitHub Actions on version 0.1.0 (`ci.yml`, `security.yml`, `playground-preview.yml`) | 4.5 to 5.3; PostgreSQL 17 and MariaDB 11.8; PHP 8.3 and 8.4 | All 21 checks pass | pull request #1 |
 
 Behat and the axe-core checks ran on 4.5 and 5.3 only, as in CI; 5.0–5.2 had
-static checks and PHPUnit.
+PHPUnit (and, for 0.1.0, static checks).
 
 Coverage measures PHP logic only. Templates, SCSS, JavaScript behaviour and
 accessibility are covered by Behat, axe-core and manual review, not by PHP line
@@ -214,6 +218,7 @@ statement [docs/accessibility-statement-draft.es.md](docs/accessibility-statemen
 [Transfer plan](docs/transfer-plan.md) ·
 [Incident and patch log](docs/incident-and-patch-log.md) ·
 [Third-party licences](docs/third-party-licenses.md) ·
+[Canarian curriculum and course size](docs/curriculum-canarias.md) ·
 [Changelog](CHANGELOG.md)
 
 ## Security

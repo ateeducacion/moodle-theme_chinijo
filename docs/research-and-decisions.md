@@ -21,11 +21,14 @@ the check. Add new entries at the end of each section; do not rewrite history.
 | Semgrep | 1.180.0 (`semgrep/semgrep:1.180.0`) | Registry rulesets with PHP and JavaScript rules; `--config auto` does not work with `--metrics=off`. |
 | gitleaks | 8.30.1 (`ghcr.io/gitleaks/gitleaks:v8.30.1`) | The GitHub Action v3 needs a licence for organisation repositories, the CLI does not. |
 | Font | Atkinson Hyperlegible, Fontsource package 5.2.8 (OFL-1.1) | Licence and latin subset (covers Spanish). |
+| Font | Andika, Fontsource package 5.3.0 (OFL-1.1; package SHA-256 `4c96703f…5507d`) | Licence (no Reserved Font Name), latin subset. |
+| Canarian regulations | ATE index https://ateeducacion.github.io/normativa_educativa_canaria/llms.txt; Decreto 211/2022 read in the BOC (art. 6, 8, 9 and Anexo 4) | Areas and weekly timetable of 1.º–2.º, learning situations; summary and implications in `curriculum-canarias.md`. |
 
 ## Decisions
 
 ### D1. Boost child theme with a minimal override surface
-Inherit everything from Boost; override only `core_renderer::course_header()`; use
+Inherit everything from Boost; override only `core_renderer::course_header()` and
+`core_renderer::course_content_header()` (both add to the parent's output); use
 output hooks and documented `lib.php` callbacks for the rest. Rejected: copying
 Boost layouts or `full_header`/navbar templates (they changed between 4.5 and 5.3:
 login form moved to core in 5.3, course index header in 5.3, colour mode menu in
@@ -119,6 +122,39 @@ The portable `blueprint.json` uses only steps implemented by both runners;
 Semgrep CE with explicit rulesets (p/php, p/phpcs-security-audit, p/javascript,
 p/owasp-top-ten, p/cwe-top-25, p/secrets); the gate fails on ERROR severity.
 gitleaks CLI instead of the licensed GitHub Action.
+
+### D14. Course page for learners: "Next" and "My path"
+Inside `course_content_header()`, from the completion data that already feeds the
+progress: the next activity to do with one large Start link, and the activities
+of the current section (the section of the next activity) in course order, with
+their pictograms and their state written out. Grounded in the Canarian Primary
+curriculum (`docs/curriculum-canarias.md`): a course per area holds several
+learning situations, each usually a section, with 20 to 100 activities a year
+(inference), so the path is drawn per section and windowed to 7 activities.
+Progress is a count of activities, never a percentage or a mark, because grades
+in Primary are qualitative. Rejected: replacing the course format or overriding
+its templates (they change between 4.5 and 5.3), and a whole-course path of every
+activity (too long for 6-year-olds).
+
+### D15. Encouragement and sound
+After core confirms a manual completion, a message of encouragement in a
+`role="status"` region inside the main landmark, with a link to the next
+activity; it never takes the focus and stays until closed. Sounds are off by
+default; when the learner turns them on, a short chime is generated with the Web
+Audio API, so there is no audio file to license or download. Rejected: core's
+toast (it closes by itself and cannot hold a link to the next activity).
+
+### D16. "Listen" with on-device voices only
+The Web Speech API reads the main region of activity pages, using only voices
+with `localService` set, so no text leaves the device (specification 2.9: no
+external services without authorisation). The button is hidden when there is no
+such voice for the page language. It does not replace screen readers or EVAGD's
+text-to-speech tools.
+
+### D17. Andika as "School letters"
+Andika (SIL International, OFL 1.1, no Reserved Font Name; Fontsource 5.3.0) has
+single-storey a and g, as in the letters children learn to write. Self-hosted,
+latin subset, downloaded only when chosen. Offered as a choice, not as a default.
 
 ## Known uncertainties
 
