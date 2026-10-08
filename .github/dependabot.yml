@@ -1,0 +1,25 @@
+# Dependabot keeps the development tooling up to date: GitHub Actions and the
+# container images used by CI and the local stack. The theme itself has no
+# Composer or npm runtime dependencies.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+
+  - package-ecosystem: docker
+    directories:
+      - /dev/ci
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: docker-compose
+    directories:
+      - /
+      - /dev/ci
+    schedule:
+      interval: weekly

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://ateeducacion.github.io/moodle-playground/assets/blueprints/blueprint-schema.json",
+  "preferredVersions": {
+    "php": "8.4",
+    "moodle": "5.3"
+  },
+  "landingPage": "/course/view.php?id=2",
+  "steps": [
+    {
+      "step": "installMoodle",
+      "options": {
+        "siteName": "Chinijo demo",
+        "adminUser": "admin",
+        "adminPass": "Chinijo-demo-1234",
+        "adminEmail": "admin@example.com",
+        "locale": "en"
+      }
+    },
+    {
+      "step": "installMoodlePlugin",
+      "url": "https://github.com/ateeducacion/moodle-theme_chinijo/archive/refs/heads/main.zip",
+      "pluginType": "theme",
+      "pluginName": "chinijo",
+      "critical": true
+    },
+    {
+      "step": "setTheme",
+      "name": "chinijo",
+      "critical": true
+    },
+    {
+      "step": "setConfig",
+      "name": "enablecompletion",
+      "value": "1"
+    },
+    {
+      "step": "createCategory",
+      "name": "Primary education (demo)"
+    },
+    {
+      "step": "createCourse",
+      "fullname": "Year 1 classroom (Chinijo demo)",
+      "shortname": "CHINIJO-DEMO",
+      "category": "Primary education (demo)",
+      "format": "topics",
+      "numsections": 3,
+      "summary": "Synthetic demonstration course for the Chinijo theme. No real people or data."
+    },
+    {
+      "step": "createUser",
+      "username": "teacher1",
+      "password": "Chinijo-demo-1234",
+      "email": "teacher1@example.com",
+      "firstname": "Ana",
+      "lastname": "Docente (demo)"
+    },
+    {
+      "step": "createUser",
+      "username": "student1",
+      "password": "Chinijo-demo-1234",
+      "email": "student1@example.com",
+      "firstname": "Leo",
+      "lastname": "Alumno (demo)"
+    },
+    {
+      "step": "createUser",
+      "username": "student2",
+      "password": "Chinijo-demo-1234",
+      "email": "student2@example.com",
+      "firstname": "Sara",
+      "lastname": "Alumna (demo)"
+    },
+    {
+      "step": "enrolUser",
+      "username": "teacher1",
+      "course": "CHINIJO-DEMO",
+      "role": "editingteacher"
+    },
+    {
+      "step": "enrolUser",
+      "username": "student1",
+      "course": "CHINIJO-DEMO",
+      "role": "student"
+    },
+    {
+      "step": "enrolUser",
+      "username": "student2",
+      "course": "CHINIJO-DEMO",
+      "role": "student"
+    },
+    {
+      "step": "login",
+      "username": "student1"
+    }
+  ]
+}

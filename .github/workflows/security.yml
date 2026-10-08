@@ -1,0 +1,54 @@
+# Static security analysis and secret scanning for theme_chinijo.
+#
+# Semgrep CE runs registry rulesets that cover PHP and JavaScript (p/php,
+# p/phpcs-security-audit, p/javascript, p/owasp-top-ten, p/cwe-top-25,
+# p/secrets). Every finding is kept in the report artifact; findings of
+# ERROR severity (high/critical) fail the job. gitleaks scans the whole Git
+# history and the working tree. Rules are downloaded at run time, so the job
+# also runs weekly to catch new rules without waiting for a code change.
+name: Security
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+  # Reused by the release workflow, so a release always reruns the gates on the tagged commit.
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: Semgrep and gitleaks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Scan
+        run: sh dev/security-scan.sh
+
+      - name: Upload reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: security-reports
+          path: build/security/
+          retention-days: 30
+          if-no-files-found: warn
