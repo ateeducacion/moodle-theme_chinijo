@@ -28,6 +28,7 @@ Supported: Moodle 4.5 LTS, 5.0, 5.1, 5.2 and 5.3 LTS (`$plugin->requires = 20241
 | `version.php`, `config.php`, `lib.php`, `settings.php` | Plugin entry points (callbacks only in `lib.php`) | yes |
 | `classes/` | All logic: `local/` (preferences, pictograms, progress, FEDER, theme checks), `output/core_renderer.php`, `hook_callbacks.php`, `observer.php`, `form/`, `privacy/` | yes |
 | `db/` | `install.xml`, `access.php`, `hooks.php`, `events.php` | yes |
+| `backup/moodle2/` | Course backup and restore of pictograms | yes |
 | `templates/`, `scss/`, `fonts/`, `pix/`, `lang/en`, `lang/es` | UI | yes |
 | `amd/src/` → `amd/build/` | ES modules and their Grunt build (commit both) | yes |
 | `preferences.php`, `pictograms.php` | Pages | yes |
@@ -86,7 +87,8 @@ make screenshot    # docs/screenshots/chinijo-course.png from the running site
 
 - **JS** (`amd/src`): rebuild with `make fix` (Moodle 5.3 Grunt) and commit `amd/build`.
 - **Strings**: update `lang/en` and `lang/es` together; `make lint` checks parity.
-- **DB schema**: bump `version.php`, add `db/upgrade.php` steps with savepoints and a test.
+- **DB schema**: bump `version.php`, add `db/upgrade.php` steps with savepoints and a test;
+  update the backup and restore classes if the pictogram table changes.
 - **UI**: run `make test-a11y`, refresh the screenshot (`make screenshot`) and update
   `docs/accessibility-audit.md` with what was actually checked.
 
