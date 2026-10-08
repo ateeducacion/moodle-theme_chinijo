@@ -58,6 +58,13 @@ refers to colours through CSS custom properties so they follow the colour mode
 `theme_boost\colour_mode::render_menu()` (Chinijo uses Boost's navbar, so nothing
 to do); Bootstrap modules must not be imported directly (5.3).
 
+## User tours
+
+Moodle's default user tours are filtered to the Boost theme, so they do not show
+with Chinijo unless an administrator adds Chinijo to each tour's "Theme" filter
+(*Site administration › Appearance › User tours*). Tours open a modal step that
+hides the rest of the page from assistive technologies while it is shown.
+
 ## EVAGD integration assumptions (to be verified in pre-production)
 
 These cannot be checked on a generic Moodle and are **pending** until EVAGD
