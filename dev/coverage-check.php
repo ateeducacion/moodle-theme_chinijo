@@ -62,6 +62,6 @@ foreach ($xml->xpath('//file') as $node) {
 }
 
 $percentage = $total ? 100 * $covered / $total : 0;
-echo "Line coverage of the theme's PHP logic (classes/ and lib.php):\n" . implode("\n", $rows) . "\n";
+echo "Line coverage of the theme's PHP logic (classes/, backup/ and lib.php):\n" . implode("\n", $rows) . "\n";
 printf("Total: %.2f%% (%d of %d executable lines). Minimum: %.2f%%\n", $percentage, $covered, $total, $minimum);
 exit($percentage + 1e-9 < $minimum ? 1 : 0);

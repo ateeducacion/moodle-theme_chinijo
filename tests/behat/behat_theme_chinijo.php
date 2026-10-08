@@ -85,6 +85,19 @@ class behat_theme_chinijo extends behat_base {
     }
 
     /**
+     * Switch the language of the session, as the language menu does, by reloading the current page with Moodle's
+     * "lang" URL parameter.
+     *
+     * @When I switch the session language to :lang for theme_chinijo tests
+     * @param string $lang Language code.
+     */
+    public function i_switch_the_session_language(string $lang): void {
+        $url = new moodle_url($this->getSession()->getCurrentUrl());
+        $url->param('lang', clean_param($lang, PARAM_SAFEDIR));
+        $this->execute('behat_general::i_visit', [$url->out_as_local_url(false)]);
+    }
+
+    /**
      * Press the tab key until an element has the focus, failing if it is never reached.
      *
      * This checks that the element can be reached with the keyboard alone and that no focus trap

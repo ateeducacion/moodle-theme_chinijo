@@ -39,7 +39,7 @@ const MARKER = 'data-chinijo-pictogram';
  *
  * @param {Object} item Pictogram with type, id, url and alt.
  * @param {string} variant One of 'cm', 'section' or 'index'.
- * @returns {HTMLImageElement}
+ * @returns {HTMLElement} The image, or a hidden wrapper around it in the course index.
  */
 const createImage = (item, variant) => {
     const image = document.createElement('img');
@@ -48,7 +48,15 @@ const createImage = (item, variant) => {
     image.className = `theme-chinijo-pictogram theme-chinijo-pictogram--${variant}`;
     image.decoding = 'async';
     image.setAttribute(MARKER, `${item.type}:${item.id}`);
-    return image;
+    if (variant !== 'index') {
+        return image;
+    }
+    // Inside a link the name already says everything: hide the decorative copy from assistive technologies.
+    const wrapper = document.createElement('span');
+    wrapper.setAttribute('aria-hidden', 'true');
+    wrapper.className = 'theme-chinijo-pictogram-wrapper';
+    wrapper.appendChild(image);
+    return wrapper;
 };
 
 /**
@@ -77,11 +85,13 @@ const decorateItem = (item) => {
             // Inside the title block, before the name, so it shares the activity's stretched link area.
             insertOnce(cmitem, cmitem.querySelector('.activitytitle .activityname'), () => createImage(item, 'cm'));
         });
-        document.querySelectorAll(`[data-for="cm"][data-id="${id}"] [data-for="cm_name"]`).forEach((name) => {
-            if (name.closest('[data-for="cm"]').dataset.id !== id) {
-                return;
+        document.querySelectorAll(`[data-for="cm"][data-id="${id}"]`).forEach((indexitem) => {
+            // The course index item has the name link and a "locked" icon, both marked as cm_name: use the link.
+            const name = indexitem.querySelector('a[data-for="cm_name"]');
+            // Subsections contain other activities: never decorate a nested activity's link.
+            if (name && name.closest('[data-for="cm"]') === indexitem) {
+                insertOnce(indexitem, name.firstChild, () => createImage(item, 'index'));
             }
-            insertOnce(name, name.firstChild, () => createImage(item, 'index'));
         });
     } else if (item.type === 'section') {
         document.querySelectorAll(`[data-for="section"][data-id="${id}"] [data-for="section_title"]`).forEach((title) => {

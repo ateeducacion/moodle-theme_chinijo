@@ -17,8 +17,8 @@
 /**
  * Code coverage settings for theme_chinijo, used by Moodle's PHPUnit configuration.
  *
- * Coverage is measured on the theme's own PHP logic: the autoloaded classes and
- * the lib.php callbacks. Page scripts, settings, language files and templates
+ * Coverage is measured on the theme's own PHP logic: the autoloaded classes, the
+ * backup and restore classes and the lib.php callbacks. Page scripts, settings, language files and templates
  * are exercised by Behat instead and are not part of the PHP line coverage.
  *
  * @package    theme_chinijo
@@ -37,7 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 return new class extends phpunit_coverage_info {
     /** @var array Folders to include. */
-    protected $includelistfolders = ['classes'];
+    protected $includelistfolders = ['classes', 'backup'];
 
     /** @var array Files to include. */
     protected $includelistfiles = ['lib.php'];
@@ -45,6 +45,12 @@ return new class extends phpunit_coverage_info {
     /** @var array Folders to exclude. */
     protected $excludelistfolders = [];
 
-    /** @var array Files to exclude. */
-    protected $excludelistfiles = [];
+    /**
+     * @var array Files to exclude. Moodle includes tests/generator by default; these are test-only data
+     *            generators (the Behat one never runs under PHPUnit), not part of the theme.
+     */
+    protected $excludelistfiles = [
+        'tests/generator/lib.php',
+        'tests/generator/behat_theme_chinijo_generator.php',
+    ];
 };

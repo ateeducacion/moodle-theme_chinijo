@@ -172,12 +172,14 @@ run_coverage() {
     log "PHPUnit with PCOV coverage"
     mkdir -p "$OUT/coverage"
     cd "$MOODLE_DIR"
-    php -d pcov.enabled=1 -d pcov.directory="$(public_dir)/theme/chinijo" vendor/bin/phpunit \
-        --testsuite theme_chinijo_testsuite \
+    # The component configuration limits coverage to the files listed in tests/coverage.php, as moodle-plugin-ci does.
+    php "$(public_dir)/admin/tool/phpunit/cli/util.php" --buildcomponentconfigs >/dev/null
+    php -d pcov.enabled=1 -d pcov.directory="$(installed_dir)" vendor/bin/phpunit \
+        --configuration "$(installed_dir)/phpunit.xml" \
         --coverage-text --coverage-clover "$OUT/coverage/coverage.xml" --coverage-html "$OUT/coverage/html" \
         --log-junit "$OUT/coverage/junit.xml" | tee "$OUT/coverage/summary.txt"
     # Paths in the report point at the plugin in the repository, not at the runner's copy.
-    sed -i "s#$(public_dir)/theme/chinijo/##g" "$OUT/coverage/coverage.xml"
+    sed -i "s#$(installed_dir)/##g" "$OUT/coverage/coverage.xml"
     php "$PLUGIN_DIR/dev/coverage-check.php" "$OUT/coverage/coverage.xml" 80
 }
 

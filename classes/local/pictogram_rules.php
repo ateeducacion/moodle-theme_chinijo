@@ -138,6 +138,9 @@ class pictogram_rules {
      * @return array
      */
     public static function get_filemanager_options(): array {
+        global $CFG;
+        // FILE_INTERNAL is defined by the repository API, which is not loaded on every page.
+        require_once($CFG->dirroot . '/repository/lib.php');
         return [
             'subdirs' => 0,
             'maxfiles' => 1,

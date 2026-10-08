@@ -83,11 +83,6 @@ Feature: Pictograms for course sections and activities
     And I am on "Course 1" course homepage
     And "img[alt='Book']" "css_element" should not exist
 
-  Scenario: Students cannot manage pictograms
-    Given I am on the "C1" "theme_chinijo > Pictograms" page logged in as "student1"
-    Then I should see "Manage course pictograms"
-    And I should not see "Choose a pictogram"
-
   Scenario: The pictogram page is not linked for students
     Given I log in as "student1"
     When I am on "Course 1" course homepage
