@@ -1,0 +1,184 @@
+// High contrast mode: black text on white, underlined links, solid black boundaries and inverted
+// primary actions, so that meaning never depends on colour alone. It deliberately overrides component
+// colours, hence !important. Boost's colour modes are pinned to light while it is on (see hook_callbacks).
+/* stylelint-disable declaration-no-important */
+html[data-chinijo-contrast="high"] {
+    body {
+        background-color: $chinijo-hc-background !important;
+        color: $chinijo-hc-text !important;
+    }
+
+    body *:not(input) {
+        color: $chinijo-hc-text !important;
+        background-color: transparent !important;
+        border-color: $chinijo-hc-text !important;
+        text-shadow: none !important;
+    }
+
+    // Surfaces that sit on top of other content stay opaque.
+    .navbar,
+    .drawer,
+    .modal-content,
+    .dropdown-menu,
+    .popover,
+    .toast,
+    .card,
+    .fixed-top,
+    .sticky-footer,
+    .stickyfooter,
+    .form-control,
+    .custom-select,
+    .form-select,
+    .activityiconcontainer,
+    #page-header,
+    .theme-chinijo-toolbar,
+    .theme-chinijo-prefs__label,
+    .theme-chinijo-progress {
+        background-color: $chinijo-hc-background !important;
+    }
+
+    .form-control,
+    .custom-select,
+    .form-select,
+    .card,
+    .dropdown-menu,
+    .modal-content,
+    .theme-chinijo-progress,
+    .activityiconcontainer {
+        border: 2px solid $chinijo-hc-text !important;
+    }
+
+    a,
+    a * {
+        color: $chinijo-hc-link !important;
+    }
+
+    a {
+        text-decoration: underline !important;
+
+        &:visited,
+        &:visited * {
+            color: $chinijo-hc-visited !important;
+        }
+    }
+
+    .btn {
+        border: 2px solid $chinijo-hc-text !important;
+        text-decoration: none !important;
+    }
+
+    .btn,
+    .btn *,
+    a.btn,
+    a.btn * {
+        color: $chinijo-hc-text !important;
+    }
+
+    // Primary actions and selected items are inverted: white on black.
+    .btn-primary,
+    .btn-success,
+    .btn-danger,
+    .bg-primary,
+    .badge-primary,
+    .text-bg-primary,
+    .dropdown-item.active,
+    .dropdown-item:active,
+    .list-group-item.active,
+    .courseindex .courseindex-item.pageitem,
+    .nav-pills .nav-link.active,
+    .tooltip-inner,
+    .theme-chinijo-prefs__radio:checked + .theme-chinijo-prefs__label {
+        background-color: $chinijo-hc-text !important;
+
+        &,
+        & *,
+        &:visited,
+        &:visited * {
+            color: $chinijo-hc-background !important;
+        }
+    }
+
+    // The current page in tabs and secondary navigation keeps a visible, colour-independent marker.
+    .nav-link.active,
+    nav a[aria-current="page"],
+    nav a[aria-current="true"],
+    .mds-nav-pill--selected,
+    .moremenu .nav-link.active {
+        border-bottom: 4px solid $chinijo-hc-text !important;
+        font-weight: 700 !important;
+    }
+
+    .badge,
+    .alert {
+        border: 2px solid $chinijo-hc-text !important;
+    }
+
+    .alert {
+        border-left-width: .5rem !important;
+    }
+
+    .text-muted,
+    .dimmed_text,
+    .dimmed,
+    .dimmed .activityiconcontainer,
+    :disabled,
+    .disabled {
+        opacity: 1 !important;
+    }
+
+    :disabled,
+    .disabled {
+        border-style: dashed !important;
+    }
+
+    ::placeholder {
+        color: #444 !important;
+        opacity: 1 !important;
+    }
+
+    // Activity icons are dark when they are not tinted white on a coloured background.
+    .activityiconcontainer img,
+    .activityicon,
+    .icon.activityicon {
+        filter: none !important;
+    }
+
+    .theme-chinijo-progress__bar {
+        border: 2px solid $chinijo-hc-text !important;
+        background-color: $chinijo-hc-background !important;
+        color: $chinijo-hc-text !important;
+
+        &::-webkit-progress-bar {
+            background-color: $chinijo-hc-background !important;
+        }
+
+        &::-webkit-progress-value {
+            background-color: $chinijo-hc-text !important;
+        }
+
+        &::-moz-progress-bar {
+            background-color: $chinijo-hc-text !important;
+        }
+    }
+
+    :focus-visible {
+        outline: 4px solid $chinijo-hc-text !important;
+        outline-offset: 2px !important;
+        box-shadow: 0 0 0 2px $chinijo-hc-background !important;
+    }
+}
+
+// Windows high contrast and other forced colour modes: keep boundaries that rely on backgrounds.
+@media (forced-colors: active) {
+    .btn,
+    .theme-chinijo-prefs__label,
+    .theme-chinijo-progress__bar,
+    .theme-chinijo-prefs-trigger__glyph {
+        border: 2px solid buttontext !important;
+    }
+
+    :focus-visible {
+        outline: 3px solid highlight !important;
+    }
+}
+/* stylelint-enable declaration-no-important */

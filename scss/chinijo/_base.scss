@@ -1,0 +1,93 @@
+// Calm, predictable defaults for young readers. Nothing here hides Moodle features.
+
+// Keep focused elements clear of the fixed navbar and of sticky footers (WCAG 2.4.11).
+html {
+    scroll-padding-top: calc(#{$navbar-height} + 1rem);
+    scroll-padding-bottom: 5rem;
+}
+
+#page.drawers {
+    scroll-padding-top: 1rem;
+    scroll-padding-bottom: 5rem;
+}
+
+// Links inside text are underlined, so they are not identified by colour alone (WCAG 1.4.1).
+#region-main p a:not(.btn),
+.no-overflow a:not(.btn),
+.text_to_html a:not(.btn),
+.activity-description a:not(.btn),
+.generalbox a:not(.btn) {
+    text-decoration: underline;
+    text-underline-offset: .15em;
+}
+
+// Larger, comfortable targets in the main content, forms and dialogues.
+#region-main,
+.modal,
+.theme-chinijo-prefs {
+    .btn:not(.btn-link):not(.btn-icon):not(.btn-close) {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: $chinijo-target-size;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+#region-main {
+    .form-control,
+    .custom-select,
+    .form-select {
+        min-height: $chinijo-target-size;
+    }
+}
+
+// Primary actions (continue, submit, confirm) stand out by weight and outline, not only by colour.
+.btn-primary {
+    font-weight: 700;
+    border-width: 2px;
+}
+
+// Error messages carry a bar and bold text in addition to their colour.
+.invalid-feedback,
+.form-control-feedback {
+    border-left: 4px solid $danger;
+    padding-left: .5rem;
+    font-weight: 600;
+}
+
+.alert-danger,
+.alert-error {
+    border-left-width: .5rem;
+}
+
+.alert-success {
+    border-left-width: .5rem;
+}
+
+// More room around course content.
+.course-content {
+    .activity-item {
+        padding-top: .75rem;
+        padding-bottom: .75rem;
+    }
+
+    .sectionname {
+        font-size: 1.5rem;
+    }
+}
+
+// The course header region holds the progress indicator, on its own line.
+#page-header #course-header {
+    width: 100%;
+}
+
+// Course index names wrap instead of being cut with an ellipsis, so no text is lost
+// with larger text or the WCAG 1.4.12 spacing values.
+.courseindex .courseindex-link.text-truncate,
+.courseindex .courseindex-name.text-truncate {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+}

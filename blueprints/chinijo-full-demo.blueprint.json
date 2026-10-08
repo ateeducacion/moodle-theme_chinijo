@@ -1,0 +1,45 @@
+{
+  "$schema": "https://ateeducacion.github.io/moodle-playground/assets/blueprints/blueprint-schema.json",
+  "preferredVersions": {
+    "php": "8.4",
+    "moodle": "5.3"
+  },
+  "landingPage": "/course/view.php?id=2",
+  "steps": [
+    {
+      "step": "installMoodle",
+      "options": {
+        "siteName": "Chinijo demo",
+        "adminUser": "admin",
+        "adminPass": "Chinijo-demo-1234",
+        "adminEmail": "admin@example.com",
+        "locale": "en"
+      }
+    },
+    {
+      "step": "installMoodlePlugin",
+      "url": "https://github.com/ateeducacion/moodle-theme_chinijo/archive/refs/heads/main.zip",
+      "pluginType": "theme",
+      "pluginName": "chinijo",
+      "critical": true
+    },
+    {
+      "step": "setTheme",
+      "name": "chinijo",
+      "critical": true
+    },
+    {
+      "step": "installLanguagePack",
+      "language": "es"
+    },
+    {
+      "step": "runPhpCode",
+      "code": "require_once($CFG->dirroot . '/theme/chinijo/dev/seedlib.php'); chinijo_seed_run();",
+      "critical": true
+    },
+    {
+      "step": "login",
+      "username": "student1"
+    }
+  ]
+}

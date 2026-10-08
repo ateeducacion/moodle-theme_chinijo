@@ -1,0 +1,56 @@
+# Release of theme_chinijo, from a version tag (v*, for example v0.1.0).
+#
+# The tag must match $plugin->release in version.php. The workflow reruns the
+# full CI and security workflows on the tagged commit and only then builds the
+# clean installable ZIP (top-level chinijo/ directory, runtime files only),
+# computes its SHA-256 checksum and publishes both as a draft GitHub release
+# for a maintainer to review and publish.
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  security:
+    uses: ./.github/workflows/security.yml
+
+  package:
+    name: Package and draft release
+    needs: [ci, security]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Check that the tag matches version.php
+        run: |
+          release=$(sed -n "s/^\$plugin->release *= *'\([^']*\)';.*/\1/p" version.php)
+          if [ "v$release" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match \$plugin->release ($release)." >&2
+            exit 1
+          fi
+
+      - name: Build and check the plugin package
+        run: sh dev/package.sh
+
+      - name: Draft the GitHub release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          draft: true
+          body_path: CHANGELOG.md
+          files: |
+            build/theme_chinijo-*.zip
+            build/theme_chinijo-*.zip.sha256

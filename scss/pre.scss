@@ -1,0 +1,38 @@
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+// Chinijo variables, injected before Boost's default preset.
+// Every value is a default, so the brand colour setting and the raw initial SCSS setting win.
+
+// 16px body text instead of Boost's 15px, for young readers.
+$font-size-base: 1rem !default;
+$line-height-base: 1.5 !default;
+
+// Practical target size for children. WCAG 2.2 (2.5.8) only requires 24px; 44px follows WCAG 2.5.5 (AAA).
+$chinijo-target-size: 2.75rem !default;
+
+// Colours used by Chinijo's own components. All pass 4.5:1 (text) or 3:1 (boundaries) on white.
+$chinijo-ink: #1d2125 !default;
+$chinijo-boundary: #6a737b !default;
+$chinijo-track: #e9ecef !default;
+$chinijo-progress: #357a32 !default;
+$chinijo-focus-outline: #1d2125 !default;
+$chinijo-focus-gap: #fff !default;
+
+// High contrast palette.
+$chinijo-hc-text: #000 !default;
+$chinijo-hc-background: #fff !default;
+$chinijo-hc-link: #00009c !default;
+$chinijo-hc-visited: #4b0082 !default;

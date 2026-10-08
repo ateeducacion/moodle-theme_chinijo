@@ -1,0 +1,33 @@
+// Atkinson Hyperlegible, by the Braille Institute of America, SIL Open Font License 1.1 (see fonts/).
+// Browsers only download it when the "easy to read" typeface is chosen, because nothing else uses it.
+@font-face {
+    font-family: "Atkinson Hyperlegible";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("[[font:theme|atkinson-hyperlegible-latin-400-normal.woff2]]") format("woff2");
+}
+
+@font-face {
+    font-family: "Atkinson Hyperlegible";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("[[font:theme|atkinson-hyperlegible-latin-400-italic.woff2]]") format("woff2");
+}
+
+@font-face {
+    font-family: "Atkinson Hyperlegible";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("[[font:theme|atkinson-hyperlegible-latin-700-normal.woff2]]") format("woff2");
+}
+
+@font-face {
+    font-family: "Atkinson Hyperlegible";
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url("[[font:theme|atkinson-hyperlegible-latin-700-italic.woff2]]") format("woff2");
+}

@@ -1,0 +1,44 @@
+# Adds a "Preview in Moodle Playground" button to the description of pull requests.
+#
+# The action reads blueprint.json and rewrites the installMoodlePlugin URL of
+# this repository to the archive of the pull request's branch, so the preview
+# runs the proposed version of Chinijo on Moodle 5.3 (preferredVersions in the
+# blueprint). It edits the PR description (no comments), which needs
+# pull-requests: write for this job only. Pull requests from forks get a
+# read-only token, so the job is skipped for them; their authors can open the
+# preview by hand (see docs/playground.md).
+name: Playground preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    name: Moodle Playground preview link
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check out the pull request
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Add the preview button
+        uses: ateeducacion/action-moodle-playground-pr-preview@bfa63e4863a8cf9d6ac9394bd83f8669000dfd51 # v1
+        with:
+          blueprint-file: blueprint.json
+          moodle-version: '5.3'
+          mode: append-to-description
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          extra-text: >-
+            Demo accounts (disposable, preview only): student1, student2 and teacher1, password
+            Chinijo-demo-1234. Open "Display settings" in the navbar to try the preferences panel.

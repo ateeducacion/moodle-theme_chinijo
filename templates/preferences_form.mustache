@@ -1,0 +1,86 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_chinijo/preferences_form
+
+    Display settings form. Each preference is a group of radio buttons inside a
+    fieldset with a legend. The form posts to the stand-alone page, so it works
+    without JavaScript; inside the dialogue, theme_chinijo/preferences previews
+    every change immediately and saves it with the Save button.
+
+    Context variables required for this template:
+    * actionurl - URL the form posts to.
+    * sesskey - Session key.
+    * returnurl - Local URL to return to after saving.
+    * cancelurl - Absolute URL used by the Cancel link.
+    * indialogue - True when rendered for the dialogue.
+    * canpersist - False for guests and visitors who are not logged in.
+    * groups - Preference groups, each with name, legend, hassample and options.
+
+    Example context (json):
+    {
+        "actionurl": "https://moodle.example/theme/chinijo/preferences.php",
+        "sesskey": "abc123",
+        "returnurl": "/my/",
+        "cancelurl": "https://moodle.example/my/",
+        "indialogue": false,
+        "canpersist": true,
+        "groups": [
+            {
+                "name": "fontsize",
+                "legend": "Text size",
+                "hassample": true,
+                "options": [
+                    {"name": "fontsize", "value": "default", "id": "pref-fontsize-default", "label": "Normal", "checked": true},
+                    {"name": "fontsize", "value": "large", "id": "pref-fontsize-large", "label": "Large", "checked": false}
+                ]
+            }
+        ]
+    }
+}}
+<form method="post" action="{{actionurl}}" class="theme-chinijo-prefs" data-region="theme_chinijo-preferences" data-indialogue="{{#indialogue}}1{{/indialogue}}{{^indialogue}}0{{/indialogue}}">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <input type="hidden" name="returnurl" value="{{returnurl}}">
+    <p class="theme-chinijo-prefs__intro">{{#str}}prefs_intro, theme_chinijo{{/str}}</p>
+    {{^canpersist}}
+        <p class="theme-chinijo-prefs__note">{{#str}}prefs_sessiononly, theme_chinijo{{/str}}</p>
+    {{/canpersist}}
+    {{#groups}}
+        <fieldset class="theme-chinijo-prefs__group" data-preference="{{name}}">
+            <legend class="theme-chinijo-prefs__legend">{{legend}}</legend>
+            <div class="theme-chinijo-prefs__options">
+                {{#options}}
+                    <div class="theme-chinijo-prefs__option">
+                        <input type="radio" class="theme-chinijo-prefs__radio" name="{{name}}" id="{{id}}" value="{{value}}"{{#checked}} checked{{/checked}}>
+                        <label for="{{id}}" class="theme-chinijo-prefs__label">
+                            {{#hassample}}<span class="theme-chinijo-prefs__sample" data-sample="{{name}}-{{value}}" aria-hidden="true">Aa</span>{{/hassample}}
+                            <span class="theme-chinijo-prefs__text">{{label}}</span>
+                        </label>
+                    </div>
+                {{/options}}
+            </div>
+        </fieldset>
+    {{/groups}}
+    <div class="theme-chinijo-prefs__status" role="status" data-region="theme_chinijo-preferences-status"></div>
+    <div class="theme-chinijo-prefs__actions">
+        <button type="submit" class="btn btn-primary" name="save" value="1" data-action="save">{{#str}}prefs_save, theme_chinijo{{/str}}</button>
+        <button type="submit" class="btn btn-secondary" name="reset" value="1" data-action="reset">{{#str}}prefs_reset, theme_chinijo{{/str}}</button>
+        {{^indialogue}}
+            <a class="btn btn-link" href="{{cancelurl}}">{{#str}}cancel, core{{/str}}</a>
+        {{/indialogue}}
+    </div>
+</form>

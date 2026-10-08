@@ -1,0 +1,215 @@
+# Moodle plugin CI for theme_chinijo.
+#
+# Based on moodlehq/moodle-plugin-ci's gha.dist.yml (moodle-plugin-ci 4.5.11).
+# Moodle 4.5 LTS and 5.3 LTS get the full regression run (static checks,
+# PHPUnit, Behat including the axe-core accessibility scenarios); 5.0, 5.1
+# and 5.2 get installation, static checks and PHPUnit. MariaDB is tested on
+# both LTS releases. Every mandatory step is blocking.
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+  # Reused by the release workflow, so a release always reruns the gates on the tagged commit.
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  moodle:
+    name: Moodle ${{ matrix.label }} · PHP ${{ matrix.php }} · ${{ matrix.database }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+
+    services:
+      postgres:
+        image: ${{ matrix.database == 'pgsql' && 'postgres:17' || '' }}
+        env:
+          POSTGRES_USER: 'postgres'
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+
+      mariadb:
+        image: ${{ matrix.database == 'mariadb' && 'mariadb:11.8' || '' }}
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+          MYSQL_CHARACTER_SET_SERVER: 'utf8mb4'
+          MYSQL_COLLATION_SERVER: 'utf8mb4_unicode_ci'
+        ports:
+          - 3306:3306
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval 10s --health-timeout 5s --health-retries 3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Previous LTS: PHP 8.3 is the newest PHP it supports.
+          - {label: '4.5 LTS', moodle-branch: MOODLE_405_STABLE, php: '8.3', database: pgsql, behat: true, grunt: true}
+          - {label: '4.5 LTS', moodle-branch: MOODLE_405_STABLE, php: '8.3', database: mariadb}
+          - {label: '5.0', moodle-branch: MOODLE_500_STABLE, php: '8.3', database: pgsql}
+          # Moodle 5.1 moved the web root to public/.
+          - {label: '5.1', moodle-branch: MOODLE_501_STABLE, php: '8.3', database: pgsql}
+          - {label: '5.2', moodle-branch: MOODLE_502_STABLE, php: '8.3', database: pgsql}
+          # Current LTS: the reference build (amd/build is produced with its Grunt; 4.5's Grunt gives the same output).
+          - {label: '5.3 LTS', moodle-branch: MOODLE_503_STABLE, php: '8.4', database: pgsql, behat: true, grunt: true, coverage: true}
+          - {label: '5.3 LTS', moodle-branch: MOODLE_503_STABLE, php: '8.4', database: mariadb}
+          - {label: '5.3 LTS', moodle-branch: MOODLE_503_STABLE, php: '8.3', database: pgsql}
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          path: plugin
+          persist-credentials: false
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: ${{ matrix.php }}
+          # JIT is off: with PCOV loaded PHP 8.4 warns that it disables JIT, and Moodle's CLI scripts fail on any warning.
+          ini-values: max_input_vars=5000, opcache.enable_cli=1, opcache.jit=disable
+          coverage: ${{ matrix.coverage && 'pcov' || 'none' }}
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci 4.5.11
+          echo "$(cd ci/bin; pwd)" >> "$GITHUB_PATH"
+          echo "$(cd ci/vendor/bin; pwd)" >> "$GITHUB_PATH"
+          sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> "$GITHUB_ENV"
+
+      - name: Install moodle-plugin-ci
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+        env:
+          DB: ${{ matrix.database }}
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+
+      # Core's axe step polls for results get_extended_timeout() * 10 times without pausing, which is too
+      # short on hosted runners for whole pages with an editor iframe (seen on the 4.5 assignment form).
+      - name: Allow slower runners in Behat
+        if: ${{ !cancelled() && matrix.behat }}
+        run: |
+          # shellcheck disable=SC2016 # A line of PHP for config.php, not a shell expansion.
+          moodle-plugin-ci add-config '$CFG->behat_increasetimeout = 3;'
+
+      - name: PHP Lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phplint
+
+      - name: PHP Mess Detector
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpmd
+
+      - name: Moodle Code Checker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpcs --max-warnings 0
+
+      - name: Moodle PHPDoc Checker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpdoc --max-warnings 0
+
+      - name: Validating
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci validate
+
+      - name: Check upgrade savepoints
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci savepoints
+
+      - name: Mustache Lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci mustache
+
+      - name: Grunt (ESLint, Stylelint, amd/build up to date)
+        if: ${{ !cancelled() && matrix.grunt }}
+        run: moodle-plugin-ci grunt --max-lint-warnings 0
+
+      - name: Language packs (en and es keys and placeholders)
+        if: ${{ !cancelled() }}
+        run: php plugin/dev/check-lang.php plugin
+
+      - name: PHPUnit tests
+        if: ${{ !cancelled() && !matrix.coverage }}
+        run: moodle-plugin-ci phpunit --fail-on-warning
+
+      - name: PHPUnit tests with coverage
+        if: ${{ !cancelled() && matrix.coverage }}
+        run: |
+          moodle-plugin-ci phpunit --fail-on-warning --coverage-pcov --coverage-text --coverage-clover
+          php plugin/dev/coverage-check.php coverage.xml 80 | tee coverage-summary.txt
+
+      - name: Upload coverage report
+        if: ${{ !cancelled() && matrix.coverage }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage
+          path: |
+            coverage.xml
+            coverage-summary.txt
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Behat features (including @accessibility axe-core checks)
+        id: behat
+        if: ${{ !cancelled() && matrix.behat }}
+        run: moodle-plugin-ci behat --profile chrome --auto-rerun 1 --dump
+        env:
+          MOODLE_BEHAT_DEFAULT_BROWSER: chrome
+
+      - name: Upload Behat faildump
+        if: ${{ failure() && steps.behat.outcome == 'failure' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: behat-faildump-${{ matrix.moodle-branch }}-${{ matrix.php }}-${{ matrix.database }}
+          path: ${{ github.workspace }}/moodledata/behat_dump
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Mark cancelled jobs as failed
+        if: ${{ cancelled() }}
+        run: exit 1
+
+  repository:
+    name: Blueprint, scripts, workflows and package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Validate the Moodle Playground blueprints
+        run: sh dev/validate-blueprint.sh
+
+      - name: ShellCheck
+        run: docker run --rm -v "$PWD:/mnt:ro" -w /mnt koalaman/shellcheck:v0.11.0 dev/*.sh dev/ci/run.sh
+
+      - name: actionlint
+        run: docker run --rm -v "$PWD:/repo:ro" -w /repo rhysd/actionlint:1.7.12 -color
+
+      - name: Build and check the plugin package
+        run: sh dev/package.sh
+
+      - name: Upload package
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: theme_chinijo-package
+          path: |
+            build/theme_chinijo-*.zip
+            build/theme_chinijo-*.zip.sha256
+          retention-days: 14
+          if-no-files-found: error

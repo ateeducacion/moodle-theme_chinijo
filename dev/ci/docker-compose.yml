@@ -1,0 +1,54 @@
+# Development-only test runner (see dev/ci/Dockerfile). Use it through the Makefile:
+#   make lint | fix | test | test-unit | test-behat | test-a11y | coverage  [MOODLE_VERSION=4.5..5.3]
+# The Makefile sets a project name per Moodle release, so each release keeps
+# its own Moodle checkout, database and caches in separate volumes.
+
+services:
+  db:
+    image: postgres:17.11-alpine3.24
+    environment:
+      # moodle-plugin-ci creates the "moodle" database itself.
+      POSTGRES_USER: moodle
+      POSTGRES_PASSWORD: moodle-ci-only
+      POSTGRES_DB: postgres
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U moodle -d postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  selenium:
+    image: selenium/standalone-chromium:152.0
+    shm_size: 2gb
+
+  ci:
+    build:
+      context: .
+      args:
+        PHP_VERSION: ${CI_PHP_VERSION:-8.4}
+    image: chinijo-ci:php${CI_PHP_VERSION:-8.4}
+    depends_on:
+      db:
+        condition: service_healthy
+      selenium:
+        condition: service_started
+    hostname: ci
+    environment:
+      MOODLE_BRANCH: ${MOODLE_BRANCH:-MOODLE_503_STABLE}
+      DB_HOST: db
+      DB_USER: moodle
+      DB_PASS: moodle-ci-only
+      DB_NAME: moodle
+      MOODLE_START_BEHAT_SERVERS: "NO"
+      MOODLE_BEHAT_WWWROOT: http://ci:8000
+      MOODLE_BEHAT_WDHOST: http://selenium:4444/wd/hub
+    volumes:
+      - ../..:/plugin:ro
+      - ../../build:/out
+      - work:/work
+
+volumes:
+  work:
+  dbdata:

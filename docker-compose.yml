@@ -1,0 +1,65 @@
+# Local development stack for theme_chinijo.
+#
+# The checked-out repository is bind-mounted read-only as the live theme, so
+# Moodle can never modify or delete the source. SYNC_MOODLE_CODE is "never"
+# and Moodle's code is not kept in a volume: erseco/alpine-moodle's code sync
+# uses "rsync --delete", which would remove bind-mounted plugin files.
+#
+# Use the Makefile (make up MOODLE_VERSION=4.5|5.0|5.1|5.2|5.3) rather than
+# calling docker compose directly: it selects the image tag, the theme mount
+# path (theme/ before Moodle 5.1, public/theme/ from 5.1) and a project name
+# per Moodle release, so that databases of different releases never mix.
+
+services:
+  db:
+    image: postgres:17.11-alpine3.24
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-moodle}
+      POSTGRES_USER: ${POSTGRES_USER:-moodle}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-moodle-dev-only}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  moodle:
+    image: erseco/alpine-moodle:${MOODLE_IMAGE_TAG:-v5.3.0}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SITE_URL: http://localhost:${CHINIJO_HTTP_PORT:-8080}
+      DB_TYPE: pgsql
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-moodle}
+      DB_USER: ${POSTGRES_USER:-moodle}
+      DB_PASS: ${POSTGRES_PASSWORD:-moodle-dev-only}
+      DB_PREFIX: mdl_
+      # The image does not quote this value when installing: keep it to a single word.
+      MOODLE_SITENAME: Chinijo
+      MOODLE_LANGUAGE: en
+      MOODLE_USERNAME: ${MOODLE_ADMIN_USER:-admin}
+      MOODLE_PASSWORD: ${MOODLE_ADMIN_PASSWORD:-Chinijo-dev-1234}
+      MOODLE_EMAIL: ${MOODLE_ADMIN_EMAIL:-admin@example.com}
+      # PHP sees the container port (8080), not the host port, so Moodle's wwwroot port check would
+      # redirect forever on any other host port. Development only: skip that check.
+      REVERSEPROXY: "true"
+      SYNC_MOODLE_CODE: "never"
+      AUTO_UPDATE_MOODLE: "true"
+      DEBUG: "true"
+      RUN_CRON_TASKS: "false"
+    ports:
+      - "${CHINIJO_HTTP_PORT:-8080}:8080"
+    volumes:
+      - moodledata:/var/www/moodledata
+      - ./:${CHINIJO_THEME_PATH:-/var/www/html/public/theme/chinijo}:ro
+
+volumes:
+  dbdata:
+  moodledata:

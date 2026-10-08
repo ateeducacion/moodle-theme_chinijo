@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<libraries>
+  <library>
+    <location>fonts</location>
+    <name>Atkinson Hyperlegible</name>
+    <description>High-legibility typeface by the Braille Institute of America (latin subset, WOFF2 files from the Fontsource package 5.2.8).</description>
+    <version>2020</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/googlefonts/atkinson-hyperlegible</repository>
+    <copyrights>
+      <copyright>2020 Braille Institute of America, Inc.</copyright>
+    </copyrights>
+  </library>
+</libraries>

@@ -1,0 +1,29 @@
+// Reduced motion: the system setting (prefers-reduced-motion) and the personal preference.
+// Durations are almost zero rather than zero: core modals and Boost's drawers wait for the
+// transitionend event, which browsers do not fire for a transition that lasts 0s.
+/* stylelint-disable declaration-no-important, time-min-milliseconds */
+@mixin chinijo-reduce-motion {
+    scroll-behavior: auto !important;
+
+    *,
+    *::before,
+    *::after {
+        animation-delay: 0s !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-delay: 0s !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        @include chinijo-reduce-motion();
+    }
+}
+
+html[data-chinijo-motion="reduce"] {
+    @include chinijo-reduce-motion();
+}
+/* stylelint-enable declaration-no-important, time-min-milliseconds */
