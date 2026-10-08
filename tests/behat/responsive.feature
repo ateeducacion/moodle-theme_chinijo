@@ -31,9 +31,10 @@ Feature: Chinijo on phones and tablets
     Given I change viewport size to "<size>"
     And I log in as "student1"
     When I am on "Course 1" course homepage
-    Then I should see "Your progress: 0 of 1 activities completed (0%)"
+    Then I should see "0 of 1 activities done"
     And "img[alt='Book']" "css_element" should exist
     And the page should not scroll horizontally
+    And the ".theme-chinijo-next__start" "css_element" should be at least "44" pixels wide and high
     And the "Display settings" "button" should be at least "44" pixels wide and high
     And I click on "Display settings" "button"
     And the "label[for='theme-chinijo-pref-dlg-contrast-high']" "css_element" should be at least "44" pixels wide and high

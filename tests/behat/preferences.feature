@@ -101,3 +101,28 @@ Feature: Personal display settings
     When I follow "Preferences" in the user menu
     And I follow "Display settings"
     Then I should see "Choose how pages look for you."
+
+  @javascript
+  Scenario: A ready-made combination is previewed in the dialogue and kept with Save
+    Given I log in as "student1"
+    And I click on "Display settings" "button"
+    When I press "Easier to read"
+    Then the "data-chinijo-font" attribute of "html" "css_element" should contain "legible"
+    And the "data-chinijo-fontsize" attribute of "html" "css_element" should contain "large"
+    And I click on "School letters (Andika)" "radio"
+    And I click on "Sounds on" "radio"
+    And the "data-chinijo-font" attribute of "html" "css_element" should contain "school"
+    And I press "Save"
+    And I should see "Your display settings have been saved."
+    And I reload the page
+    And the "data-chinijo-font" attribute of "html" "css_element" should contain "school"
+    And the "data-chinijo-letterspacing" attribute of "html" "css_element" should contain "wide"
+    And the "data-chinijo-sound" attribute of "html" "css_element" should contain "on"
+
+  Scenario: A ready-made combination works without JavaScript
+    Given I log in as "student1"
+    When I am on the "theme_chinijo > Display settings" page
+    And I press "Easier to see"
+    Then I should see "Your display settings have been saved."
+    And the "data-chinijo-contrast" attribute of "html" "css_element" should contain "high"
+    And the "data-chinijo-fontsize" attribute of "html" "css_element" should contain "xlarge"

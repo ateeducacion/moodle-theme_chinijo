@@ -1,0 +1,118 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_chinijo/learning_path
+
+    The learner's path on the course page, from Moodle's completion data only:
+    the next activity to do and the activities in course order with their state.
+    State is given by text and shape as well as colour.
+
+    Context variables required for this template:
+    * courseid - Course id.
+    * completed - Number of completed activities.
+    * total - Number of activities with completion that are counted.
+    * coursecomplete - Whether Moodle marks the whole course as completed.
+    * cmidsjson - JSON list of the counted course module ids.
+    * itemsjson - JSON list of the activities on the path, for theme_chinijo/completion_feedback.
+    * firstname - The learner's first name.
+    * next - The next activity (see theme_chinijo/learning_path_next), or null.
+    * section - The current section (number, name, url, pictogramurl, completed, total), or null.
+    * alldone - True when every activity is done.
+    * hasitems - Whether there are activities to draw.
+    * window - Activities drawn on the path: cmid, name, url, iconurl, pictogramurl, state, statelabel, iscurrent.
+    * before - Number of activities left out before the window.
+    * after - Number of activities left out after the window.
+
+    Example context (json):
+    {
+        "courseid": 2,
+        "completed": 1,
+        "total": 2,
+        "coursecomplete": false,
+        "cmidsjson": "[10,11]",
+        "itemsjson": "[]",
+        "firstname": "Leo",
+        "next": {
+            "name": "Draw your family",
+            "url": "https://moodle.example/mod/assign/view.php?id=11",
+            "modname": "Assignment",
+            "iconurl": "https://moodle.example/theme/image.php/chinijo/assign/1/monologo",
+            "pictogramurl": ""
+        },
+        "alldone": false,
+        "section": {"number": 2, "name": "Let's draw", "url": "https://moodle.example/course/view.php?id=2#section-2", "pictogramurl": "", "completed": 1, "total": 2},
+        "hasitems": true,
+        "window": [
+            {"cmid": 10, "name": "Read the story", "url": "https://moodle.example/mod/page/view.php?id=10", "iconurl": "https://moodle.example/theme/image.php/chinijo/page/1/monologo", "pictogramurl": "", "state": "done", "statelabel": "Done", "iscurrent": false},
+            {"cmid": 11, "name": "Draw your family", "url": "https://moodle.example/mod/assign/view.php?id=11", "iconurl": "https://moodle.example/theme/image.php/chinijo/assign/1/monologo", "pictogramurl": "", "state": "current", "statelabel": "Now", "iscurrent": true}
+        ],
+        "before": 0,
+        "after": 0
+    }
+}}
+<section class="theme-chinijo-path" data-region="theme_chinijo-progress" aria-labelledby="theme-chinijo-path-title-{{courseid}}" data-courseid="{{courseid}}" data-cmids="{{cmidsjson}}" data-completed="{{completed}}" data-total="{{total}}" data-items="{{itemsjson}}" data-firstname="{{firstname}}"{{#section}} data-section="{{number}}"{{/section}}>
+    {{#next}}
+        {{> theme_chinijo/learning_path_next }}
+    {{/next}}
+    {{#alldone}}
+        {{> theme_chinijo/learning_path_next }}
+    {{/alldone}}
+    <div class="theme-chinijo-path__header">
+        <h2 class="theme-chinijo-path__title" id="theme-chinijo-path-title-{{courseid}}">{{#str}}path_title, theme_chinijo{{/str}}</h2>
+        <p class="theme-chinijo-path__summary" data-region="theme_chinijo-progress-label">
+            {{#coursecomplete}}
+                <span class="theme-chinijo-progress__done">{{#str}}progress_coursecomplete, theme_chinijo{{/str}}</span>
+            {{/coursecomplete}}
+            {{^coursecomplete}}
+                {{#str}}path_summary, theme_chinijo, { "completed": {{completed}}, "total": {{total}} }{{/str}}
+            {{/coursecomplete}}
+        </p>
+    </div>
+    {{#section}}
+        <p class="theme-chinijo-path__section">
+            {{#pictogramurl}}<img src="{{pictogramurl}}" alt="" class="theme-chinijo-path__section-pictogram">{{/pictogramurl}}
+            <a class="theme-chinijo-path__section-name" href="{{url}}">{{name}}</a>
+            <span class="theme-chinijo-path__section-summary" data-region="theme_chinijo-section-label">{{#str}}path_section_summary, theme_chinijo, { "completed": {{completed}}, "total": {{total}} }{{/str}}</span>
+        </p>
+    {{/section}}
+    {{#hasitems}}
+        <div class="theme-chinijo-path__track">
+            <ol class="theme-chinijo-path__list">
+                {{#before}}
+                    <li class="theme-chinijo-path__more">{{#str}}path_more, theme_chinijo, {{before}}{{/str}}</li>
+                {{/before}}
+                {{#window}}
+                    <li class="theme-chinijo-path__stop" data-state="{{state}}" data-cmid="{{cmid}}"{{#iscurrent}} aria-current="step"{{/iscurrent}}>
+                        <span class="theme-chinijo-path__marker" aria-hidden="true">
+                            {{#pictogramurl}}<img src="{{pictogramurl}}" alt="" class="theme-chinijo-path__pictogram">{{/pictogramurl}}
+                            {{^pictogramurl}}<img src="{{iconurl}}" alt="" class="theme-chinijo-path__icon">{{/pictogramurl}}
+                            <span class="theme-chinijo-path__badge">
+                                <svg class="theme-chinijo-icon" viewBox="0 0 24 24" width="16" height="16" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                            </span>
+                        </span>
+                        {{#url}}<a class="theme-chinijo-path__name" href="{{url}}">{{name}}</a>{{/url}}
+                        {{^url}}<span class="theme-chinijo-path__name">{{name}}</span>{{/url}}
+                        <span class="theme-chinijo-path__state" data-region="theme_chinijo-path-state">{{statelabel}}</span>
+                    </li>
+                {{/window}}
+                {{#after}}
+                    <li class="theme-chinijo-path__more">{{#str}}path_more, theme_chinijo, {{after}}{{/str}}</li>
+                {{/after}}
+            </ol>
+        </div>
+    {{/hasitems}}
+</section>

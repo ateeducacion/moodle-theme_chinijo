@@ -17,10 +17,11 @@
 {{!
     @template theme_chinijo/preferences_form
 
-    Display settings form. Each preference is a group of radio buttons inside a
-    fieldset with a legend. The form posts to the stand-alone page, so it works
-    without JavaScript; inside the dialogue, theme_chinijo/preferences previews
-    every change immediately and saves it with the Save button.
+    Display settings panel. Ready-made combinations come first, in their own
+    small form; then each preference is a group of radio buttons inside a
+    fieldset with a legend. Both forms post to the stand-alone page, so they
+    work without JavaScript; inside the dialogue, theme_chinijo/preferences
+    previews every change immediately and saves it with the Save button.
 
     Context variables required for this template:
     * actionurl - URL the form posts to.
@@ -29,6 +30,7 @@
     * cancelurl - Absolute URL used by the Cancel link.
     * indialogue - True when rendered for the dialogue.
     * canpersist - False for guests and visitors who are not logged in.
+    * presets - Ready-made combinations, each with name, label, valuesjson and iscalm.
     * groups - Preference groups, each with name, legend, hassample and options.
 
     Example context (json):
@@ -39,6 +41,10 @@
         "cancelurl": "https://moodle.example/my/",
         "indialogue": false,
         "canpersist": true,
+        "presets": [
+            {"name": "standard", "label": "As usual", "valuesjson": "{}", "iscalm": false},
+            {"name": "calm", "label": "Calmer", "valuesjson": "{}", "iscalm": true}
+        ],
         "groups": [
             {
                 "name": "fontsize",
@@ -52,35 +58,60 @@
         ]
     }
 }}
-<form method="post" action="{{actionurl}}" class="theme-chinijo-prefs" data-region="theme_chinijo-preferences" data-indialogue="{{#indialogue}}1{{/indialogue}}{{^indialogue}}0{{/indialogue}}">
-    <input type="hidden" name="sesskey" value="{{sesskey}}">
-    <input type="hidden" name="returnurl" value="{{returnurl}}">
+<div class="theme-chinijo-prefs" data-region="theme_chinijo-preferences-panel">
     <p class="theme-chinijo-prefs__intro">{{#str}}prefs_intro, theme_chinijo{{/str}}</p>
     {{^canpersist}}
         <p class="theme-chinijo-prefs__note">{{#str}}prefs_sessiononly, theme_chinijo{{/str}}</p>
     {{/canpersist}}
-    {{#groups}}
-        <fieldset class="theme-chinijo-prefs__group" data-preference="{{name}}">
-            <legend class="theme-chinijo-prefs__legend">{{legend}}</legend>
-            <div class="theme-chinijo-prefs__options">
-                {{#options}}
-                    <div class="theme-chinijo-prefs__option">
-                        <input type="radio" class="theme-chinijo-prefs__radio" name="{{name}}" id="{{id}}" value="{{value}}"{{#checked}} checked{{/checked}}>
-                        <label for="{{id}}" class="theme-chinijo-prefs__label">
-                            {{#hassample}}<span class="theme-chinijo-prefs__sample" data-sample="{{name}}-{{value}}" aria-hidden="true">Aa</span>{{/hassample}}
-                            <span class="theme-chinijo-prefs__text">{{label}}</span>
-                        </label>
-                    </div>
-                {{/options}}
-            </div>
-        </fieldset>
-    {{/groups}}
-    <div class="theme-chinijo-prefs__status" role="status" data-region="theme_chinijo-preferences-status"></div>
-    <div class="theme-chinijo-prefs__actions">
-        <button type="submit" class="btn btn-primary" name="save" value="1" data-action="save">{{#str}}prefs_save, theme_chinijo{{/str}}</button>
-        <button type="submit" class="btn btn-secondary" name="reset" value="1" data-action="reset">{{#str}}prefs_reset, theme_chinijo{{/str}}</button>
-        {{^indialogue}}
-            <a class="btn btn-link" href="{{cancelurl}}">{{#str}}cancel, core{{/str}}</a>
-        {{/indialogue}}
-    </div>
-</form>
+    {{! The combinations have their own form, so that Enter in the main form never applies one of them. }}
+    <form method="post" action="{{actionurl}}" class="theme-chinijo-prefs__group theme-chinijo-prefs__presets" data-region="theme_chinijo-presets">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="returnurl" value="{{returnurl}}">
+        <p class="theme-chinijo-prefs__legend" id="theme-chinijo-prefs-presets-{{#indialogue}}dlg{{/indialogue}}{{^indialogue}}page{{/indialogue}}">{{#str}}prefs_presets, theme_chinijo{{/str}}</p>
+        <div class="theme-chinijo-prefs__options" role="group" aria-labelledby="theme-chinijo-prefs-presets-{{#indialogue}}dlg{{/indialogue}}{{^indialogue}}page{{/indialogue}}">
+            {{#presets}}
+                <button type="submit" class="theme-chinijo-prefs__preset" name="preset" value="{{name}}" data-action="preset" data-values="{{valuesjson}}">
+                    {{#iscalm}}
+                        <svg class="theme-chinijo-prefs__drawing" viewBox="0 0 44 28" width="44" height="28" aria-hidden="true" focusable="false"><path d="M4 14h36"></path><path d="M10 6h24" opacity=".45"></path><path d="M10 22h24" opacity=".45"></path></svg>
+                    {{/iscalm}}
+                    {{^iscalm}}
+                        <span class="theme-chinijo-prefs__sample" data-sample="preset-{{name}}" aria-hidden="true">Aa</span>
+                    {{/iscalm}}
+                    <span class="theme-chinijo-prefs__text">{{label}}</span>
+                </button>
+            {{/presets}}
+        </div>
+    </form>
+    <form method="post" action="{{actionurl}}" class="theme-chinijo-prefs__form" data-region="theme_chinijo-preferences" data-indialogue="{{#indialogue}}1{{/indialogue}}{{^indialogue}}0{{/indialogue}}">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="returnurl" value="{{returnurl}}">
+        {{#groups}}
+            <fieldset class="theme-chinijo-prefs__group" data-preference="{{name}}">
+                <legend class="theme-chinijo-prefs__legend">{{legend}}</legend>
+                <div class="theme-chinijo-prefs__options">
+                    {{#options}}
+                        <div class="theme-chinijo-prefs__option">
+                            <input type="radio" class="theme-chinijo-prefs__radio" name="{{name}}" id="{{id}}" value="{{value}}"{{#checked}} checked{{/checked}}>
+                            <label for="{{id}}" class="theme-chinijo-prefs__label">
+                                {{#hassample}}<span class="theme-chinijo-prefs__sample" data-sample="{{name}}-{{value}}" aria-hidden="true">Aa</span>{{/hassample}}
+                                {{#iconmotiondefault}}<svg class="theme-chinijo-prefs__drawing" viewBox="0 0 44 28" width="44" height="28" aria-hidden="true" focusable="false"><path d="M4 14c4-8 8-8 12 0s8 8 12 0 8-8 12 0"></path></svg>{{/iconmotiondefault}}
+                                {{#iconmotionreduce}}<svg class="theme-chinijo-prefs__drawing" viewBox="0 0 44 28" width="44" height="28" aria-hidden="true" focusable="false"><path d="M4 14h36"></path></svg>{{/iconmotionreduce}}
+                                {{#iconsounddefault}}<svg class="theme-chinijo-prefs__drawing" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" focusable="false"><path d="M4 9h4l5-4v14l-5-4H4z"></path><path d="M16 9l5 6M21 9l-5 6"></path></svg>{{/iconsounddefault}}
+                                {{#iconsoundon}}<svg class="theme-chinijo-prefs__drawing" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" focusable="false"><path d="M4 9h4l5-4v14l-5-4H4z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 6a8.5 8.5 0 0 1 0 12"></path></svg>{{/iconsoundon}}
+                                <span class="theme-chinijo-prefs__text">{{label}}</span>
+                            </label>
+                        </div>
+                    {{/options}}
+                </div>
+            </fieldset>
+        {{/groups}}
+        <div class="theme-chinijo-prefs__status" role="status" data-region="theme_chinijo-preferences-status"></div>
+        <div class="theme-chinijo-prefs__actions">
+            <button type="submit" class="btn btn-primary" name="save" value="1" data-action="save">{{#str}}prefs_save, theme_chinijo{{/str}}</button>
+            <button type="submit" class="btn btn-secondary" name="reset" value="1" data-action="reset">{{#str}}prefs_reset, theme_chinijo{{/str}}</button>
+            {{^indialogue}}
+                <a class="btn btn-link" href="{{cancelurl}}">{{#str}}cancel, core{{/str}}</a>
+            {{/indialogue}}
+        </div>
+    </form>
+</div>

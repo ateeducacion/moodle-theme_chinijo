@@ -129,19 +129,15 @@ final class lang_test extends \advanced_testcase {
         $this->install_spanish_stub();
         $manager = get_string_manager();
         $this->assertTrue($manager->translation_exists('es'));
-        $a = (object) ['completed' => 3, 'total' => 8, 'percentage' => 37];
-        $this->assertSame(
-            'Your progress: 3 of 8 activities completed (37%)',
-            $manager->get_string('progress_summary', 'theme_chinijo', $a, 'en')
-        );
-        $this->assertSame(
-            'Tu progreso: 3 de 8 actividades completadas (37 %)',
-            $manager->get_string('progress_summary', 'theme_chinijo', $a, 'es')
-        );
+        $a = (object) ['completed' => 3, 'total' => 8];
+        $this->assertSame('3 of 8 activities done', $manager->get_string('path_summary', 'theme_chinijo', $a, 'en'));
+        $this->assertSame('3 de 8 actividades hechas', $manager->get_string('path_summary', 'theme_chinijo', $a, 'es'));
         $this->assertSame('Tamaño del texto', $manager->get_string('pref_fontsize', 'theme_chinijo', null, 'es'));
+        $this->assertSame('¡Muy bien, Leo!', $manager->get_string('completion_title', 'theme_chinijo', 'Leo', 'es'));
+        $a->name = 'Leer';
         $this->assertSame(
-            '¡Muy bien! «Leer» está marcada como hecha.',
-            $manager->get_string('completion_done', 'theme_chinijo', 'Leer', 'es')
+            'Has terminado «Leer». Ya llevas 3 de 8.',
+            $manager->get_string('completion_text', 'theme_chinijo', $a, 'es')
         );
         // Apostrophes are escaped correctly in the source files.
         $description = $manager->get_string('unaddableblocks_desc', 'theme_chinijo', null, 'en');

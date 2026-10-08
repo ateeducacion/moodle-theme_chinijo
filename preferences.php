@@ -46,9 +46,14 @@ $PAGE->set_heading(get_string('displaysettings', 'theme_chinijo'));
 if (data_submitted()) {
     require_sesskey();
 
+    $preset = optional_param('preset', '', PARAM_ALPHA);
     if (optional_param('reset', false, PARAM_BOOL)) {
         preferences::reset();
         $message = get_string('prefs_resetdone', 'theme_chinijo');
+    } else if ($preset !== '') {
+        // Throws invalid_parameter_exception, and stores nothing, for an unknown combination.
+        preferences::set_many(preferences::get_preset_values($preset));
+        $message = get_string('prefs_saved', 'theme_chinijo');
     } else {
         $values = [];
         foreach (preferences::get_names() as $name) {

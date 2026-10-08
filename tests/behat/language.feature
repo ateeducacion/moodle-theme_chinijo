@@ -27,12 +27,15 @@ Feature: Chinijo in English and Spanish
     And I am on "Curso 1" course homepage
     And I should see "Display settings"
     When I switch the session language to "es" for theme_chinijo tests
-    Then I should see "Ajustes de visualización"
+    Then I should see "Cómo lo veo"
     And the "lang" attribute of "html" "css_element" should contain "es"
-    And I should see "Tu progreso: 0 de 1 actividades completadas (0 %)"
-    And I click on "Ajustes de visualización" "button"
-    And I should see "Tamaño del texto" in the "Ajustes de visualización" "dialogue"
-    And I should see "Fácil de leer (Atkinson Hyperlegible)" in the "Ajustes de visualización" "dialogue"
+    And I should see "0 de 1 actividades hechas"
+    And I should see "Mi camino"
+    And I should see "Cuento" in the "[data-region='theme_chinijo-next']" "css_element"
+    And I click on "Cómo lo veo" "button"
+    And I should see "Tamaño del texto" in the "Cómo lo veo" "dialogue"
+    And I should see "Fácil de leer (Atkinson Hyperlegible)" in the "Cómo lo veo" "dialogue"
+    And I should see "Leer mejor" in the "Cómo lo veo" "dialogue"
     And I click on "Grande" "radio"
     And I press "Guardar"
     And I should see "Se han guardado tus ajustes de visualización."
@@ -41,4 +44,4 @@ Feature: Chinijo in English and Spanish
     Given I log in as "student1"
     When I am on "Curso 1" course homepage
     Then I should see "Display settings"
-    And I should see "Your progress: 0 of 1 activities completed (0%)"
+    And I should see "0 of 1 activities done"

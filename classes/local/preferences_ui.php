@@ -82,13 +82,25 @@ class preferences_ui {
                     'label' => get_string('pref_' . $name . '_' . $choice, 'theme_chinijo'),
                     'checked' => $values[$name] === $choice,
                     'isdefault' => $choice === preferences::DEFAULT,
+                    // Motion and sound show a small drawing instead of the "Aa" sample.
+                    'icon' . $name . $choice => true,
                 ];
             }
             $groups[] = [
                 'name' => $name,
                 'legend' => get_string('pref_' . $name, 'theme_chinijo'),
-                'hassample' => $name !== 'motion',
+                'hassample' => !in_array($name, ['motion', 'sound'], true),
                 'options' => $options,
+            ];
+        }
+
+        $presets = [];
+        foreach (array_keys(preferences::PRESETS) as $preset) {
+            $presets[] = [
+                'name' => $preset,
+                'label' => get_string('prefs_preset_' . $preset, 'theme_chinijo'),
+                'valuesjson' => json_encode(preferences::get_preset_values($preset)),
+                'iscalm' => $preset === 'calm',
             ];
         }
 
@@ -99,6 +111,7 @@ class preferences_ui {
             'cancelurl' => $returnurl->out(false),
             'indialogue' => $indialogue,
             'canpersist' => preferences::can_persist(),
+            'presets' => $presets,
             'groups' => $groups,
         ];
     }

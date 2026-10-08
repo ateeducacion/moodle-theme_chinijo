@@ -31,3 +31,37 @@
     font-display: swap;
     src: url("[[font:theme|atkinson-hyperlegible-latin-700-italic.woff2]]") format("woff2");
 }
+
+// Andika, by SIL International, SIL Open Font License 1.1 (see fonts/). Its letters are shaped like the
+// ones children learn to write (single-storey a and g). Only downloaded when "School letters" is chosen.
+@font-face {
+    font-family: Andika;
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("[[font:theme|andika-latin-400-normal.woff2]]") format("woff2");
+}
+
+@font-face {
+    font-family: Andika;
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("[[font:theme|andika-latin-400-italic.woff2]]") format("woff2");
+}
+
+@font-face {
+    font-family: Andika;
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("[[font:theme|andika-latin-700-normal.woff2]]") format("woff2");
+}
+
+@font-face {
+    font-family: Andika;
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url("[[font:theme|andika-latin-700-italic.woff2]]") format("woff2");
+}

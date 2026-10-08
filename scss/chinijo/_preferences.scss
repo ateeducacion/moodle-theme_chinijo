@@ -35,6 +35,20 @@ html[data-chinijo-font="legible"] {
     }
 }
 
+// School letters, shaped like the ones children learn to write.
+html[data-chinijo-font="school"] {
+    body,
+    button,
+    input,
+    select,
+    textarea,
+    .btn,
+    .tooltip,
+    .popover {
+        font-family: Andika, "Atkinson Hyperlegible", Verdana, sans-serif;
+    }
+}
+
 // Spacing. The widest values match WCAG 2.2 success criterion 1.4.12 (Text Spacing).
 html[data-chinijo-letterspacing="wide"] body {
     letter-spacing: .06em;

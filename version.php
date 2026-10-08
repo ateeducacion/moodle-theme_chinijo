@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'theme_chinijo';
-$plugin->version   = 2026100800;
-$plugin->release   = '0.1.0';
+$plugin->version   = 2026100801;
+$plugin->release   = '0.2.0';
 $plugin->maturity  = MATURITY_ALPHA;
 // Moodle 4.5.0 (Build: 20241007), verified against tag v4.5.0 of moodle/moodle.
 $plugin->requires  = 2024100700;

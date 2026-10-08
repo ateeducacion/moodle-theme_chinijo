@@ -52,11 +52,25 @@ class preferences {
     public const CHOICES = [
         'contrast' => ['default', 'high'],
         'fontsize' => ['default', 'large', 'xlarge', 'xxlarge'],
-        'font' => ['default', 'legible'],
+        'font' => ['default', 'legible', 'school'],
         'letterspacing' => ['default', 'wide', 'wider'],
         'wordspacing' => ['default', 'wide', 'wider'],
         'lineheight' => ['default', 'wide', 'wider'],
         'motion' => ['default', 'reduce'],
+        'sound' => ['default', 'on'],
+    ];
+
+    /**
+     * Ready-made combinations offered at the top of the panel. Preferences not listed take their default.
+     *
+     * @var array
+     */
+    public const PRESETS = [
+        'standard' => [],
+        'reading' => ['fontsize' => 'large', 'font' => 'legible', 'letterspacing' => 'wide', 'wordspacing' => 'wide',
+            'lineheight' => 'wide'],
+        'seeing' => ['contrast' => 'high', 'fontsize' => 'xlarge', 'font' => 'legible'],
+        'calm' => ['motion' => 'reduce'],
     ];
 
     /**
@@ -80,6 +94,20 @@ class preferences {
             throw new invalid_parameter_exception('Unknown display preference: ' . $name);
         }
         return self::CHOICES[$name];
+    }
+
+    /**
+     * Every preference value of a ready-made combination.
+     *
+     * @param string $preset Name of the combination, a key of PRESETS.
+     * @return array Short name => value, for every preference.
+     * @throws invalid_parameter_exception When the combination does not exist.
+     */
+    public static function get_preset_values(string $preset): array {
+        if (!array_key_exists($preset, self::PRESETS)) {
+            throw new invalid_parameter_exception('Unknown display preset: ' . $preset);
+        }
+        return self::PRESETS[$preset] + array_fill_keys(self::get_names(), self::DEFAULT);
     }
 
     /**

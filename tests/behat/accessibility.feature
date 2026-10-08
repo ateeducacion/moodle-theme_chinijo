@@ -45,10 +45,21 @@ Feature: Automated accessibility checks of the pages Chinijo changes
     Given I log in as "student1"
     And the page should meet accessibility standards with "best-practice" extra tests
     When I am on "Course 1" course homepage
-    Then I should see "Your progress: 0 of 1 activities completed (0%)"
+    Then I should see "0 of 1 activities done"
     And "img[alt='Book']" "css_element" should exist
     And the page should meet accessibility standards
     And the "region-main" "region" should meet accessibility standards with "best-practice" extra tests
+
+  Scenario: Encouragement after marking an activity as done
+    Given the following "activities" exist:
+      | activity | course | name       | section | completion |
+      | page     | C1     | Count more | 1       | 1          |
+    And I log in as "student1"
+    And I am on "Course 1" course homepage
+    When I toggle the manual completion state of "Read the story"
+    Then I should see "Well done, Student!"
+    And the page should meet accessibility standards
+    And the "[data-region='theme_chinijo-cheer']" "css_element" should meet accessibility standards with "best-practice" extra tests
 
   Scenario: Activity page and assignment submission form
     Given I am on the "Read the story" "page activity" page logged in as "student1"

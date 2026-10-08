@@ -46,6 +46,30 @@ final class preferences_test extends \advanced_testcase {
     }
 
     /**
+     * The ready-made combinations set every preference to an allowed value; sounds stay off in all of them.
+     */
+    public function test_presets(): void {
+        $this->assertSame(['standard', 'reading', 'seeing', 'calm'], array_keys(preferences::PRESETS));
+        foreach (array_keys(preferences::PRESETS) as $preset) {
+            $values = preferences::get_preset_values($preset);
+            $this->assertEqualsCanonicalizing(preferences::get_names(), array_keys($values), $preset);
+            foreach ($values as $name => $value) {
+                $this->assertTrue(preferences::is_valid($name, $value), $preset . ': ' . $name);
+            }
+            $this->assertSame(preferences::DEFAULT, $values['sound'], $preset);
+        }
+        $defaults = array_fill_keys(preferences::get_names(), preferences::DEFAULT);
+        $this->assertSame($defaults, preferences::get_preset_values('standard'));
+        $this->assertSame('high', preferences::get_preset_values('seeing')['contrast']);
+        $this->assertSame('reduce', preferences::get_preset_values('calm')['motion']);
+        $this->assertContains('school', preferences::get_choices('font'));
+        $this->assertSame([preferences::DEFAULT, 'on'], preferences::get_choices('sound'));
+
+        $this->expectException(invalid_parameter_exception::class);
+        preferences::get_preset_values('everything');
+    }
+
+    /**
      * Unknown preferences have no choices.
      */
     public function test_get_choices_unknown(): void {
