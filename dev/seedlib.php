@@ -20,8 +20,9 @@
  * Creates (once) three fictitious users, a Primary education demo course with
  * completion tracking, a few activities including an assignment, demo
  * pictograms drawn with GD (no third-party images) and some completion data
- * for the first student. Used by dev/seed.php (make seed) and by the browser
- * Moodle Playground scenario in blueprints/. Excluded from release packages.
+ * for the first student. Used by dev/seed.php (make seed) and, through
+ * chinijo_seed_playground(), by the browser Moodle Playground scenario in
+ * blueprints/. Excluded from release packages.
  *
  * @package    theme_chinijo
  * @copyright  2026 Área de Tecnología Educativa (ATE), Gobierno de Canarias
@@ -42,6 +43,21 @@ const CHINIJO_DEMO_PASSWORD = 'Chinijo-demo-1234';
 
 /** Short name of the demo course. */
 const CHINIJO_DEMO_COURSE = 'CHINIJO-DEMO';
+
+/** Names of the demo course sections, by section number. */
+const CHINIJO_DEMO_SECTIONS = [1 => 'Story time', 2 => 'Let\'s draw', 3 => 'Numbers'];
+
+/** Completion settings of the demo activities (course_modules fields), by activity name. */
+const CHINIJO_DEMO_COMPLETION = [
+    'Welcome to the class' => ['completion' => COMPLETION_TRACKING_MANUAL],
+    'Read the story' => ['completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => 1],
+    'Look at the pictures' => ['completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => 1],
+    'Draw your family' => ['completion' => COMPLETION_TRACKING_AUTOMATIC],
+    'Colour the sun' => ['completion' => COMPLETION_TRACKING_MANUAL],
+    'Show your drawing to the class' => ['completion' => COMPLETION_TRACKING_MANUAL],
+    'Count to ten' => ['completion' => COMPLETION_TRACKING_MANUAL],
+    'Numbers song (example link)' => ['completion' => COMPLETION_TRACKING_MANUAL],
+];
 
 
 /**
@@ -237,7 +253,7 @@ function chinijo_seed_course(testing_data_generator $generator): stdClass {
         'showcompletionconditions' => 1,
         'summary' => 'Synthetic demonstration course for the Chinijo theme. No real people or data.',
     ]);
-    foreach ([1 => 'Story time', 2 => 'Let\'s draw', 3 => 'Numbers'] as $number => $name) {
+    foreach (CHINIJO_DEMO_SECTIONS as $number => $name) {
         course_update_section(
             $course,
             $DB->get_record('course_sections', ['course' => $course->id, 'section' => $number]),
@@ -339,4 +355,49 @@ function chinijo_seed_run(): stdClass {
     mtrace('Demo accounts (development only, password ' . CHINIJO_DEMO_PASSWORD . '): teacher1, student1, student2.');
     $CFG->debug = $debug;
     return $course;
+}
+
+/**
+ * Finish the demo course built by the Moodle Playground blueprint.
+ *
+ * Moodle Playground ships Moodle without its tests/ directories, so the test
+ * data generators used by chinijo_seed_run() are not available there. The
+ * blueprint creates the users, the course, the enrolments and the activities
+ * with Playground's own steps, which do not set completion; this adds what they
+ * leave out: completion settings, section names, the assignment's online text
+ * submissions, the demo pictograms and the completion data of student1.
+ * Idempotent.
+ */
+function chinijo_seed_playground(): void {
+    global $DB;
+
+    \core\session\manager::set_user(get_admin());
+    $course = $DB->get_record('course', ['shortname' => CHINIJO_DEMO_COURSE], '*', MUST_EXIST);
+    $DB->update_record('course', (object) ['id' => $course->id, 'enablecompletion' => 1, 'showcompletionconditions' => 1]);
+    foreach (CHINIJO_DEMO_SECTIONS as $number => $name) {
+        $DB->set_field('course_sections', 'name', $name, ['course' => $course->id, 'section' => $number]);
+    }
+    foreach (get_fast_modinfo($course)->get_cms() as $cm) {
+        if (isset(CHINIJO_DEMO_COMPLETION[$cm->name])) {
+            $DB->update_record('course_modules', (object) (['id' => $cm->id] + CHINIJO_DEMO_COMPLETION[$cm->name]));
+        }
+        if ($cm->modname === 'assign') {
+            $config = ['assignment' => $cm->instance, 'plugin' => 'onlinetext', 'subtype' => 'assignsubmission',
+                'name' => 'enabled'];
+            if (!$DB->record_exists('assign_plugin_config', $config)) {
+                $DB->insert_record('assign_plugin_config', (object) ($config + ['value' => 1]));
+            }
+        }
+    }
+    rebuild_course_cache($course->id, true);
+    $course = get_course($course->id);
+
+    try {
+        chinijo_seed_pictograms($course);
+    } catch (\Throwable $e) {
+        // The demo still works without pictograms.
+        mtrace('Demo pictograms skipped: ' . $e->getMessage());
+    }
+    chinijo_seed_completion($course, $DB->get_record('user', ['username' => 'student1'], '*', MUST_EXIST));
+    mtrace('Playground demo course ready.');
 }

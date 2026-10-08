@@ -33,13 +33,178 @@
       "language": "es"
     },
     {
+      "step": "setConfig",
+      "name": "enablecompletion",
+      "value": "1"
+    },
+    {
+      "step": "createCategory",
+      "name": "Primary education (demo)"
+    },
+    {
+      "step": "createCourse",
+      "fullname": "Year 1 classroom (Chinijo demo)",
+      "shortname": "CHINIJO-DEMO",
+      "category": "Primary education (demo)",
+      "format": "topics",
+      "numsections": 3,
+      "summary": "Synthetic demonstration course for the Chinijo theme. No real people or data."
+    },
+    {
+      "step": "createUser",
+      "username": "teacher1",
+      "password": "Chinijo-demo-1234",
+      "email": "teacher1@example.com",
+      "firstname": "Ana",
+      "lastname": "Docente (demo)"
+    },
+    {
+      "step": "createUser",
+      "username": "student1",
+      "password": "Chinijo-demo-1234",
+      "email": "student1@example.com",
+      "firstname": "Leo",
+      "lastname": "Alumno (demo)"
+    },
+    {
+      "step": "createUser",
+      "username": "student2",
+      "password": "Chinijo-demo-1234",
+      "email": "student2@example.com",
+      "firstname": "Sara",
+      "lastname": "Alumna (demo)"
+    },
+    {
+      "step": "enrolUser",
+      "username": "teacher1",
+      "course": "CHINIJO-DEMO",
+      "role": "editingteacher"
+    },
+    {
+      "step": "enrolUser",
+      "username": "student1",
+      "course": "CHINIJO-DEMO",
+      "role": "student"
+    },
+    {
+      "step": "enrolUser",
+      "username": "student2",
+      "course": "CHINIJO-DEMO",
+      "role": "student"
+    },
+    {
+      "step": "addModule",
+      "module": "page",
+      "course": "CHINIJO-DEMO",
+      "section": 0,
+      "name": "Welcome to the class",
+      "content": "<p>Hello! This is our class. Press <strong>Mark as done</strong> when you have read this page.</p>",
+      "contentformat": 1,
+      "display": 5,
+      "displayoptions": "a:2:{s:10:\"printintro\";s:1:\"0\";s:17:\"printlastmodified\";s:1:\"1\";}",
+      "revision": 1
+    },
+    {
+      "step": "addModule",
+      "module": "page",
+      "course": "CHINIJO-DEMO",
+      "section": 1,
+      "name": "Read the story",
+      "content": "<p>Once upon a time, a little goat lived on a volcano by the sea.</p>",
+      "contentformat": 1,
+      "display": 5,
+      "displayoptions": "a:2:{s:10:\"printintro\";s:1:\"0\";s:17:\"printlastmodified\";s:1:\"1\";}",
+      "revision": 1
+    },
+    {
+      "step": "addModule",
+      "module": "page",
+      "course": "CHINIJO-DEMO",
+      "section": 2,
+      "name": "Look at the pictures",
+      "content": "<p>Look at the pictures of families. Who is in each family?</p>",
+      "contentformat": 1,
+      "display": 5,
+      "displayoptions": "a:2:{s:10:\"printintro\";s:1:\"0\";s:17:\"printlastmodified\";s:1:\"1\";}",
+      "revision": 1
+    },
+    {
+      "step": "addModule",
+      "module": "assign",
+      "course": "CHINIJO-DEMO",
+      "section": 2,
+      "name": "Draw your family",
+      "intro": "<p>Write two sentences about your drawing and press <strong>Submit</strong>.</p>",
+      "alwaysshowdescription": 1,
+      "submissiondrafts": 0,
+      "requiresubmissionstatement": 0,
+      "sendnotifications": 0,
+      "sendlatenotifications": 0,
+      "sendstudentnotifications": 1,
+      "grade": 100,
+      "teamsubmission": 0,
+      "requireallteammemberssubmit": 0,
+      "blindmarking": 0,
+      "markingworkflow": 0,
+      "markingallocation": 0,
+      "completionsubmit": 1
+    },
+    {
+      "step": "addModule",
+      "module": "page",
+      "course": "CHINIJO-DEMO",
+      "section": 2,
+      "name": "Colour the sun",
+      "content": "<p>Colour the sun in your drawing with yellow and orange.</p>",
+      "contentformat": 1,
+      "display": 5,
+      "displayoptions": "a:2:{s:10:\"printintro\";s:1:\"0\";s:17:\"printlastmodified\";s:1:\"1\";}",
+      "revision": 1
+    },
+    {
+      "step": "addModule",
+      "module": "page",
+      "course": "CHINIJO-DEMO",
+      "section": 2,
+      "name": "Show your drawing to the class",
+      "content": "<p>Tell the class who is in your drawing.</p>",
+      "contentformat": 1,
+      "display": 5,
+      "displayoptions": "a:2:{s:10:\"printintro\";s:1:\"0\";s:17:\"printlastmodified\";s:1:\"1\";}",
+      "revision": 1
+    },
+    {
+      "step": "addModule",
+      "module": "page",
+      "course": "CHINIJO-DEMO",
+      "section": 3,
+      "name": "Count to ten",
+      "content": "<p>One, two, three, four, five, six, seven, eight, nine, ten!</p>",
+      "contentformat": 1,
+      "display": 5,
+      "displayoptions": "a:2:{s:10:\"printintro\";s:1:\"0\";s:17:\"printlastmodified\";s:1:\"1\";}",
+      "revision": 1
+    },
+    {
+      "step": "addModule",
+      "module": "url",
+      "course": "CHINIJO-DEMO",
+      "section": 3,
+      "name": "Numbers song (example link)",
+      "externalurl": "https://example.com/",
+      "display": 0,
+      "displayoptions": "a:1:{s:10:\"printintro\";i:1;}",
+      "parameters": ""
+    },
+    {
       "step": "runPhpCode",
-      "code": "require_once($CFG->dirroot . '/theme/chinijo/dev/seedlib.php'); chinijo_seed_run();",
+      "code": "define('CLI_SCRIPT', true); require('/www/moodle/config.php'); require_once($CFG->dirroot . '/theme/chinijo/dev/seedlib.php'); chinijo_seed_playground();",
       "critical": true
     },
     {
       "step": "login",
-      "username": "student1"
+      "username": "student1",
+      "critical": true
     }
   ]
 }
