@@ -122,11 +122,10 @@ gitleaks CLI instead of the licensed GitHub Action.
 
 ## Known uncertainties
 
-- The PR preview action `v1` declares the `node20` runtime. GitHub has been
-  retiring Node 20 on hosted runners; the workflow could not be run from this
-  environment (nothing was pushed), so its behaviour on current runners is
-  unverified.
-- moodle-plugin-ci 4.5.11's own CI does not cover 5.2/5.3; the local runs on the
-  five branches recorded in the README are the evidence available.
+- The PR preview action `v1` declares the `node20` runtime, which GitHub has
+  been retiring on hosted runners. It ran successfully on pull request #1
+  (2026-10-08); it may need an update when Node 20 is removed.
+- moodle-plugin-ci 4.5.11's own CI does not cover 5.2/5.3; the evidence is this
+  repository's own runs on the five branches, locally and in GitHub Actions.
 - The Moodle Playground run of `blueprint.json` needs the theme published on the
   `main` branch of the GitHub repository; it has not been executed yet.

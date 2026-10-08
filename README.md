@@ -21,7 +21,7 @@ course progress and pictogram support, while keeping every Moodle feature.
 [high contrast with large text and the easy-to-read typeface](docs/screenshots/chinijo-course-high-contrast.png).*
 
 > **Status:** development version 0.1.0 (alpha). Automated checks pass locally
-> on Moodle 4.5 to 5.3 (see [Verification](#verification)). Manual
+> and in GitHub Actions on Moodle 4.5 to 5.3 (see [Verification](#verification)). Manual
 > accessibility checks with screen readers and devices, tests on EVAGD
 > pre-production and institutional acceptance are **pending**.
 
@@ -166,8 +166,8 @@ Read [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md) before changi
 
 ## Verification
 
-Results of the runs made for this version (2026-10-08). CI on GitHub has not run
-yet because the code has not been pushed.
+Results of the runs made for this version (2026-10-08): local runs and GitHub
+Actions on pull request #1.
 
 | Check | Moodle / PHP / DB | Result | Evidence |
 |---|---|---|---|
@@ -183,6 +183,7 @@ yet because the code has not been pushed.
 | `make validate-blueprint` | — | Both blueprints valid (official schema; alpine-moodle validator) | console |
 | `make package` | — | Clean ZIP, single `chinijo/` directory, runtime files only; the ZIP installed on a fresh Moodle 5.3 site | `build/*.zip` |
 | `make up`, `make seed`, `make reset` | 5.3 (`erseco/alpine-moodle:v5.3.0`) and 4.5 (`v4.5.15`) | Pass | console |
+| GitHub Actions (`ci.yml`, `security.yml`, `playground-preview.yml`) | 4.5 to 5.3; PostgreSQL 17 and MariaDB 11.8; PHP 8.3 and 8.4 | All 21 checks pass. The first run found three CI-only problems, fixed before merging: two PHPUnit tests on MariaDB, JIT with PCOV on PHP 8.4, and the axe step's polling time on the 4.5 runner | pull request #1 |
 
 Behat and the axe-core checks ran on 4.5 and 5.3 only, as in CI; 5.0–5.2 had
 static checks and PHPUnit.

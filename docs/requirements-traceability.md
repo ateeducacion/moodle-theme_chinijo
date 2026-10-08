@@ -16,12 +16,12 @@ available), **Process** (contractual or organisational, documented only).
 |---|---|---|---|---|
 | 2.2 / A | Boost child theme | `config.php` (`parents = ['boost']`), `classes/output/core_renderer.php` | `lib_test::test_installed_metadata`, local installs on 4.5 and 5.3 | Done |
 | 2.3 / 2.7 / 2.10.A | GPL v3 or later; LICENSE; README with installation and update instructions | `LICENSE`, file headers, `README.md`, `docs/deployment-evagd.md` | Package check (`dev/package.sh`) | Done |
-| 2.3 / 2.7 | Code in ATE's GitHub organisation with continuous, incremental history | Local feature branch with incremental commits | `git log` | Pending: pushing needs the maintainers' authorisation |
+| 2.3 / 2.7 | Code in ATE's GitHub organisation with continuous, incremental history | Incremental commits on `feature/chinijo-theme`, reviewed in pull request #1 | Pull request #1 and its commits | Done |
 | 2.3 / 2.10.B.1 | Develop inside ATE's project template | Repository layout follows Moodle plugin conventions | — | Pending: the template is to be supplied with the start-up record |
 | 2.3 / 2.10.B.2–4 | Only Moodle/Boost technologies (PHP, Mustache, AMD/ES); no SPA frameworks; GPL-compatible libraries without telemetry; SASS allowed | PHP, Mustache, SCSS, ES modules built with Moodle's Grunt; only third-party asset: Atkinson Hyperlegible (OFL) | `thirdpartylibs.xml`, `docs/third-party-licenses.md`, `make package` contents | Done |
 | 2.3 / 2.9 | No external services or extra runtimes without written authorisation | No runtime external requests, no CDN, self-hosted font | Code review (`docs/security-report.md`) | Done |
 | 2.5 / G.4 | Service levels and incident log | `docs/incident-and-patch-log.md` | — | Process |
-| 2.6 | Continuous integration, periodic pushes | `.github/workflows/ci.yml`, `security.yml` | actionlint; local equivalent runs | Partial: workflows not yet run on GitHub |
+| 2.6 | Continuous integration, periodic pushes | `.github/workflows/ci.yml`, `security.yml` | GitHub Actions on pull request #1 (21 checks pass); actionlint | Done |
 | 2.7 | Technology transfer plan | `docs/transfer-plan.md` | — | Partial: sessions to be scheduled |
 | 2.9 | moodle-plugin-ci checks: PHP syntax, PHPCS, PHPMD, Mustache, ESLint, Stylelint | CI and `make lint` | Local runs (4.5, 5.0, 5.1, 5.2, 5.3) | Done (PHPMD reports only Moodle-imposed callback signatures and test-class size, see security report) |
 | 2.9 | Static security analysis report (tool, rule sets, no critical/high) | `dev/security-scan.sh`, `docs/security-report.md` | Semgrep 1.180.0: 0 findings; gitleaks: no leaks | Done |
@@ -69,7 +69,7 @@ available), **Process** (contractual or organisational, documented only).
 | Requirement | Implementation | Evidence | Status |
 |---|---|---|---|
 | Child theme, minimal duplication | No copied Boost templates | `docs/architecture.md` | Done |
-| Compatible with the target Moodle/EVAGD version | 4.5 LTS – 5.3 LTS | CI matrix; local lint and PHPUnit on all five branches, Behat on 4.5 and 5.3 | Partial: target version to be communicated; EVAGD pre-production pending |
+| Compatible with the target Moodle/EVAGD version | 4.5 LTS – 5.3 LTS | CI matrix (GitHub Actions on pull request #1); local lint and PHPUnit on all five branches, Behat on 4.5 and 5.3 | Partial: target version to be communicated; EVAGD pre-production pending |
 | Responsive: 10" and 12" tablets both orientations, desktop; two latest Chrome, Firefox, Safari, Edge | Responsive Boost layout; wrapping index; navbar label hidden on narrow screens | `responsive.feature` in Chromium (phone, tablet portrait and landscape, no horizontal scrolling) | Partial: real devices and browser matrix pending |
 | Code security (2.9) | See above | — | Done |
 | FEDER visibility (Reg. (EU) 2021/1060 art. 47, annex IX); placement agreed with the contract manager | `classes/local/feder.php`, settings, template | `feder_test`, `hook_callbacks_test`, `feder.feature` | Partial: approved emblem, wording and placement pending |
@@ -87,12 +87,12 @@ available), **Process** (contractual or organisational, documented only).
 
 | # | Deliverable | Where | Status |
 |---|---|---|---|
-| 1 | Source code in ATE's GitHub with history | This repository | Pending push |
+| 1 | Source code in ATE's GitHub with history | This repository (pull request #1) | Done |
 | 2 | Technical installation/configuration/upgrade manual and transfer plan | `docs/deployment-evagd.md`, `docs/compatibility.md`, `docs/transfer-plan.md` | Done (to be validated by the Consejería) |
 | 3 | Teacher guide | `docs/teacher-guide.es.md` | Done |
 | 4 | Accessibility audit report without A/AA errors | `docs/accessibility-audit.md` | Partial (automated part only) |
 | 5 | Draft accessibility statement and data | `docs/accessibility-statement-draft.es.md` | Done as a draft; data pending |
-| 6 | Code quality results and static security report | CI, `docs/security-report.md` | Done locally; CI on GitHub pending |
+| 6 | Code quality results and static security report | CI, `docs/security-report.md` | Done (local and GitHub Actions) |
 | 7 | Warranty incident and patch log | `docs/incident-and-patch-log.md` | Process |
 | 8 | Reversibility record | Template in `docs/release-and-reversibility.md` | Pending (signed at closure) |
 
