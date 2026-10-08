@@ -7,11 +7,11 @@ checklist: `docs/accessibility.md`. A row marked **Pending** has not been done.
 
 - **Automated (axe-core through Moodle Behat)**: the sampled pages and states
   pass WCAG 2.0/2.1/2.2 A and AA on Moodle 5.3 (axe-core 4.13) and the theme's
-  regions pass the best-practice rules. Results for Moodle 4.5 are in the table
-  below.
-- **One finding, not attributable to the theme**: Moodle 5.3's Boost course
-  index drawer heading is outside any landmark (axe `region`, a best-practice
-  rule, not a WCAG success criterion). Reproduced with theme_boost (see F-01).
+  regions pass the best-practice rules; the same scenarios pass on Moodle 4.5
+  (axe-core 4.10).
+- **Findings not attributable to the theme** (best-practice rules, not WCAG
+  success criteria), reproduced with theme_boost: F-01 (5.3, `region`) and F-03
+  (4.5, `landmark-unique`). Two theme findings were fixed (F-02, F-04).
 - **Manual review, screen readers, devices and EVAGD pre-production**: pending.
 - **Conformance claim**: none. The audit is incomplete until the manual part is
   done on the EVAGD pre-production sample.
@@ -33,18 +33,18 @@ best-practice rules on the scope shown.
 
 | Page / state | Scope of +BP | 5.3 | 4.5 |
 |---|---|---|---|
-| Login page, not logged in, with display settings toolbar and FEDER text | whole page | Pass | see table update below |
-| Dashboard (learner) | whole page | Pass | |
-| Course page with progress and pictograms (learner) | main region | Pass (whole page: F-01 only under +BP) | |
-| Activity page (page resource) | main region | Pass | |
-| Assignment, "Add submission" form | main region | Pass | |
-| Display settings dialogue: default | dialogue | Pass | |
-| Display settings dialogue: high contrast + huge text + legible font | dialogue | Pass | |
-| Display settings dialogue: high contrast + large text | dialogue | Pass | |
-| Stand-alone display settings page | whole page | Pass | |
-| Pictogram management page (teacher) | main region | Pass | |
-| Pictogram edit form | main region | Pass | |
-| Pictogram edit form with validation errors | main region | Pass | |
+| Login page, not logged in, with display settings toolbar and FEDER text | whole page | Pass | Pass |
+| Dashboard (learner) | whole page | Pass | Pass |
+| Course page with progress and pictograms (learner) | main region | Pass (whole page: F-01 only under +BP) | Pass (whole page: F-03 only under +BP) |
+| Activity page (page resource) | main region | Pass | Pass |
+| Assignment, "Add submission" form | main region | Pass | Pass |
+| Display settings dialogue: default | dialogue | Pass | Pass |
+| Display settings dialogue: high contrast + huge text + legible font | dialogue | Pass | Pass |
+| Display settings dialogue: high contrast + large text | dialogue | Pass | Pass |
+| Stand-alone display settings page | whole page | Pass | Pass |
+| Pictogram management page (teacher) | main region | Pass | Pass |
+| Pictogram edit form | main region | Pass | Pass |
+| Pictogram edit form with validation errors | main region | Pass | Pass |
 
 Keyboard (Behat, Chromium): an assignment was reached from the course page,
 opened, filled in and submitted with Tab and Enter only (`keyboard_submission.feature`);
