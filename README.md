@@ -20,8 +20,8 @@ course progress and pictogram support, while keeping every Moodle feature.
 [display settings dialogue](docs/screenshots/chinijo-display-settings.png),
 [high contrast with large text and the easy-to-read typeface](docs/screenshots/chinijo-course-high-contrast.png).*
 
-> **Status:** development version 0.1.0 (alpha). Automated checks pass on
-> Moodle 4.5 and 5.3 locally (see [Verification](#verification)). Manual
+> **Status:** development version 0.1.0 (alpha). Automated checks pass locally
+> on Moodle 4.5 to 5.3 (see [Verification](#verification)). Manual
 > accessibility checks with screen readers and devices, tests on EVAGD
 > pre-production and institutional acceptance are **pending**.
 
@@ -172,14 +172,20 @@ yet because the code has not been pushed.
 | Check | Moodle / PHP / DB | Result | Evidence |
 |---|---|---|---|
 | `make lint` | 5.3 / 8.4 / PostgreSQL 17 | Pass (PHPMD: advisory notes only) | `build/lint-53.log` |
-| `make test-unit` | 5.3 / 8.4 / PostgreSQL 17 | 72 tests, 621 assertions, pass | `build/coverage/junit.xml` |
-| `make coverage` | 5.3 / 8.4 / PostgreSQL 17 | 95.57 % of 519 lines (`classes/`, `backup/`, `lib.php`) | `build/coverage/` |
-| `make test-behat` | 5.3 / 8.4 / PostgreSQL 17 / Chromium 152 | 29 scenarios pass (1 after an automatic rerun of a WebDriver timeout) | `build/behat-53.log` |
-| `make lint`, `make test`, `make coverage` | 4.5 / 8.3 / PostgreSQL 17 | see the 4.5 rows below | `build/*-45.log` |
+| `make lint` | 5.2.4, 5.1.8, 5.0.11 / 8.3 / PostgreSQL 17 | Pass (PHPMD: advisory notes only) | `build/lint-52.log`, `lint-51.log`, `lint-50.log` |
+| `make lint` | 4.5.15 / 8.3 / PostgreSQL 17 | Pass (PHPMD: advisory notes only) | `build/lint-45.log` |
+| `make coverage` (PHPUnit 11.5 with PCOV) | 5.3 / 8.4 / PostgreSQL 17 | 72 tests, 621 assertions, pass; 95.57 % of 519 lines (`classes/`, `backup/`, `lib.php`) | `build/coverage-53.log`, `build/coverage/` |
+| `make coverage` (PHPUnit 9.6 with PCOV) | 4.5.15 / 8.3 / PostgreSQL 17 | 72 tests, 619 assertions, 1 skipped (Boost colour modes exist only in 5.3), pass; 95.57 % | `build/coverage-45.log` |
+| `make test-unit` | 5.2.4, 5.1.8, 5.0.11 / 8.3 / PostgreSQL 17 | 72 tests, 619 assertions, 1 skipped (same test), pass on each | `build/test-unit-5{0,1,2}.log` |
+| `make test-behat` (includes the axe-core scenarios) | 5.3 / 8.4 / PostgreSQL 17 / Chromium 152 | 32 scenarios, 432 steps, pass without reruns | `build/behat-53.log` |
+| `make test-behat` (includes the axe-core scenarios) | 4.5.15 / 8.3 / PostgreSQL 17 / Chromium 152 | 32 scenarios, 432 steps, pass without reruns | `build/behat-45.log` |
 | `make security` | — | Semgrep 1.180.0: 0 findings (171 rules); gitleaks 8.30.1: no leaks | `build/security/` |
 | `make validate-blueprint` | — | Both blueprints valid (official schema; alpine-moodle validator) | console |
-| `make package` | — | Clean ZIP, single `chinijo/` directory, runtime files only | `build/*.zip` |
+| `make package` | — | Clean ZIP, single `chinijo/` directory, runtime files only; the ZIP installed on a fresh Moodle 5.3 site | `build/*.zip` |
 | `make up`, `make seed`, `make reset` | 5.3 (`erseco/alpine-moodle:v5.3.0`) and 4.5 (`v4.5.15`) | Pass | console |
+
+Behat and the axe-core checks ran on 4.5 and 5.3 only, as in CI; 5.0–5.2 had
+static checks and PHPUnit.
 
 Coverage measures PHP logic only. Templates, SCSS, JavaScript behaviour and
 accessibility are covered by Behat, axe-core and manual review, not by PHP line

@@ -23,7 +23,7 @@ available), **Process** (contractual or organisational, documented only).
 | 2.5 / G.4 | Service levels and incident log | `docs/incident-and-patch-log.md` | — | Process |
 | 2.6 | Continuous integration, periodic pushes | `.github/workflows/ci.yml`, `security.yml` | actionlint; local equivalent runs | Partial: workflows not yet run on GitHub |
 | 2.7 | Technology transfer plan | `docs/transfer-plan.md` | — | Partial: sessions to be scheduled |
-| 2.9 | moodle-plugin-ci checks: PHP syntax, PHPCS, PHPMD, Mustache, ESLint, Stylelint | CI and `make lint` | Local runs (5.3 and 4.5) | Done (PHPMD reports only Moodle-imposed callback signatures and test-class size, see security report) |
+| 2.9 | moodle-plugin-ci checks: PHP syntax, PHPCS, PHPMD, Mustache, ESLint, Stylelint | CI and `make lint` | Local runs (4.5, 5.0, 5.1, 5.2, 5.3) | Done (PHPMD reports only Moodle-imposed callback signatures and test-class size, see security report) |
 | 2.9 | Static security analysis report (tool, rule sets, no critical/high) | `dev/security-scan.sh`, `docs/security-report.md` | Semgrep 1.180.0: 0 findings; gitleaks: no leaks | Done |
 | 2.9 / B | GDPR/LOPDGDD: only own display preferences; teachers cannot set them; no health data | `classes/local/preferences.php`, `classes/privacy/provider.php` | `preferences_test` (isolation, permissions, guests), `privacy/provider_test` | Done |
 | 2.9 | ENS: do not degrade EVAGD's category | No new services, endpoints only through Moodle APIs | `docs/security-report.md` | Done (EVAGD measures to be communicated) |
@@ -69,7 +69,7 @@ available), **Process** (contractual or organisational, documented only).
 | Requirement | Implementation | Evidence | Status |
 |---|---|---|---|
 | Child theme, minimal duplication | No copied Boost templates | `docs/architecture.md` | Done |
-| Compatible with the target Moodle/EVAGD version | 4.5 LTS – 5.3 LTS | CI matrix, local runs on 4.5 and 5.3 | Partial: target version to be communicated; EVAGD pre-production pending |
+| Compatible with the target Moodle/EVAGD version | 4.5 LTS – 5.3 LTS | CI matrix; local lint and PHPUnit on all five branches, Behat on 4.5 and 5.3 | Partial: target version to be communicated; EVAGD pre-production pending |
 | Responsive: 10" and 12" tablets both orientations, desktop; two latest Chrome, Firefox, Safari, Edge | Responsive Boost layout; wrapping index; navbar label hidden on narrow screens | `responsive.feature` in Chromium (phone, tablet portrait and landscape, no horizontal scrolling) | Partial: real devices and browser matrix pending |
 | Code security (2.9) | See above | — | Done |
 | FEDER visibility (Reg. (EU) 2021/1060 art. 47, annex IX); placement agreed with the contract manager | `classes/local/feder.php`, settings, template | `feder_test`, `hook_callbacks_test`, `feder.feature` | Partial: approved emblem, wording and placement pending |

@@ -17,8 +17,9 @@
 - Databases (from `admin/environment.xml` of each branch): Moodle 5.3 needs
   PostgreSQL ≥ 17 and MariaDB ≥ 11.4, so CI uses PostgreSQL 17 and MariaDB 11.8
   for every branch.
-- The 5.0–5.2 image versions are listed for completeness; the local stack has been
-  run on 4.5 and 5.3 (see the verification table in the README).
+- Static checks and PHPUnit have run locally on all five branches; Behat and
+  axe-core on 4.5 and 5.3. The local development site (`make up`) has been run on
+  4.5 and 5.3 (see the verification table in the README).
 
 ## Install location (Moodle 5.1 `public/` layout)
 

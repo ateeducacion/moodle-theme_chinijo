@@ -15,7 +15,7 @@ pictogramas, sin quitar ninguna función de Moodle.
 *Captura real del tema en Moodle 5.3 con datos sintéticos de demostración.*
 
 > **Estado:** versión de desarrollo 0.1.0 (alfa). Las comprobaciones automáticas
-> pasan en Moodle 4.5 y 5.3 en local. Quedan **pendientes** las pruebas manuales
+> pasan en local de Moodle 4.5 a 5.3 (Behat y axe-core en 4.5 y 5.3). Quedan **pendientes** las pruebas manuales
 > de accesibilidad con lectores de pantalla y dispositivos, las pruebas en la
 > preproducción de EVAGD y la recepción institucional.
 
