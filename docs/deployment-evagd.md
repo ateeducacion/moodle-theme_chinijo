@@ -102,7 +102,7 @@ Record results in `docs/accessibility-audit.md` and `docs/incident-and-patch-log
 - [ ] Display settings: every option, save, reset, persistence after logout/login,
       language switch, guest access.
 - [ ] Pictograms: upload, change, remove, learner view, hidden activities, course
-      backup/restore behaviour (pictograms are not part of course backups yet).
+      backup, restore, import and duplication.
 - [ ] Course progress matches the dashboard's figures.
 - [ ] Spanish interface (EVAGD language configuration).
 - [ ] No conflict with other themes or customisations active in EVAGD.

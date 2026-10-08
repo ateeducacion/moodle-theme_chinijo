@@ -72,8 +72,9 @@ companion plugin is needed. Images are added by JavaScript next to the names
 (progressive enhancement) instead of overriding course format templates, which
 differ between formats and versions. Course formats keep the `data-for`
 attributes used for this on 4.5–5.3. SVG is not accepted (script risk); images are
-checked by content. Backup/restore is not implemented yet (see the traceability
-matrix).
+checked by content. Course backup and restore use Moodle's theme backup plugin
+classes; pictograms are restored in `after_restore_course()`, once section and
+course module ids are mapped.
 
 ### D8. Progress figures
 Reproduce `\core_completion\progress` per branch (4.5 counts all activities with

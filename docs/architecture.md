@@ -14,6 +14,7 @@ the override surface as small as possible, so that Moodle upgrades stay cheap.
 | Hooks (`db/hooks.php`, `classes/hook_callbacks.php`) | `before_html_attributes` (display preferences, priority 0 so it runs after Boost's colour mode listener), `before_standard_top_of_body_html_generation` (toolbar on the login page), `after_standard_main_region_html_generation` (FEDER notice, pictogram credits), `before_footer_html_generation` (FEDER notice on the login page). | Hooks API, available on all supported branches (4.4+). Every callback checks that Chinijo renders the page. |
 | `lib.php` callbacks | `render_navbar_output` (display settings control), `user_preferences` (validation of the preferences by core_user), `pluginfile` (FEDER emblem, pictograms), `extend_navigation_course` (Pictograms page), `extend_navigation_user_settings` (link in Preferences). | Documented plugin callbacks still used by core on 4.5–5.3; no hook replaces them. |
 | `db/events.php` | Remove pictograms when their course, section or activity is deleted. | Events API. |
+| `backup/moodle2/` | Include pictograms in course backups, imports and duplicates. | Moodle's `backup_theme_plugin`/`restore_theme_plugin`. |
 
 No Moodle core file, database table or vendor library is modified. No Boost
 Mustache template is copied.
@@ -100,11 +101,11 @@ does the same and restores the previous mode when high contrast is turned off.
   without pictograms the course looks exactly as in Boost.
 - Credits (author, licence) are listed in a "Pictogram credits" section of the page.
 - Cleanup: observers for course, section and module deletion.
-- Not implemented: course backup and restore of pictograms (Moodle provides
-  `backup_theme_plugin`, but restore must remap section and module ids after the
-  course structure is restored). Pictograms are therefore not copied by backup,
-  import or course duplication. This is a known limitation, tracked in
-  `docs/requirements-traceability.md`.
+- Backup and restore: `backup/moodle2/backup_theme_chinijo_plugin.class.php` adds
+  the records and files to course backups (whatever the course theme is);
+  `restore_theme_chinijo_plugin` keeps them until the whole course is restored
+  (`after_restore_course()`), maps them to the new section and course module ids
+  and restores the files. Covered by `backup_test` (course duplication).
 
 ## Course progress and feedback
 
