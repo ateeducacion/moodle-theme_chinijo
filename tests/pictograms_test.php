@@ -386,6 +386,8 @@ final class pictograms_test extends \advanced_testcase {
      */
     public function test_render_page_data(): void {
         global $PAGE;
+        // Enrolment may send the course welcome e-mail, which sets up the global page's theme.
+        $PAGE = new \moodle_page();
         $PAGE->set_course($this->course);
         $output = $PAGE->get_renderer('core');
         $this->setUser($this->student);

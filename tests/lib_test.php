@@ -117,6 +117,8 @@ final class lib_test extends \advanced_testcase {
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $context = \context_course::instance($course->id);
 
+        // Enrolment may send the course welcome e-mail, which sets up the global page's theme.
+        $PAGE = new \moodle_page();
         $PAGE->force_theme('chinijo');
         $this->setUser($teacher);
         $node = \navigation_node::create('Course');

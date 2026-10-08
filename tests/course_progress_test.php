@@ -126,6 +126,8 @@ final class course_progress_test extends \advanced_testcase {
         $teacher = $generator->create_and_enrol($course, 'editingteacher');
         $generator->create_module('page', ['course' => $course->id, 'completion' => COMPLETION_TRACKING_MANUAL]);
 
+        // Enrolment may send the course welcome e-mail, which sets up the global page's theme.
+        $PAGE = new \moodle_page();
         $PAGE->set_course($course);
         $PAGE->set_url(new \moodle_url('/course/view.php', ['id' => $course->id]));
         $PAGE->force_theme('chinijo');
