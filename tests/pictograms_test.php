@@ -23,6 +23,10 @@ use theme_chinijo\local\pictogram_display;
 use theme_chinijo\local\pictogram_rules;
 use theme_chinijo\local\pictograms;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(pictograms::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(pictogram_rules::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(pictogram_display::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(observer::class)]
 /**
  * Tests for course pictograms.
  *
@@ -35,10 +39,6 @@ use theme_chinijo\local\pictograms;
  * @covers     \theme_chinijo\local\pictogram_display
  * @covers     \theme_chinijo\observer
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(pictograms::class)]
-#[\PHPUnit\Framework\Attributes\CoversClass(pictogram_rules::class)]
-#[\PHPUnit\Framework\Attributes\CoversClass(pictogram_display::class)]
-#[\PHPUnit\Framework\Attributes\CoversClass(observer::class)]
 final class pictograms_test extends \advanced_testcase {
     /** @var string A 1x1 PNG. */
     private const PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';

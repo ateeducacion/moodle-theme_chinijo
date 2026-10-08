@@ -16,6 +16,12 @@
 
 namespace theme_chinijo;
 
+#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_get_main_scss_content')]
+#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_get_pre_scss')]
+#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_get_extra_scss')]
+#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_user_preferences')]
+#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_extend_navigation_course')]
+#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_extend_navigation_user_settings')]
 /**
  * Tests for the plugin metadata, configuration and lib.php callbacks.
  *
@@ -30,12 +36,6 @@ namespace theme_chinijo;
  * @covers     ::theme_chinijo_extend_navigation_course
  * @covers     ::theme_chinijo_extend_navigation_user_settings
  */
-#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_get_main_scss_content')]
-#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_get_pre_scss')]
-#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_get_extra_scss')]
-#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_user_preferences')]
-#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_extend_navigation_course')]
-#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_extend_navigation_user_settings')]
 final class lib_test extends \advanced_testcase {
     /**
      * Load the theme's lib.php.

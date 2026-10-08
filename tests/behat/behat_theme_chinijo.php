@@ -98,6 +98,40 @@ class behat_theme_chinijo extends behat_base {
     }
 
     /**
+     * Check that an element is at least the given size in CSS pixels in both directions (WCAG 2.5.8 targets).
+     *
+     * @Then the :element :selectortype should be at least :size pixels wide and high
+     * @param string $element Element locator.
+     * @param string $selectortype Selector type.
+     * @param int $size Minimum size in CSS pixels.
+     */
+    public function the_element_should_be_at_least(string $element, string $selectortype, int $size): void {
+        $node = $this->find($selectortype, $element);
+        $xpath = addslashes_js($node->getXpath());
+        $box = $this->evaluate_script('return (function() { var r = document.evaluate("' . $xpath . '", document, null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.getBoundingClientRect();
+            return {width: r.width, height: r.height}; })();');
+        if ($box['width'] < $size || $box['height'] < $size) {
+            throw new ExpectationException(sprintf('"%s" is %.1f x %.1f CSS pixels, smaller than %d x %d',
+                $element, $box['width'], $box['height'], $size, $size), $this->getSession());
+        }
+    }
+
+    /**
+     * Check that the page has no horizontal scrolling (WCAG 1.4.10 Reflow).
+     *
+     * @Then the page should not scroll horizontally
+     */
+    public function the_page_should_not_scroll_horizontally(): void {
+        $widths = $this->evaluate_script('return {page: document.documentElement.scrollWidth,
+            viewport: document.documentElement.clientWidth};');
+        if ($widths['page'] > $widths['viewport'] + 1) {
+            throw new ExpectationException(sprintf('The page is %d CSS pixels wide in a %d pixel viewport',
+                $widths['page'], $widths['viewport']), $this->getSession());
+        }
+    }
+
+    /**
      * Press the tab key until an element has the focus, failing if it is never reached.
      *
      * This checks that the element can be reached with the keyboard alone and that no focus trap

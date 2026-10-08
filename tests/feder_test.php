@@ -18,6 +18,7 @@ namespace theme_chinijo;
 
 use theme_chinijo\local\feder;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(feder::class)]
 /**
  * Tests for the EU funding (FEDER) notice.
  *
@@ -27,7 +28,6 @@ use theme_chinijo\local\feder;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_chinijo\local\feder
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(feder::class)]
 final class feder_test extends \advanced_testcase {
     /**
      * Store an emblem file in the theme setting, as the admin setting does.

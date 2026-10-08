@@ -18,6 +18,7 @@ namespace theme_chinijo\form;
 
 use theme_chinijo\local\pictogram_rules;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(pictogram_form::class)]
 /**
  * Tests for the pictogram form's server-side validation.
  *
@@ -27,7 +28,6 @@ use theme_chinijo\local\pictogram_rules;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_chinijo\form\pictogram_form
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(pictogram_form::class)]
 final class pictogram_form_test extends \advanced_testcase {
     /**
      * Put a file in the current user's draft area.

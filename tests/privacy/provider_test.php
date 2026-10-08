@@ -20,6 +20,7 @@ use core_privacy\local\metadata\collection;
 use core_privacy\local\request\writer;
 use theme_chinijo\local\preferences;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(provider::class)]
 /**
  * Tests for the privacy provider.
  *
@@ -29,7 +30,6 @@ use theme_chinijo\local\preferences;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_chinijo\privacy\provider
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(provider::class)]
 final class provider_test extends \core_privacy\tests\provider_testcase {
     /**
      * Every stored preference is described, and nothing else.

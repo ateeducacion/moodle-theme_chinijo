@@ -23,6 +23,9 @@ use core\hook\output\before_standard_top_of_body_html_generation;
 use theme_chinijo\local\preferences;
 use theme_chinijo\local\theme;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(hook_callbacks::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(theme::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(\theme_chinijo\local\preferences_ui::class)]
 /**
  * Tests for the output hook callbacks.
  *
@@ -34,9 +37,6 @@ use theme_chinijo\local\theme;
  * @covers     \theme_chinijo\local\theme
  * @covers     \theme_chinijo\local\preferences_ui
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(hook_callbacks::class)]
-#[\PHPUnit\Framework\Attributes\CoversClass(theme::class)]
-#[\PHPUnit\Framework\Attributes\CoversClass(\theme_chinijo\local\preferences_ui::class)]
 final class hook_callbacks_test extends \advanced_testcase {
     /**
      * Create a page rendered by the given theme with the given layout.

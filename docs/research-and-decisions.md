@@ -102,8 +102,9 @@ is not modified.
 ### D11. CI matrix
 Full runs (static, PHPUnit, Behat with axe) on 4.5 LTS (PHP 8.3) and 5.3 LTS
 (PHP 8.4); install, static checks and PHPUnit on 5.0, 5.1, 5.2 and on 5.3 with
-PHP 8.3; MariaDB 11.8 on both LTS. `amd/build` is produced with Moodle 5.3's Grunt,
-so the "build is up to date" check runs on the 5.3 job only. Actions are pinned
+PHP 8.3; MariaDB 11.8 on both LTS. `amd/build` is produced with Moodle 5.3's Grunt;
+Moodle 4.5's Grunt produced identical files in the local run, so the "build is up
+to date" check runs on both LTS jobs. Actions are pinned
 to commit SHAs. PHPMD runs as a step; moodle-plugin-ci reports its findings but
 does not fail on them.
 

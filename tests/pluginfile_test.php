@@ -18,6 +18,9 @@ namespace theme_chinijo;
 
 use theme_chinijo\local\pictograms;
 
+#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_pluginfile')]
+#[\PHPUnit\Framework\Attributes\CoversClass(local\pictogram_display::class)]
+#[\PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses]
 /**
  * Security tests for the theme's file serving (pluginfile callback).
  *
@@ -35,9 +38,6 @@ use theme_chinijo\local\pictograms;
  * @covers     \theme_chinijo\local\pictogram_display
  * @runTestsInSeparateProcesses
  */
-#[\PHPUnit\Framework\Attributes\CoversFunction('theme_chinijo_pluginfile')]
-#[\PHPUnit\Framework\Attributes\CoversClass(local\pictogram_display::class)]
-#[\PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses]
 final class pluginfile_test extends \advanced_testcase {
     /**
      * Load the theme's lib.php.

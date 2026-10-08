@@ -24,6 +24,8 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->libdir . '/completionlib.php');
 
+#[\PHPUnit\Framework\Attributes\CoversClass(course_progress::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(output\core_renderer::class)]
 /**
  * Tests for the course progress indicator and the course header that shows it.
  *
@@ -34,8 +36,6 @@ require_once($CFG->libdir . '/completionlib.php');
  * @covers     \theme_chinijo\local\course_progress
  * @covers     \theme_chinijo\output\core_renderer
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(course_progress::class)]
-#[\PHPUnit\Framework\Attributes\CoversClass(output\core_renderer::class)]
 final class course_progress_test extends \advanced_testcase {
     /**
      * Completion is enabled for the site, as Moodle's default settings do.

@@ -28,6 +28,8 @@ global $CFG;
 require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 
+#[\PHPUnit\Framework\Attributes\CoversClass(\backup_theme_chinijo_plugin::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(\restore_theme_chinijo_plugin::class)]
 /**
  * Tests for the backup and restore of pictograms.
  *
@@ -38,8 +40,6 @@ require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
  * @covers     \backup_theme_chinijo_plugin
  * @covers     \restore_theme_chinijo_plugin
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(\backup_theme_chinijo_plugin::class)]
-#[\PHPUnit\Framework\Attributes\CoversClass(\restore_theme_chinijo_plugin::class)]
 final class backup_test extends \advanced_testcase {
     /**
      * Duplicating a course copies its pictograms onto the new sections and activities, with their files.

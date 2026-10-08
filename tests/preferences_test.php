@@ -20,6 +20,7 @@ use core_user;
 use invalid_parameter_exception;
 use theme_chinijo\local\preferences;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(preferences::class)]
 /**
  * Tests for the personal display preferences.
  *
@@ -29,7 +30,6 @@ use theme_chinijo\local\preferences;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_chinijo\local\preferences
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(preferences::class)]
 final class preferences_test extends \advanced_testcase {
     /**
      * Every preference offers a default as its first choice, and the text size offers at least three sizes.

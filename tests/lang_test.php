@@ -18,6 +18,7 @@ namespace theme_chinijo;
 
 use theme_chinijo\local\preferences;
 
+#[\PHPUnit\Framework\Attributes\CoversNothing]
 /**
  * Tests that the English and Spanish language packs stay complete and consistent.
  *
@@ -27,7 +28,6 @@ use theme_chinijo\local\preferences;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @coversNothing
  */
-#[\PHPUnit\Framework\Attributes\CoversNothing]
 final class lang_test extends \advanced_testcase {
     /**
      * Load the strings of one language file.

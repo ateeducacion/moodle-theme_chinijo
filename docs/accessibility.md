@@ -44,6 +44,10 @@ Based on W3C **WCAG-EM 1.0**:
   Tab and Enter only, and fails if any control cannot be reached (focus trap);
   `preferences.feature` opens the dialogue with Space and checks that focus
   returns to the control after Save and after Escape.
+- Reflow and targets: `responsive.feature` loads the course page and the dialogue
+  at 425×750, 768×1024 and 1024×768 with the largest text and line spacing, checks
+  that the page does not scroll horizontally and that the control, the options and
+  the Save button are at least 44×44 CSS pixels.
 - Contrast of the theme's own colours (computed, see below).
 
 ## Theme colours and contrast (WCAG 1.4.3, 1.4.11)

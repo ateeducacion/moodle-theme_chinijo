@@ -57,13 +57,13 @@ jobs:
       matrix:
         include:
           # Previous LTS: PHP 8.3 is the newest PHP it supports.
-          - {label: '4.5 LTS', moodle-branch: MOODLE_405_STABLE, php: '8.3', database: pgsql, behat: true}
+          - {label: '4.5 LTS', moodle-branch: MOODLE_405_STABLE, php: '8.3', database: pgsql, behat: true, grunt: true}
           - {label: '4.5 LTS', moodle-branch: MOODLE_405_STABLE, php: '8.3', database: mariadb}
           - {label: '5.0', moodle-branch: MOODLE_500_STABLE, php: '8.3', database: pgsql}
           # Moodle 5.1 moved the web root to public/.
           - {label: '5.1', moodle-branch: MOODLE_501_STABLE, php: '8.3', database: pgsql}
           - {label: '5.2', moodle-branch: MOODLE_502_STABLE, php: '8.3', database: pgsql}
-          # Current LTS: the reference build. amd/build is produced with its Grunt, so it is checked here.
+          # Current LTS: the reference build (amd/build is produced with its Grunt; 4.5's Grunt gives the same output).
           - {label: '5.3 LTS', moodle-branch: MOODLE_503_STABLE, php: '8.4', database: pgsql, behat: true, grunt: true, coverage: true}
           - {label: '5.3 LTS', moodle-branch: MOODLE_503_STABLE, php: '8.4', database: mariadb}
           - {label: '5.3 LTS', moodle-branch: MOODLE_503_STABLE, php: '8.3', database: pgsql}

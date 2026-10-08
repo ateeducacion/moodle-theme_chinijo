@@ -52,7 +52,7 @@ available), **Process** (contractual or organisational, documented only).
 | Requirement | Implementation | Tests / evidence | Status |
 |---|---|---|---|
 | Simplified design, minimum cognitive load, core features kept | Calmer defaults (`_base.scss`), nothing hidden | Screenshots; Behat on core flows | Partial: needs UAT with the target users |
-| Targets ≥ 24×24 px (2.5.8) | 44 px buttons/controls in content and dialogues, 44 px radio options | Manual measurement | Partial: device testing pending |
+| Targets ≥ 24×24 px (2.5.8) | 44 px buttons/controls in content and dialogues, 44 px radio options | `responsive.feature` measures ≥ 44×44 px at phone and tablet sizes with the largest text | Partial: real device testing pending |
 | Pictograms for sections, activities or main actions; third-party licences; served from EVAGD; attribution; outside the GPL | `pictograms.php`, `classes/local/pictogram*.php`, `amd/src/pictograms.js`, credits, backup/restore | `pictograms_test`, `pictogram_form_test`, `pluginfile_test`, `backup_test`, `pictograms.feature` | Done for sections and activities. Pictograms for "main actions" (buttons) are not implemented. No pictogram is bundled. |
 | Orientation: progress indicators and breadcrumbs | `course_progress`, Boost breadcrumbs kept | `course_progress_test` (matches core on each branch), `course_progress.feature` | Done |
 
@@ -70,7 +70,7 @@ available), **Process** (contractual or organisational, documented only).
 |---|---|---|---|
 | Child theme, minimal duplication | No copied Boost templates | `docs/architecture.md` | Done |
 | Compatible with the target Moodle/EVAGD version | 4.5 LTS – 5.3 LTS | CI matrix, local runs on 4.5 and 5.3 | Partial: target version to be communicated; EVAGD pre-production pending |
-| Responsive: 10" and 12" tablets both orientations, desktop; two latest Chrome, Firefox, Safari, Edge | Responsive Boost layout; wrapping index; navbar label hidden on narrow screens | Behat in Chromium | Pending: real devices and browser matrix |
+| Responsive: 10" and 12" tablets both orientations, desktop; two latest Chrome, Firefox, Safari, Edge | Responsive Boost layout; wrapping index; navbar label hidden on narrow screens | `responsive.feature` in Chromium (phone, tablet portrait and landscape, no horizontal scrolling) | Partial: real devices and browser matrix pending |
 | Code security (2.9) | See above | — | Done |
 | FEDER visibility (Reg. (EU) 2021/1060 art. 47, annex IX); placement agreed with the contract manager | `classes/local/feder.php`, settings, template | `feder_test`, `hook_callbacks_test`, `feder.feature` | Partial: approved emblem, wording and placement pending |
 
