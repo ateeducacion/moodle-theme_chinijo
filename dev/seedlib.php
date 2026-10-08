@@ -224,7 +224,9 @@ function chinijo_seed_course(testing_data_generator $generator): stdClass {
     if ($course) {
         return $course;
     }
-    $category = $generator->create_category(['name' => 'Primary education (demo)', 'idnumber' => 'CHINIJO-DEMO']);
+    // The category may be left over from a demo course deleted by hand.
+    $category = $DB->get_record('course_categories', ['idnumber' => 'CHINIJO-DEMO'])
+        ?: $generator->create_category(['name' => 'Primary education (demo)', 'idnumber' => 'CHINIJO-DEMO']);
     $course = $generator->create_course([
         'fullname' => 'Year 1 classroom (Chinijo demo)',
         'shortname' => CHINIJO_DEMO_COURSE,
@@ -248,9 +250,16 @@ function chinijo_seed_course(testing_data_generator $generator): stdClass {
             'content' => '<p>Hello! This is our class. Press <strong>Mark as done</strong> when you have read this page.</p>']],
         ['page', 1, 'Read the story', ['completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => 1,
             'content' => '<p>Once upon a time, a little goat lived on a volcano by the sea.</p>']],
+        // A learning situation usually has several activities (see docs/curriculum-canarias.md).
+        ['page', 2, 'Look at the pictures', ['completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => 1,
+            'content' => '<p>Look at the pictures of families. Who is in each family?</p>']],
         ['assign', 2, 'Draw your family', ['completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionsubmit' => 1,
             'intro' => '<p>Write two sentences about your drawing and press <strong>Submit</strong>.</p>',
             'assignsubmission_onlinetext_enabled' => 1, 'assignsubmission_file_enabled' => 0, 'submissiondrafts' => 0]],
+        ['page', 2, 'Colour the sun', ['completion' => COMPLETION_TRACKING_MANUAL,
+            'content' => '<p>Colour the sun in your drawing with yellow and orange.</p>']],
+        ['page', 2, 'Show your drawing to the class', ['completion' => COMPLETION_TRACKING_MANUAL,
+            'content' => '<p>Tell the class who is in your drawing.</p>']],
         ['page', 3, 'Count to ten', ['completion' => COMPLETION_TRACKING_MANUAL,
             'content' => '<p>One, two, three, four, five, six, seven, eight, nine, ten!</p>']],
         ['url', 3, 'Numbers song (example link)', ['completion' => COMPLETION_TRACKING_MANUAL,
@@ -278,7 +287,7 @@ function chinijo_seed_pictograms(stdClass $course): void {
         }
     }
     $activityshapes = ['Welcome to the class' => ['star', 'Star'], 'Read the story' => ['book', 'Book'],
-        'Draw your family' => ['pencil', 'Pencil'], 'Count to ten' => ['numbers', 'Numbers']];
+        'Draw your family' => ['pencil', 'Pencil'], 'Colour the sun' => ['sun', 'Sun'], 'Count to ten' => ['numbers', 'Numbers']];
     foreach ($modinfo->get_cms() as $cm) {
         if (isset($activityshapes[$cm->name])) {
             [$shape, $alt] = $activityshapes[$cm->name];
@@ -298,7 +307,7 @@ function chinijo_seed_completion(stdClass $course, stdClass $student): void {
     foreach (get_fast_modinfo($course, $student->id)->get_cms() as $cm) {
         if ($cm->name === 'Welcome to the class') {
             $completion->update_state($cm, COMPLETION_COMPLETE, $student->id);
-        } else if ($cm->name === 'Read the story') {
+        } else if ($cm->name === 'Read the story' || $cm->name === 'Look at the pictures') {
             $completion->set_module_viewed($cm, $student->id);
         }
     }

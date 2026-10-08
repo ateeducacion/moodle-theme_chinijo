@@ -33,7 +33,11 @@ html[data-chinijo-contrast="high"] {
     #page-header,
     .theme-chinijo-toolbar,
     .theme-chinijo-prefs__label,
-    .theme-chinijo-progress {
+    .theme-chinijo-prefs__preset,
+    .theme-chinijo-next,
+    .theme-chinijo-path__track,
+    .theme-chinijo-path__marker,
+    .theme-chinijo-cheer__card {
         background-color: $chinijo-hc-background !important;
     }
 
@@ -43,9 +47,19 @@ html[data-chinijo-contrast="high"] {
     .card,
     .dropdown-menu,
     .modal-content,
-    .theme-chinijo-progress,
+    .theme-chinijo-path__track,
     .activityiconcontainer {
         border: 2px solid $chinijo-hc-text !important;
+    }
+
+    .theme-chinijo-next,
+    .theme-chinijo-cheer__card {
+        border: 3px solid $chinijo-hc-text !important;
+    }
+
+    // The line between the stops of the path keeps its solid (done) or dotted (to do) style.
+    .theme-chinijo-path__list > li + li::before {
+        border-top-color: $chinijo-hc-text !important;
     }
 
     a,
@@ -74,10 +88,14 @@ html[data-chinijo-contrast="high"] {
         color: $chinijo-hc-text !important;
     }
 
-    // Primary actions and selected items are inverted: white on black.
+    // Primary actions and selected items are inverted: white on black. Links styled as buttons are
+    // listed too, so that the inversion wins over the "a.btn" rule above.
     .btn-primary,
     .btn-success,
     .btn-danger,
+    a.btn-primary,
+    a.btn-success,
+    a.btn-danger,
     .bg-primary,
     .badge-primary,
     .text-bg-primary,
@@ -87,7 +105,9 @@ html[data-chinijo-contrast="high"] {
     .courseindex .courseindex-item.pageitem,
     .nav-pills .nav-link.active,
     .tooltip-inner,
-    .theme-chinijo-prefs__radio:checked + .theme-chinijo-prefs__label {
+    .theme-chinijo-prefs__radio:checked + .theme-chinijo-prefs__label,
+    .theme-chinijo-path__badge,
+    [data-state="current"] > .theme-chinijo-path__state {
         background-color: $chinijo-hc-text !important;
 
         &,
@@ -172,8 +192,12 @@ html[data-chinijo-contrast="high"] {
 @media (forced-colors: active) {
     .btn,
     .theme-chinijo-prefs__label,
+    .theme-chinijo-prefs__preset,
     .theme-chinijo-progress__bar,
-    .theme-chinijo-prefs-trigger__glyph {
+    .theme-chinijo-prefs-trigger__glyph,
+    .theme-chinijo-next,
+    .theme-chinijo-path__marker,
+    .theme-chinijo-cheer__card {
         border: 2px solid buttontext !important;
     }
 

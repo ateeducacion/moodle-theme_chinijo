@@ -35,10 +35,11 @@ best-practice rules on the scope shown.
 |---|---|---|---|
 | Login page, not logged in, with display settings toolbar and FEDER text | whole page | Pass | Pass |
 | Dashboard (learner) | whole page | Pass | Pass |
-| Course page with progress and pictograms (learner) | main region | Pass (whole page: F-01 only under +BP) | Pass (whole page: F-03 only under +BP) |
+| Course page with "Next", "My path" and pictograms (learner) | main region | Pass (whole page: F-01 only under +BP) | Pass (whole page: F-03 only under +BP) |
+| Encouragement after marking an activity as done | the message | Pass | Pass after fixing F-05 |
 | Activity page (page resource) | main region | Pass | Pass |
 | Assignment, "Add submission" form | main region | Pass | Pass |
-| Display settings dialogue: default | dialogue | Pass | Pass |
+| Display settings dialogue: default, with the ready-made combinations | dialogue | Pass | Pass |
 | Display settings dialogue: high contrast + huge text + legible font | dialogue | Pass | Pass |
 | Display settings dialogue: high contrast + large text | dialogue | Pass | Pass |
 | Stand-alone display settings page | whole page | Pass | Pass |
@@ -60,6 +61,7 @@ interface after a language switch: `language.feature`.
 | F-02 | Course page and course index | axe `presentation-role-conflict` (minor, best practice) | Decorative pictograms in the course index (empty `alt`) were flagged. | Theme | Behat run 2026-10-08 | **Fixed**: they are now inside an `aria-hidden` wrapper; the rule passes. |
 | F-03 | Pages with primary and secondary navigation (Moodle 4.5) | axe `landmark-unique` (best practice, not a WCAG success criterion) | The primary navigation, the secondary navigation and the course index are `nav` landmarks without names. | Moodle core (Boost) | Same result with `?theme=boost` on the 4.5 development site once Boost's user tour was closed (axe-core 4.10.2, 2026-10-08). With the tour open, Boost hides the page from assistive technologies, which makes Boost look clean. | Not changed in the theme. Covered in Behat as F-01. |
 | F-04 | Pages rendered after the main region (4.5 and 5.3) | Layout (WCAG 2.4.11 risk) | The pictogram credits and the FEDER notice are printed by Boost outside `#page`, so an open drawer covered their left edge. | Theme | Behat on 4.5 (click intercepted by the course index drawer) | **Fixed**: the blocks follow Boost's drawer offsets. |
+| F-05 | Course page, encouragement after completion (version 0.2.0) | WCAG 1.4.3 (axe `color-contrast`) | The message faded in; axe measured the "Keep going" button half-way through the fade (3.76:1 on a run on 4.5). | Theme | Behat on 4.5 (passed on the automatic rerun) | **Fixed**: the message only slides in, without fading, so its colours have their full contrast from the first frame. |
 
 ## Manual checks (to be done in EVAGD pre-production)
 

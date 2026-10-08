@@ -12,4 +12,16 @@
       <copyright>2020 Braille Institute of America, Inc.</copyright>
     </copyrights>
   </library>
+  <library>
+    <location>fonts</location>
+    <name>Andika</name>
+    <description>Typeface for beginning readers by SIL International (latin subset, WOFF2 files from the Fontsource package 5.3.0).</description>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/silnrsi/font-andika</repository>
+    <copyrights>
+      <copyright>2004-2022 SIL International</copyright>
+    </copyrights>
+  </library>
 </libraries>

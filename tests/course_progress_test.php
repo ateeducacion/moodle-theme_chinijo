@@ -26,6 +26,7 @@ require_once($CFG->libdir . '/completionlib.php');
 
 #[\PHPUnit\Framework\Attributes\CoversClass(course_progress::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(output\core_renderer::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(\theme_chinijo\local\learning_path::class)]
 /**
  * Tests for the course progress indicator and the course header that shows it.
  *
@@ -35,6 +36,7 @@ require_once($CFG->libdir . '/completionlib.php');
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_chinijo\local\course_progress
  * @covers     \theme_chinijo\output\core_renderer
+ * @covers     \theme_chinijo\local\learning_path
  */
 final class course_progress_test extends \advanced_testcase {
     /**
@@ -115,38 +117,91 @@ final class course_progress_test extends \advanced_testcase {
     }
 
     /**
-     * The course header shows the indicator to a tracked student, and the completion script is loaded.
+     * The web renderer of a course page or of an activity page.
+     *
+     * @param \stdClass $course The course.
+     * @param string $pagetype Page type.
+     * @param \cm_info|null $cm The activity, for an activity page.
+     * @return output\core_renderer
      */
-    public function test_course_header(): void {
+    protected function get_page_renderer(\stdClass $course, string $pagetype, ?\cm_info $cm = null): output\core_renderer {
         global $PAGE;
-        $this->resetAfterTest();
-        $generator = $this->getDataGenerator();
-        $course = $generator->create_course(['enablecompletion' => 1]);
-        $student = $generator->create_and_enrol($course, 'student');
-        $teacher = $generator->create_and_enrol($course, 'editingteacher');
-        $generator->create_module('page', ['course' => $course->id, 'completion' => COMPLETION_TRACKING_MANUAL]);
 
         // Enrolment may send the course welcome e-mail, which sets up the global page's theme.
         $PAGE = new \moodle_page();
-        $PAGE->set_course($course);
-        $PAGE->set_url(new \moodle_url('/course/view.php', ['id' => $course->id]));
+        if ($cm) {
+            $PAGE->set_cm($cm, $course);
+            $PAGE->set_url($cm->url);
+            $PAGE->set_pagelayout('incourse');
+        } else {
+            $PAGE->set_course($course);
+            $PAGE->set_url(new \moodle_url('/course/view.php', ['id' => $course->id]));
+            $PAGE->set_pagelayout('course');
+        }
+        $PAGE->set_pagetype($pagetype);
         $PAGE->force_theme('chinijo');
         // Tests run on the command line: ask for the web renderer explicitly.
         $output = $PAGE->get_renderer('core', null, RENDERER_TARGET_GENERAL);
         $this->assertInstanceOf(output\core_renderer::class, $output);
+        return $output;
+    }
+
+    /**
+     * The course page greets a tracked learner and shows "Next" and "My path"; teachers get neither path nor card.
+     */
+    public function test_course_page(): void {
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['enablecompletion' => 1]);
+        $student = $generator->create_and_enrol($course, 'student', ['firstname' => 'Leo']);
+        $teacher = $generator->create_and_enrol($course, 'editingteacher');
+        $generator->create_module('page', [
+            'course' => $course->id,
+            'name' => 'Read the story',
+            'completion' => COMPLETION_TRACKING_MANUAL,
+        ]);
 
         $this->setUser($student);
-        $html = $output->course_header();
+        $output = $this->get_page_renderer($course, 'course-view-topics');
+        $this->assertStringContainsString(get_string('greeting', 'theme_chinijo', 'Leo'), $output->course_header());
+        $html = $output->course_content_header();
         $this->assertStringContainsString('data-region="theme_chinijo-progress"', $html);
-        $this->assertStringContainsString('<progress', $html);
-        $this->assertStringContainsString(get_string(
-            'progress_summary',
-            'theme_chinijo',
-            ['completed' => 0, 'total' => 1, 'percentage' => 0]
-        ), $html);
+        $this->assertStringContainsString('data-region="theme_chinijo-next"', $html);
+        $this->assertStringContainsString('Read the story', $html);
+        $this->assertStringContainsString('aria-current="step"', $html);
+        $this->assertStringContainsString(
+            get_string('path_summary', 'theme_chinijo', ['completed' => 0, 'total' => 1]),
+            $html
+        );
 
         $this->setUser($teacher);
-        $this->assertStringNotContainsString('theme_chinijo-progress', $output->course_header());
+        $output = $this->get_page_renderer($course, 'course-view-topics');
+        $this->assertStringNotContainsString('theme_chinijo-progress', $output->course_content_header());
+    }
+
+    /**
+     * Activity pages get the bar with the way back to the course, the progress and the "Listen" button.
+     */
+    public function test_activity_page(): void {
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['enablecompletion' => 1]);
+        $student = $generator->create_and_enrol($course, 'student');
+        $page = $generator->create_module('page', ['course' => $course->id, 'completion' => COMPLETION_TRACKING_MANUAL]);
+        $cm = get_fast_modinfo($course)->get_cm($page->cmid);
+
+        $this->setUser($student);
+        $output = $this->get_page_renderer($course, 'mod-page-view', $cm);
+        $this->assertStringNotContainsString('theme-chinijo-greeting', $output->course_header());
+        $html = $output->course_content_header();
+        $this->assertStringContainsString('data-region="theme_chinijo-activity-bar"', $html);
+        $this->assertStringContainsString('/course/view.php?id=' . $course->id . '#module-' . $cm->id, $html);
+        $this->assertStringContainsString(get_string('activity_back', 'theme_chinijo'), $html);
+        $this->assertStringContainsString('data-action="theme_chinijo-read-aloud"', $html);
+        $this->assertStringContainsString('<progress', $html);
+
+        // Core prints the content header once; a second request for it adds nothing either.
+        $this->assertSame('', $output->course_content_header(true));
     }
 
     /**
@@ -158,6 +213,8 @@ final class course_progress_test extends \advanced_testcase {
         $this->setAdminUser();
         $PAGE->set_url(new \moodle_url('/'));
         $PAGE->force_theme('chinijo');
-        $this->assertSame('', $PAGE->get_renderer('core', null, RENDERER_TARGET_GENERAL)->course_header());
+        $output = $PAGE->get_renderer('core', null, RENDERER_TARGET_GENERAL);
+        $this->assertSame('', $output->course_header());
+        $this->assertStringNotContainsString('theme_chinijo', $output->course_content_header());
     }
 }

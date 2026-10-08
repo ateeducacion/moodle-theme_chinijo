@@ -36,26 +36,43 @@ const setPreferences = async(values) => {
 };
 
 const openCourse = async() => {
+    // Moodle finds the course by its short name, whatever its id is.
     await page.goto(`${base}/course/view.php?name=CHINIJO-DEMO`);
-    if (!page.url().includes('/course/view.php?id=')) {
-        await page.goto(`${base}/course/view.php?id=2`);
-    }
     await page.waitForSelector('img.theme-chinijo-pictogram');
     await page.waitForLoadState('networkidle');
 };
 
 await login('student1');
 await setPreferences({contrast: 'default', fontsize: 'default', font: 'default',
-    letterspacing: 'default', wordspacing: 'default', lineheight: 'default', motion: 'default'});
+    letterspacing: 'default', wordspacing: 'default', lineheight: 'default', motion: 'default', sound: 'default'});
 await openCourse();
 await page.screenshot({path: `${out}/chinijo-course.png`});
 
+// Encouragement after marking an activity as done, then back to the previous state.
+const toggle = () => page.locator('[data-activityname="Colour the sun"] button[data-action="toggle-manual-completion"]').first();
+await toggle().click();
+await page.waitForSelector('[data-region="theme_chinijo-cheer-card"]');
+await page.screenshot({path: `${out}/chinijo-encouragement.png`});
+await page.click('[data-action="theme_chinijo-cheer-close"]');
+await toggle().click();
+await page.waitForLoadState('networkidle');
+
+// The next activity, opened from "Next".
+await openCourse();
+await Promise.all([page.waitForNavigation(), page.click('.theme-chinijo-next__start')]);
+await page.waitForLoadState('networkidle');
+await page.screenshot({path: `${out}/chinijo-activity.png`});
+
+await openCourse();
+
 await page.click('[data-action="theme_chinijo-open-preferences"]');
 await page.waitForSelector('.modal.show form[data-region="theme_chinijo-preferences"]');
+// The title is a string that may still be loading.
+await page.waitForFunction(() => document.querySelector('.modal.show .modal-title')?.textContent.trim());
 await page.screenshot({path: `${out}/chinijo-display-settings.png`});
 await page.keyboard.press('Escape');
 
-await setPreferences({contrast: 'high', fontsize: 'large', font: 'legible'});
+await setPreferences({contrast: 'high', fontsize: 'large', font: 'school'});
 await openCourse();
 await page.screenshot({path: `${out}/chinijo-course-high-contrast.png`});
 await setPreferences({contrast: 'default', fontsize: 'default', font: 'default'});

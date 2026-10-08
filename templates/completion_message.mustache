@@ -1,0 +1,55 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_chinijo/completion_message
+
+    Encouragement shown by theme_chinijo/completion_feedback after Moodle has
+    confirmed that the learner marked an activity as done. It does not take the
+    focus or block the page, and stays until the learner closes it.
+
+    Context variables required for this template:
+    * title - Short praise, for example "Well done, Leo!".
+    * text - What was done and how many activities are done.
+    * nexturl - URL of the next activity, or an empty string.
+    * nextname - Name of the next activity.
+
+    Example context (json):
+    {
+        "title": "Well done, Leo!",
+        "text": "You have finished “Read the story”. You have done 3 of 5.",
+        "nexturl": "https://moodle.example/mod/assign/view.php?id=11",
+        "nextname": "Draw your family"
+    }
+}}
+<div class="theme-chinijo-cheer__card" data-region="theme_chinijo-cheer-card">
+    <div class="theme-chinijo-cheer__picture" aria-hidden="true">
+        <svg class="theme-chinijo-cheer__star" viewBox="0 0 48 48" width="56" height="56" focusable="false"><path d="M24 4l5.9 12.6 13.8 1.6-10.2 9.4 2.8 13.6L24 34.4 11.7 41.2l2.8-13.6L4.3 18.2l13.8-1.6z"></path></svg>
+    </div>
+    <div class="theme-chinijo-cheer__body">
+        <p class="theme-chinijo-cheer__title">{{title}}</p>
+        <p class="theme-chinijo-cheer__text">{{text}}</p>
+        {{#nexturl}}
+            <a class="btn btn-primary theme-chinijo-cheer__next" href="{{nexturl}}">
+                <svg class="theme-chinijo-icon theme-chinijo-icon--solid" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z"></path></svg>
+                {{#str}}completion_next, theme_chinijo{{/str}}<span class="theme-chinijo-visually-hidden">: {{nextname}}</span>
+            </a>
+        {{/nexturl}}
+    </div>
+    <button type="button" class="theme-chinijo-cheer__close" data-action="theme_chinijo-cheer-close" aria-label="{{#str}}completion_close, theme_chinijo{{/str}}">
+        <svg class="theme-chinijo-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+    </button>
+</div>

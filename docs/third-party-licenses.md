@@ -6,6 +6,7 @@ version 3 or later (see `LICENSE`). The following material is not original work.
 | Material | Location | Licence | Source | Notes |
 |---|---|---|---|---|
 | Atkinson Hyperlegible (regular, italic, bold, bold italic; latin subset, WOFF2) | `fonts/` | SIL Open Font License 1.1 (`fonts/OFL-AtkinsonHyperlegible.txt`) | Braille Institute of America; files from the Fontsource package `@fontsource/atkinson-hyperlegible` 5.2.8 | Distributed unmodified alongside the theme (aggregation); declared in `thirdpartylibs.xml`. |
+| Andika (regular, italic, bold, bold italic; latin subset, WOFF2) | `fonts/` | SIL Open Font License 1.1 (`fonts/OFL-Andika.txt`); no Reserved Font Name is declared | SIL International; files from the Fontsource package `@fontsource/andika` 5.3.0 (SHA-256 of the package `4c96703f…5507d`) | Used by the "School letters" option. Distributed unmodified alongside the theme (aggregation); declared in `thirdpartylibs.xml`. |
 | `pix/favicon.ico` | `pix/` | GPL-3.0-or-later | Moodle's Boost theme | Copied because Moodle requires each theme to ship its own favicon; sites can set their own (Appearance › Logos). |
 | Moodle and Boost code patterns | throughout | GPL-3.0-or-later | moodle/moodle | No Boost template or file is copied; callbacks follow Boost's documented patterns. |
 

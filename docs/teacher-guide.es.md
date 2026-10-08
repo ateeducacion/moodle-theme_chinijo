@@ -7,17 +7,28 @@ se organiza y se escribe el curso.
 
 ## 1. Lo que hace el tema por tu alumnado
 
-- **Ajustes de visualización** (botón «Aa Ajustes de visualización» en la barra
-  superior): cada alumno o alumna elige para sí el contraste, el tamaño del texto,
-  un tipo de letra fácil de leer, el espacio entre letras, palabras y líneas, y si
-  quiere reducir las animaciones. **Tú no puedes cambiar estos ajustes a nadie**,
-  ni conviene pedir información sobre ellos: son decisiones personales.
-- **Progreso del curso**: «Tu progreso: 3 de 8 actividades completadas». Solo
-  aparece si el curso tiene activado el seguimiento de finalización y cuenta las
-  actividades que tienen una condición de finalización.
-- **Aviso al terminar**: al pulsar «Marcar como hecho», aparece un mensaje breve
-  «¡Muy bien!» después de que Moodle lo haya guardado.
-- **Pictogramas** junto al nombre de las secciones y actividades que tú elijas.
+- **«Cómo lo veo»** (botón «Aa» de la barra superior): cada alumno o alumna elige
+  para sí el contraste, el tamaño del texto, una letra fácil de leer o la letra
+  escolar, el espacio entre letras, palabras y líneas, si quiere reducir las
+  animaciones y si quiere oír sonidos. Arriba hay combinaciones listas para usar
+  («Leer mejor», «Ver mejor», «Más calma»). **Tú no puedes cambiar estos ajustes
+  a nadie**, ni conviene pedir información sobre ellos: son decisiones personales.
+- **Página del curso**: un saludo («¡Hola, Leo!»), **Lo siguiente** (la primera
+  actividad que le falta, con un botón grande «Empezar») y **Mi camino** (las
+  actividades en el orden del curso, con su pictograma y si están hechas, son la de
+  «Ahora», faltan o todavía no se pueden abrir) y «2 de 5 actividades hechas».
+  Solo aparece si el curso tiene activado el seguimiento de finalización, y solo
+  cuenta las actividades que tienen una condición de finalización: **el orden del
+  curso es el orden del camino**. Si hay muchas actividades, el camino muestra
+  siete alrededor de la siguiente e indica cuántas quedan antes y después.
+- **En cada actividad**: un botón grande «Volver al curso», el progreso y, si el
+  dispositivo tiene una voz instalada en el idioma de la página, un botón
+  «Escuchar» que lee el contenido. Escribe enunciados que se entiendan al oírlos.
+- **Ánimo al terminar**: al pulsar «Marcar como hecho», aparece «¡Muy bien, Leo!»
+  con lo que lleva hecho y un botón «Seguir» a la siguiente actividad, después de
+  que Moodle lo haya guardado. Solo suena si el alumno activó los sonidos.
+- **Pictogramas** junto al nombre de las secciones y actividades que tú elijas;
+  también aparecen en «Lo siguiente» y en «Mi camino».
 
 ## 2. Estructura del curso
 

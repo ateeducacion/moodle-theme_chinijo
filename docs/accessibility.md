@@ -15,9 +15,9 @@ Based on W3C **WCAG-EM 1.0**:
 
 1. **Scope**: pages rendered with Chinijo on EVAGD (pre-production as the
    reference), for learners, teachers and visitors who are not logged in; theme
-   components (display settings control, dialogue and page, toolbar, progress,
-   pictograms and credits, completion feedback, FEDER notice, pictogram management
-   pages). Third-party content and other plugins are out of scope but reported
+   components (display settings control, dialogue and page, toolbar, greeting,
+   "Next" and "My path", activity bar and "Listen", pictograms and credits,
+   encouragement after completion, FEDER notice, pictogram management pages). Third-party content and other plugins are out of scope but reported
    when they affect a sampled page.
 2. **Representative sample** (structured sample, WCAG-EM step 3): login page (not
    logged in), dashboard, course list, course page with progress and pictograms,
@@ -69,26 +69,27 @@ Ratios computed with the WCAG 2.x relative luminance formula (2026-10-08).
 | Criterion | How Chinijo addresses it | Evidence |
 |---|---|---|
 | 1.1.1 Non-text content | Pictograms need a text alternative (form validation); decorative copies in the course index use `alt=""`; the "Aa" glyph is `aria-hidden`; the EU emblem is only shown with its alternative. | PHPUnit, Behat |
-| 1.3.1 Info and relationships | Radio groups in `<fieldset>` with `<legend>`; tables with caption and `scope`; landmarks (`aside` with labels); native `<progress>` labelled by its text. | Behat axe |
+| 1.3.1 Info and relationships | Radio groups in `<fieldset>` with `<legend>`; the ready-made combinations in a labelled group; tables with caption and `scope`; landmarks (`aside` with labels); "My path" is an ordered list whose current item has `aria-current="step"` and whose state is written out ("Done", "Now", "To do", "Not yet"); native `<progress>` labelled by its text. | Behat axe |
 | 1.3.2 Meaningful sequence / 2.4.3 Focus order | Nothing is reordered with CSS positioning; pictograms are inserted before names in DOM order. | Keyboard scenario |
-| 1.4.1 Use of colour | Links in text underlined; selected options bold with thicker border; errors with a bar and bold text; high contrast inverts primary actions. | Manual |
+| 1.4.1 Use of colour | Links in text underlined; selected options bold with thicker border and a radio button; errors with a bar and bold text; high contrast inverts primary actions; on "My path" the state is text plus shape (solid ring with a tick, ring with a halo, dashed ring; solid or dotted line). | Manual |
 | 1.4.3 / 1.4.6 / 1.4.11 Contrast | See table above; checked in all modes by axe. | Behat axe |
 | 1.4.4 Resize text / 1.4.10 Reflow | rem-based scaling up to 150 %; course index names wrap; tested at 200 %/400 % zoom (manual, pending in pre-production). | Manual |
 | 1.4.12 Text spacing | The "extra wide" options apply exactly the WCAG values; layout checked without loss of content. | Manual + screenshots |
 | 1.4.13 Content on hover or focus | No new hover content. | n/a |
 | 2.1.1 Keyboard / 2.1.2 No keyboard trap | Native controls; the dialogue (core/modal) contains focus while open and is closed with Escape. | Behat keyboard scenarios |
-| 2.2.2 Pause, stop, hide | No moving content added; toasts are core's, short and polite. | Manual |
+| 2.2.2 Pause, stop, hide | No moving content added. The encouragement after completion appears once, without looping animation, and stays until closed (no time limit to read it). | Manual |
 | 2.3.1 Three flashes | No flashing content. | n/a |
 | 2.3.3 Animation from interactions (AAA, supported) | `prefers-reduced-motion` honoured; "Reduce animations" forces it. | Manual |
 | 2.4.7 Focus visible / 2.4.13 Focus appearance (AAA, supported) | 3 px dark outline with a light gap on every focusable element; 4 px in high contrast; `forced-colors` support. | Manual |
-| 2.4.11 Focus not obscured | `scroll-padding` for the fixed navbar and sticky footers. | Manual |
-| 2.5.3 Label in name | Control's accessible name equals its visible label ("Display settings"). | Behat |
+| 2.4.11 Focus not obscured | `scroll-padding` for the fixed navbar and sticky footers; while the encouragement is shown in the corner of the window, the page reserves its height as scroll padding. | Manual |
+| 2.5.3 Label in name | Accessible names start with the visible label ("Display settings"; "Start: Draw your family"; "Keep going: Page two"). | Behat |
 | 2.5.8 Target size (minimum) | Buttons and controls in content and dialogues ≥ 44 px; radio options ≥ 44 px. | Manual |
 | 3.1.1 / 3.1.2 Language | Moodle sets `lang`; all theme strings are translated (en, es). | PHPUnit, Behat |
 | 3.2.1 / 3.2.2 On focus / on input | Choosing an option previews it but nothing is saved or navigated until Save. | Behat |
 | 3.3.1 / 3.3.3 Error identification and suggestion | Moodle form errors; server-side messages explain what is wrong ("The image must be a PNG, JPEG or WebP file"). | Behat |
 | 4.1.2 Name, role, value | Native elements; the navbar link gets `role="button"` and `aria-haspopup="dialog"` when it opens the dialogue. | Behat axe |
-| 4.1.3 Status messages | Save, reset and completion feedback use core's toast (`role="status"`, polite) or a `role="status"` region. | Behat |
+| 4.1.3 Status messages | Save and reset use core's toast (`role="status"`, polite); the encouragement after completion is added to a `role="status"` region inside the main landmark that exists from page load; it never moves the focus. | Behat |
+| Audio (EN 301 549 7.x, learner autonomy) | No sound by default. "Sounds" in the display settings turns on a short chime after completion. "Listen" uses only voices installed on the device and is a convenience, not a replacement for screen readers. | Behat (setting), manual (sound) |
 
 ## Manual testing protocol (to be run in EVAGD pre-production)
 

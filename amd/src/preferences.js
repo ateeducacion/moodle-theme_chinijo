@@ -41,6 +41,7 @@ const SELECTORS = {
     TRIGGER: '[data-action="theme_chinijo-open-preferences"]',
     TEMPLATE: 'template[data-region="theme_chinijo-preferences-form"]',
     FORM: 'form[data-region="theme_chinijo-preferences"]',
+    PRESET: '[data-action="preset"]',
     STATUS: '[data-region="theme_chinijo-preferences-status"]',
     CHECKED: 'input[type="radio"]:checked',
 };
@@ -165,11 +166,23 @@ const openDialogue = async(trigger) => {
         removeOnClose: true,
         returnElement: trigger,
     });
-    const form = modal.getBody()[0].querySelector(SELECTORS.FORM);
+    const body = modal.getBody()[0];
+    const form = body.querySelector(SELECTORS.FORM);
     const status = form.querySelector(SELECTORS.STATUS);
     const names = getNames(form);
     let saved = getAppliedValues(names);
     selectValues(form, saved);
+
+    // A ready-made combination only selects its values; Save keeps them, as with any other choice.
+    body.querySelectorAll(SELECTORS.PRESET).forEach((button) => {
+        button.addEventListener('click', async(event) => {
+            event.preventDefault();
+            selectValues(form, JSON.parse(button.dataset.values || '{}'));
+            applyValues(getFormValues(form));
+            const label = button.querySelector('.theme-chinijo-prefs__text');
+            status.textContent = await getString('prefs_previewing', 'theme_chinijo', label ? label.textContent.trim() : '');
+        });
+    });
 
     form.addEventListener('change', async(event) => {
         applyValues(getFormValues(form));

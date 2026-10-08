@@ -27,29 +27,57 @@ Feature: Course progress and completion feedback
       | page     | C2     | Page     | 0          |
 
   @javascript
-  Scenario: Marking an activity as done updates the progress after Moodle confirms it
+  Scenario: Marking an activity as done updates the path and encourages the learner
     Given I log in as "student1"
     And I am on "Course 1" course homepage
-    And I should see "Your progress: 0 of 2 activities completed (0%)"
+    And I should see "Hello, Student!"
+    And I should see "0 of 2 activities done"
+    And I should see "Page one" in the "[data-region='theme_chinijo-next']" "css_element"
     When I toggle the manual completion state of "Page one"
-    Then I should see "Well done! “Page one” is marked as done."
-    And I should see "Your progress: 1 of 2 activities completed (50%)"
+    Then I should see "Well done, Student!"
+    And I should see "You have finished “Page one”. You have done 1 of 2."
+    And I should see "1 of 2 activities done"
+    And I should see "Page two" in the "[data-region='theme_chinijo-next']" "css_element"
+    And I should see "Done" in the ".theme-chinijo-path__stop[data-state='done']" "css_element"
+    And I click on "Close the message" "button"
+    And I should not see "Well done, Student!"
     And I reload the page
-    And I should see "Your progress: 1 of 2 activities completed (50%)"
+    And I should see "1 of 2 activities done"
+    And I should see "Page two" in the "[data-region='theme_chinijo-next']" "css_element"
     And I toggle the manual completion state of "Page one"
     And I should see "“Page one” is no longer marked as done."
-    And I should see "Your progress: 0 of 2 activities completed (0%)"
+    And I should see "0 of 2 activities done"
+    And I should see "Page one" in the "[data-region='theme_chinijo-next']" "css_element"
 
-  Scenario: Activity pages show the breadcrumb and the progress
-    Given I am on the "Page one" "page activity" page logged in as "student1"
-    Then I should see "Your progress: 0 of 2 activities completed (0%)"
+  @javascript
+  Scenario: The encouragement leads to the next activity, and the last one to the end of the path
+    Given I log in as "student1"
+    And I am on "Course 1" course homepage
+    When I toggle the manual completion state of "Page one"
+    And I click on "Keep going: Page two" "link"
+    Then I should see "Page two" in the "#page-header" "css_element"
+    And I should see "1 of 2 activities done"
+    And I click on "Back to the course" "link"
+    And I toggle the manual completion state of "Page two"
+    And I should see "You have done every activity. Well done!"
+    And "Keep going" "link" should not exist
+
+  Scenario: Start opens the next activity, and activity pages lead back to the course
+    Given I log in as "student1"
+    And I am on "Course 1" course homepage
+    When I click on "Start: Page one" "link"
+    Then I should see "0 of 2 activities done"
     And "Course 1" "link" should exist in the ".breadcrumb" "css_element"
+    And I click on "Back to the course" "link"
+    And I should see "My path"
 
-  Scenario: Teachers and courses without completion show no progress
+  Scenario: Teachers and courses without completion show no path
     Given I log in as "teacher1"
     When I am on "Course 1" course homepage
-    Then I should not see "Your progress"
+    Then I should not see "My path"
+    And I should not see "activities done"
     And I log out
     And I log in as "student1"
     And I am on "Course 2" course homepage
-    And I should not see "Your progress"
+    And I should not see "My path"
+    And I should see "Hello, Student!"
