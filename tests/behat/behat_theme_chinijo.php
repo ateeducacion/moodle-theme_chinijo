@@ -112,8 +112,15 @@ class behat_theme_chinijo extends behat_base {
             XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.getBoundingClientRect();
             return {width: r.width, height: r.height}; })();');
         if ($box['width'] < $size || $box['height'] < $size) {
-            throw new ExpectationException(sprintf('"%s" is %.1f x %.1f CSS pixels, smaller than %d x %d',
-                $element, $box['width'], $box['height'], $size, $size), $this->getSession());
+            $message = sprintf(
+                '"%s" is %.1f x %.1f CSS pixels, smaller than %d x %d',
+                $element,
+                $box['width'],
+                $box['height'],
+                $size,
+                $size
+            );
+            throw new ExpectationException($message, $this->getSession());
         }
     }
 
@@ -126,8 +133,8 @@ class behat_theme_chinijo extends behat_base {
         $widths = $this->evaluate_script('return {page: document.documentElement.scrollWidth,
             viewport: document.documentElement.clientWidth};');
         if ($widths['page'] > $widths['viewport'] + 1) {
-            throw new ExpectationException(sprintf('The page is %d CSS pixels wide in a %d pixel viewport',
-                $widths['page'], $widths['viewport']), $this->getSession());
+            $message = sprintf('The page is %d CSS pixels wide in a %d pixel viewport', $widths['page'], $widths['viewport']);
+            throw new ExpectationException($message, $this->getSession());
         }
     }
 
