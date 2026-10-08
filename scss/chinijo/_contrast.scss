@@ -100,7 +100,9 @@ html[data-chinijo-contrast="high"] {
 
     // The current page in tabs and secondary navigation keeps a visible, colour-independent marker.
     .nav-link.active,
-    .nav-link[aria-current="page"],
+    nav a[aria-current="page"],
+    nav a[aria-current="true"],
+    .mds-nav-pill--selected,
     .moremenu .nav-link.active {
         border-bottom: 4px solid $chinijo-hc-text !important;
         font-weight: 700 !important;

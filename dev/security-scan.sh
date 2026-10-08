@@ -34,9 +34,18 @@ echo "gitleaks $GITLEAKS_IMAGE: Git history"
 docker run --rm -v "$ROOT:/repo:ro" -v "$OUT:/out" "$GITLEAKS_IMAGE" git /repo --redact --no-banner \
     --config /repo/.gitleaks.toml --report-format json --report-path /out/gitleaks-history.json || status=1
 
-echo "gitleaks: working tree"
-docker run --rm -v "$ROOT:/repo:ro" -v "$OUT:/out" "$GITLEAKS_IMAGE" dir /repo --redact --no-banner \
-    --config /repo/.gitleaks.toml --report-format json --report-path /out/gitleaks-tree.json || status=1
+echo "gitleaks: working tree (files Git tracks or would track, so uncommitted secrets are found too)"
+TREE="$OUT/tree"
+rm -rf "$TREE" && mkdir -p "$TREE"
+(cd "$ROOT" && git ls-files --cached --others --exclude-standard | while IFS= read -r file; do
+    if [ -f "$file" ]; then
+        mkdir -p "$TREE/$(dirname "$file")" && cp "$file" "$TREE/$file"
+    fi
+done)
+docker run --rm -v "$TREE:/tree:ro" -v "$ROOT/.gitleaks.toml:/gitleaks.toml:ro" -v "$OUT:/out" "$GITLEAKS_IMAGE" \
+    dir /tree --redact --no-banner --config /gitleaks.toml --report-format json --report-path /out/gitleaks-tree.json \
+    || status=1
+rm -rf "$TREE"
 
 if [ "$status" -ne 0 ]; then
     echo "Security scan failed: see build/security/." >&2

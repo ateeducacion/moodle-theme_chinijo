@@ -1,0 +1,31 @@
+name: Accessibility problem
+description: Something in Chinijo is hard or impossible to use with a keyboard, a screen reader, zoom or another assistive technology.
+labels: [accessibility]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happens
+      description: What you tried, what happened and what you expected.
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: URL or page name (do not include personal data).
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser and version, device, assistive technology and version, display settings in use.
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - High - blocks the use of EVAGD or a WCAG level A/AA failure
+        - Medium - a feature fails but there is a workaround
+        - Low - visual or documentation defect
+    validations:
+      required: true

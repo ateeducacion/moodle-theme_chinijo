@@ -7,6 +7,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Wait before proposing a new release, so that compromised or broken releases can be withdrawn first.
+    cooldown:
+      default-days: 7
     groups:
       actions:
         patterns: ['*']
@@ -16,6 +19,9 @@ updates:
       - /dev/ci
     schedule:
       interval: weekly
+    # Wait before proposing a new release, so that compromised or broken releases can be withdrawn first.
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: docker-compose
     directories:
@@ -23,3 +29,6 @@ updates:
       - /dev/ci
     schedule:
       interval: weekly
+    # Wait before proposing a new release, so that compromised or broken releases can be withdrawn first.
+    cooldown:
+      default-days: 7
