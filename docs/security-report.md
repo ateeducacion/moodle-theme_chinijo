@@ -8,8 +8,8 @@ rule sets, no critical or high vulnerabilities).
 
 | Date | Commit | Tool | Scope | Result |
 |---|---|---|---|---|
-| 2026-10-08 | working tree after `fb2edae` | Semgrep CE 1.180.0, 171 rules | 89 files tracked or trackable by Git (PHP, JS, Mustache, SCSS, shell, YAML, JSON, XML) | **0 findings** (any severity) |
-| 2026-10-08 | history (7 commits) | gitleaks 8.30.1, default rules | Full Git history | **No leaks** |
+| 2026-10-08 | working tree at `d928e45` | Semgrep CE 1.180.0, 171 rules | 101 files tracked or trackable by Git (PHP, JS, Mustache, SCSS, shell, YAML, JSON, XML) | **0 findings** (any severity) |
+| 2026-10-08 | history (16 commits, up to `d928e45`) | gitleaks 8.30.1, default rules | Full Git history | **No leaks** |
 | 2026-10-08 | working tree | gitleaks 8.30.1, default rules | Files tracked or trackable by Git | **No leaks** |
 
 Reproduce with `make security` (reports in `build/security/`). CI runs the same
