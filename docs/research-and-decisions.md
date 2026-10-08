@@ -126,7 +126,7 @@ gitleaks CLI instead of the licensed GitHub Action.
   retiring Node 20 on hosted runners; the workflow could not be run from this
   environment (nothing was pushed), so its behaviour on current runners is
   unverified.
-- moodle-plugin-ci 4.5.11's own CI does not cover 5.2/5.3; the local runs on 5.3
-  (and 4.5) recorded in the README are the evidence available.
+- moodle-plugin-ci 4.5.11's own CI does not cover 5.2/5.3; the local runs on the
+  five branches recorded in the README are the evidence available.
 - The Moodle Playground run of `blueprint.json` needs the theme published on the
   `main` branch of the GitHub repository; it has not been executed yet.
