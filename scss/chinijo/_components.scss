@@ -329,3 +329,23 @@
         margin-bottom: 0;
     }
 }
+
+// Boost prints the region after the main content outside #page, so these blocks do not follow the
+// drawers: mirror Boost's own offsets so that an open course index or block drawer never covers them.
+@include media-breakpoint-up(lg) {
+    #page.drawers.show-drawer-left ~ .theme-chinijo-credits,
+    #page.drawers.show-drawer-left ~ .theme-chinijo-feder {
+        margin-left: $drawer-left-width;
+    }
+
+    #page.drawers.show-drawer-right ~ .theme-chinijo-credits,
+    #page.drawers.show-drawer-right ~ .theme-chinijo-feder {
+        margin-right: $drawer-right-width;
+    }
+}
+
+// Keep the last block of the page clear of Boost's floating footer button.
+.theme-chinijo-credits:last-child,
+.theme-chinijo-feder:last-child {
+    padding-bottom: 4.5rem;
+}
