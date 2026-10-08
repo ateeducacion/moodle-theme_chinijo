@@ -1,0 +1,47 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_chinijo/feder
+
+    European Union emblem and FEDER acknowledgement configured by an administrator.
+
+    Context variables required for this template:
+    * landmark - True to render a complementary landmark (outside the main region).
+    * logourl - URL of the approved emblem, or null.
+    * logoalt - Text alternative of the emblem.
+    * text - Formatted acknowledgement HTML, or an empty string.
+
+    Example context (json):
+    {
+        "landmark": true,
+        "logourl": "https://moodle.example/pluginfile.php/1/theme_chinijo/federlogo/0/emblem.png",
+        "logoalt": "Co-funded by the European Union",
+        "text": "<p>Acknowledgement text approved by the institution.</p>"
+    }
+}}
+{{#landmark}}<aside class="theme-chinijo-feder" aria-label="{{#str}}feder_region, theme_chinijo{{/str}}" data-region="theme_chinijo-feder">{{/landmark}}
+{{^landmark}}<div class="theme-chinijo-feder" data-region="theme_chinijo-feder">{{/landmark}}
+    <div class="theme-chinijo-feder__inner">
+        {{#logourl}}
+            <img class="theme-chinijo-feder__emblem" src="{{logourl}}" alt="{{logoalt}}">
+        {{/logourl}}
+        {{#text}}
+            <div class="theme-chinijo-feder__text">{{{text}}}</div>
+        {{/text}}
+    </div>
+{{#landmark}}</aside>{{/landmark}}
+{{^landmark}}</div>{{/landmark}}

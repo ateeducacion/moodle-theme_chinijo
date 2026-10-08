@@ -1,0 +1,87 @@
+// Personal display preferences, written by the theme as data attributes on the html element.
+
+// Text size. Boost sizes almost everything in rem, so scaling the root scales the page.
+html[data-chinijo-fontsize="large"] {
+    font-size: 112.5%;
+}
+
+html[data-chinijo-fontsize="xlarge"] {
+    font-size: 125%;
+}
+
+html[data-chinijo-fontsize="xxlarge"] {
+    font-size: 150%;
+}
+
+// The fixed navbar keeps its height, so its text is capped to avoid clipping it.
+html[data-chinijo-fontsize="xlarge"],
+html[data-chinijo-fontsize="xxlarge"] {
+    .navbar.fixed-top {
+        font-size: 18px;
+    }
+}
+
+// High legibility typeface. Icon fonts keep their own font family because they set it explicitly.
+html[data-chinijo-font="legible"] {
+    body,
+    button,
+    input,
+    select,
+    textarea,
+    .btn,
+    .tooltip,
+    .popover {
+        font-family: "Atkinson Hyperlegible", Verdana, "Noto Sans", sans-serif;
+    }
+}
+
+// Spacing. The widest values match WCAG 2.2 success criterion 1.4.12 (Text Spacing).
+html[data-chinijo-letterspacing="wide"] body {
+    letter-spacing: .06em;
+}
+
+html[data-chinijo-letterspacing="wider"] body {
+    letter-spacing: .12em;
+}
+
+html[data-chinijo-wordspacing="wide"] body {
+    word-spacing: .08em;
+}
+
+html[data-chinijo-wordspacing="wider"] body {
+    word-spacing: .16em;
+}
+
+html[data-chinijo-lineheight="wide"] body {
+    line-height: 1.8;
+
+    p {
+        margin-bottom: 1.5em;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        line-height: 1.5;
+    }
+}
+
+html[data-chinijo-lineheight="wider"] body {
+    line-height: 2;
+
+    p {
+        margin-bottom: 2em;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        line-height: 1.6;
+    }
+}

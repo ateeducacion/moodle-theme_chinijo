@@ -1,0 +1,49 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_chinijo/pictogram_credits
+
+    Attribution of the third-party pictograms used in a course.
+
+    Context variables required for this template:
+    * credits - List of credits, each with alt, author, license and licenseurl.
+
+    Example context (json):
+    {
+        "credits": [
+            {
+                "alt": "Book",
+                "author": "Sergio Palao. Origin: ARASAAC. Owner: Government of Aragon",
+                "license": "Creative Commons - Attribution-NonCommercial-ShareAlike 4.0 International",
+                "licenseurl": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+            }
+        ]
+    }
+}}
+<aside class="theme-chinijo-credits" aria-label="{{#str}}pictogramcredits, theme_chinijo{{/str}}" data-region="theme_chinijo-pictogram-credits">
+    <details class="theme-chinijo-credits__details">
+        <summary class="theme-chinijo-credits__summary">{{#str}}pictogramcredits, theme_chinijo{{/str}}</summary>
+        <ul class="theme-chinijo-credits__list">
+            {{#credits}}
+                <li>
+                    <span class="theme-chinijo-credits__alt">{{alt}}</span>{{#author}}: {{author}}{{/author}}{{#license}}.
+                        {{#licenseurl}}<a href="{{licenseurl}}">{{license}}</a>{{/licenseurl}}{{^licenseurl}}{{license}}{{/licenseurl}}{{/license}}
+                </li>
+            {{/credits}}
+        </ul>
+    </details>
+</aside>
