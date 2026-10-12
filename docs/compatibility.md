@@ -16,7 +16,13 @@
   use 8.3). Moodle 5.3 requires PHP ≥ 8.3 and supports 8.4.
 - Databases (from `admin/environment.xml` of each branch): Moodle 5.3 needs
   PostgreSQL ≥ 17 and MariaDB ≥ 11.4, so CI uses PostgreSQL 17 and MariaDB 11.8
-  for every branch.
+  for every branch. The local Docker stacks (`make up` and the test runner) use
+  PostgreSQL 18 since Dependabot's update; its images keep the data in a
+  versioned directory, so the volume is mounted at `/var/lib/postgresql`. A
+  volume created by PostgreSQL 17 cannot be opened by 18: delete the site's
+  volumes (`make reset MOODLE_VERSION=… CONFIRM=yes`, then `make up` and
+  `make seed`), or the runner's `chinijo-ci-<version>_dbdata` volume, which the
+  runner then reinstalls.
 - Static checks and PHPUnit have run locally on all five branches; Behat and
   axe-core on 4.5 and 5.3. The local development site (`make up`) has been run on
   4.5 and 5.3 (see the verification table in the README).
@@ -49,6 +55,11 @@ contents everywhere; only its install path changes:
 | Removed Boost templates | — | — | `flat_navigation`, `nav-drawer` removed in 5.2 | Chinijo never used them. |
 | Behat accessibility step | axe-core 4.10 (WCAG 2.0/2.1/2.2 A/AA) | — | axe-core 4.13 | Same step used on both LTS. |
 | Favicon | theme's own `pix/favicon.ico` only (no inheritance) | same | same | Chinijo ships Boost's favicon (GPL); sites can set their own under Appearance › Logos. |
+| Previous and next activity | `.activity-navigation` links (`#prev-activity-link`, `#next-activity-link`) below the activity | — (not checked on 5.0–5.2) | sticky course footer `.course-linear-navigation` with `a.course-linear-navigation-link` and the manual completion button | Both are styled as large buttons; whichever the branch prints. |
+| Section cards on the course page | `.section-item` has a border and padding | — | `.section-item` without side borders; the section name link sets its own size | Chinijo sets the border, padding and name size of `.section-item` and `.sectionname a` itself. |
+| Book chapter navigation | icon links `.btn-previous`/`.btn-next` with `aria-label`, in `div.row` | — | same links, in `div.d-flex`; Boost sizes them 48 × 48 px | Chinijo sizes them to their content and shows the `aria-label` as visible text. |
+| Quiz question layout | `.que` is a flex row (column below md), `.info` 7em wide | — | same | `.que` becomes a column at every width and `.info` a line above the question. |
+| Multiple-choice answers | the answer text is a `div[data-region="answer-label"]` selected by `qtype_multichoice/answers` on click | — | same | The answer text is stretched over the card; Moodle's own script selects the answer. True/false answers use a `<label>`. |
 
 ## Boost upgrade notes consulted
 

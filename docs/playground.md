@@ -11,7 +11,7 @@ browser from a JSON blueprint. Chinijo ships two blueprints.
 Demo accounts (**disposable, demonstration only**, never use these on a real
 site): `admin`, `teacher1`, `student1`, `student2`, password `Chinijo-demo-1234`.
 Both demos open logged in as `admin`, to explore the settings and the
-Pictograms page. Learners' view ("Next", "My path", encouragement) is for users
+Pictograms page. Learners' view ("Up next", "My path", encouragement) is for users
 with completion tracking: log out and log in as `student1` (Leo, with progress in
 the full demo), or use "Log in as" from the course participants.
 

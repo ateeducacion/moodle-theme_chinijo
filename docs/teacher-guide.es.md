@@ -13,14 +13,21 @@ se organiza y se escribe el curso.
   animaciones y si quiere oír sonidos. Arriba hay combinaciones listas para usar
   («Leer mejor», «Ver mejor», «Más calma»). **Tú no puedes cambiar estos ajustes
   a nadie**, ni conviene pedir información sobre ellos: son decisiones personales.
-- **Página del curso**: un saludo («¡Hola, Leo!»), **Lo siguiente** (la primera
-  actividad que le falta, con un botón grande «Empezar») y **Mi camino** (las
+- **Página del curso como un aula**: un saludo («¡Hola, Leo!»), la **pizarra
+  «Hoy toca»** (la primera actividad que le falta, con lo que hay que hacer y un
+  botón amarillo grande «Empezar») y **Mi camino** (las
   actividades en el orden del curso, con su pictograma y si están hechas, son la de
   «Ahora», faltan o todavía no se pueden abrir) y «2 de 5 actividades hechas».
   Solo aparece si el curso tiene activado el seguimiento de finalización, y solo
   cuenta las actividades que tienen una condición de finalización: **el orden del
   curso es el orden del camino**. Si hay muchas actividades, el camino muestra
   siete alrededor de la siguiente e indica cuántas quedan antes y después.
+- **Fichas de actividad**: cada sección lleva una franja de color, y cada
+  actividad un icono grande y, encima del nombre, un verbo que dice qué se hace en
+  ella: «Leer» (página, libro, archivo, enlace…), «Entregar» (tarea), «Responder»
+  (cuestionario, lección, encuesta), «Hablar» (foro, chat, videoconferencia),
+  «Elegir» (consulta) o «Practicar» (H5P, SCORM). Las **áreas de texto y medios
+  (etiquetas)** se ven como una nota tuya: úsalas para avisos cortos.
 - **En cada actividad**: un botón grande «Volver al curso», el progreso y, si el
   dispositivo tiene una voz instalada en el idioma de la página, un botón
   «Escuchar» que lee el contenido. Escribe enunciados que se entiendan al oírlos.
@@ -28,7 +35,7 @@ se organiza y se escribe el curso.
   con lo que lleva hecho y un botón «Seguir» a la siguiente actividad, después de
   que Moodle lo haya guardado. Solo suena si el alumno activó los sonidos.
 - **Pictogramas** junto al nombre de las secciones y actividades que tú elijas;
-  también aparecen en «Lo siguiente» y en «Mi camino».
+  también aparecen en «Hoy toca» y en «Mi camino».
 
 ## 2. Estructura del curso
 
@@ -100,7 +107,33 @@ permiten uso comercial y obligan a compartir igual. Indica siempre la autoría y
 licencia al subirlos; el tema las muestra al alumnado en «Créditos de los
 pictogramas». No subas imágenes que no tengas permiso para usar.
 
-## 6. Tareas y cuestionarios
+## 6. Tareas, cuestionarios, consultas, foros y libros
+
+Cómo los ve el alumnado con Chinijo:
+
+- **Tarea**: encima de tus instrucciones aparecen tres pasos, «1 Lee», «2 Haz tu
+  trabajo» y «3 Entrégalo», y una frase que dice si ya lo ha entregado. Salen del
+  estado real de su envío en Moodle. Si activas «Requerir que los estudiantes
+  pulsen el botón de envío», el alumno verá «Tu trabajo está guardado, pero
+  todavía no lo has entregado» hasta que lo envíe: para los más pequeños suele ser
+  más sencillo **desactivarlo**.
+- **Cuestionario**: el número de la pregunta va en una línea encima, el enunciado
+  en letra grande y cada respuesta es una ficha grande que se marca pulsando en
+  cualquier parte. Usa **una pregunta por página**, preguntas cortas de verdadero
+  o falso y de opción múltiple, y evita el tiempo límite.
+- **Consulta**: cada opción es una ficha grande. Usa opciones de una o dos
+  palabras.
+- **Foro**: los temas y los mensajes se ven grandes y «Responder» es un botón. La
+  búsqueda y la suscripción quedan detrás de **«Más opciones»** en la misma
+  página; tú, como docente, ves todos los controles como siempre.
+- **Libro y página**: texto grande en líneas cortas. En el libro, los botones
+  «Siguiente» y «Anterior» llevan el nombre del capítulo. Mejor un libro con
+  capítulos cortos que una página muy larga.
+- **Enlace y archivo**: un botón grande para abrirlo. Di en el nombre qué es
+  («Canción de los números (vídeo)»).
+
+No hay un «modo avanzado» que el alumnado pueda activar: todos ven la misma
+página, y lo que se usa menos está a un clic, a la vista.
 
 - En la descripción de la tarea, explica en una o dos frases qué hay que hacer y
   cómo se entrega.

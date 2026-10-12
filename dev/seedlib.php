@@ -45,7 +45,7 @@ const CHINIJO_DEMO_PASSWORD = 'Chinijo-demo-1234';
 const CHINIJO_DEMO_COURSE = 'CHINIJO-DEMO';
 
 /** Names of the demo course sections, by section number. */
-const CHINIJO_DEMO_SECTIONS = [1 => 'Story time', 2 => 'Let\'s draw', 3 => 'Numbers'];
+const CHINIJO_DEMO_SECTIONS = [1 => 'Story time', 2 => 'Let\'s draw', 3 => 'Numbers', 4 => 'Animals'];
 
 /** Completion settings of the demo activities (course_modules fields), by activity name. */
 const CHINIJO_DEMO_COMPLETION = [
@@ -248,7 +248,7 @@ function chinijo_seed_course(testing_data_generator $generator): stdClass {
         'shortname' => CHINIJO_DEMO_COURSE,
         'category' => $category->id,
         'format' => 'topics',
-        'numsections' => 3,
+        'numsections' => 4,
         'enablecompletion' => 1,
         'showcompletionconditions' => 1,
         'summary' => 'Synthetic demonstration course for the Chinijo theme. No real people or data.',
@@ -289,6 +289,95 @@ function chinijo_seed_course(testing_data_generator $generator): stdClass {
 }
 
 /**
+ * Save a true/false question through its question type, as the question editing form does.
+ *
+ * @param stdClass $category Question category.
+ * @param string $name Question name.
+ * @param string $text Question text (HTML).
+ * @param int $correct 1 when the statement is true, 0 when it is false.
+ * @return stdClass The question.
+ */
+function chinijo_seed_truefalse(stdClass $category, string $name, string $text, int $correct): stdClass {
+    global $USER;
+
+    $empty = ['text' => '', 'format' => FORMAT_HTML];
+    $form = (object) [
+        'category' => $category->id . ',' . $category->contextid,
+        'name' => $name,
+        'questiontext' => ['text' => $text, 'format' => FORMAT_HTML],
+        'generalfeedback' => $empty,
+        'defaultmark' => 1,
+        'penalty' => 1,
+        'correctanswer' => $correct,
+        'feedbacktrue' => $empty,
+        'feedbackfalse' => $empty,
+        'showstandardinstruction' => 0,
+        'status' => \core_question\local\bank\question_version_status::QUESTION_STATUS_READY,
+    ];
+    $question = (object) ['category' => $category->id, 'qtype' => 'truefalse', 'createdby' => $USER->id];
+    return question_bank::get_qtype('truefalse')->save_question($question, $form);
+}
+
+/**
+ * Add a learning situation with Moodle's other common content types: a label, a book, a quiz
+ * with two questions, a choice and a forum with a discussion. Idempotent.
+ *
+ * @param testing_data_generator $generator Generator.
+ * @param stdClass $course The demo course.
+ * @param stdClass $teacher The teacher who starts the forum discussion.
+ */
+function chinijo_seed_more_content(testing_data_generator $generator, stdClass $course, stdClass $teacher): void {
+    global $CFG, $DB;
+    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once($CFG->libdir . '/questionlib.php');
+
+    if ($DB->record_exists('quiz', ['course' => $course->id, 'name' => 'Animals quiz'])) {
+        return;
+    }
+    $common = ['course' => $course->id, 'section' => 4];
+
+    $generator->create_module('label', $common + [
+        'intro' => '<p>This week we learn about the animals that live with us.</p>',
+    ]);
+
+    $book = $generator->create_module('book', $common + ['name' => 'Animals at home',
+        'intro' => '<p>Read about two animals that live at home.</p>',
+        'completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => 1]);
+    $bookgenerator = $generator->get_plugin_generator('mod_book');
+    $bookgenerator->create_chapter(['bookid' => $book->id, 'title' => 'The cat', 'pagenum' => 1,
+        'content' => '<p>The cat says miau. It likes to sleep in the sun.</p>']);
+    $bookgenerator->create_chapter(['bookid' => $book->id, 'title' => 'The dog', 'pagenum' => 2,
+        'content' => '<p>The dog says guau. It likes to run in the park.</p>']);
+
+    $quiz = $generator->create_module('quiz', $common + ['name' => 'Animals quiz',
+        'intro' => '<p>Answer two questions about animals.</p>', 'questionsperpage' => 1,
+        'completion' => COMPLETION_TRACKING_MANUAL]);
+    // The question generator needs PHPUnit, so the questions are saved through the question type, as the form does.
+    $category = $generator->get_plugin_generator('core_question')->create_question_category([
+        'contextid' => context_module::instance($quiz->cmid)->id,
+    ]);
+    $questions = [
+        ['Cat', '<p>The cat says miau.</p>', 1],
+        ['Dog', '<p>Dogs can fly.</p>', 0],
+    ];
+    foreach ($questions as $slot => [$name, $text, $correct]) {
+        $question = chinijo_seed_truefalse($category, $name, $text, $correct);
+        quiz_add_quiz_question($question->id, $quiz, $slot + 1);
+    }
+    \mod_quiz\quiz_settings::create($quiz->id)->get_grade_calculator()->recompute_quiz_sumgrades();
+
+    $generator->create_module('choice', $common + ['name' => 'Your favourite animal',
+        'intro' => '<p>Which animal do you like best?</p>', 'option' => ['Cat', 'Dog', 'Fish', 'Bird'],
+        'completion' => COMPLETION_TRACKING_MANUAL]);
+
+    $forum = $generator->create_module('forum', $common + ['name' => 'Show and tell', 'type' => 'general',
+        'intro' => '<p>Tell us about an animal you know.</p>', 'completion' => COMPLETION_TRACKING_MANUAL]);
+    $generator->get_plugin_generator('mod_forum')->create_discussion(['course' => $course->id, 'forum' => $forum->id,
+        'userid' => $teacher->id, 'name' => 'My cat Luna', 'message' => '<p>This is my cat Luna. What animal do you have?</p>']);
+    mtrace('Demo content types added.');
+}
+
+/**
  * Add the demo pictograms to the sections and to some activities.
  *
  * @param stdClass $course The demo course.
@@ -296,7 +385,8 @@ function chinijo_seed_course(testing_data_generator $generator): stdClass {
 function chinijo_seed_pictograms(stdClass $course): void {
     $modinfo = get_fast_modinfo($course);
     $sections = $modinfo->get_section_info_all();
-    $shapes = [0 => ['sun', 'Sun'], 1 => ['book', 'Book'], 2 => ['pencil', 'Pencil'], 3 => ['numbers', 'Numbers']];
+    $shapes = [0 => ['sun', 'Sun'], 1 => ['book', 'Book'], 2 => ['pencil', 'Pencil'], 3 => ['numbers', 'Numbers'],
+        4 => ['star', 'Star']];
     foreach ($shapes as $number => [$shape, $alt]) {
         if (isset($sections[$number])) {
             chinijo_seed_pictogram($course, pictograms::TYPE_SECTION, (int) $sections[$number]->id, $shape, $alt);
@@ -348,6 +438,7 @@ function chinijo_seed_run(): stdClass {
     $generator->enrol_user($users['teacher']->id, $course->id, 'editingteacher');
     $generator->enrol_user($users['student1']->id, $course->id, 'student');
     $generator->enrol_user($users['student2']->id, $course->id, 'student');
+    chinijo_seed_more_content($generator, $course, $users['teacher']);
     chinijo_seed_pictograms($course);
     chinijo_seed_completion($course, $users['student1']);
 

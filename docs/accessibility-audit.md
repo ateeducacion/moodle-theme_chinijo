@@ -3,15 +3,18 @@
 Results only: what was actually checked, how, and what was found. Method and
 checklist: `docs/accessibility.md`. A row marked **Pending** has not been done.
 
-## Status summary (2026-10-08)
+## Status summary (2026-10-12, version 0.3.0)
 
 - **Automated (axe-core through Moodle Behat)**: the sampled pages and states
   pass WCAG 2.0/2.1/2.2 A and AA on Moodle 5.3 (axe-core 4.13) and the theme's
   regions pass the best-practice rules; the same scenarios pass on Moodle 4.5
-  (axe-core 4.10).
+  (axe-core 4.10). Version 0.3.0 adds the quiz attempt, the choice, the book,
+  the forum with "More options" open and a forum discussion, in standard and in
+  high contrast.
 - **Findings not attributable to the theme** (best-practice rules, not WCAG
-  success criteria), reproduced with theme_boost: F-01 (5.3, `region`) and F-03
-  (4.5, `landmark-unique`). Two theme findings were fixed (F-02, F-04).
+  success criteria), reproduced with theme_boost: F-01 (5.3, `region`), F-03
+  (4.5, `landmark-unique`), F-06 (quiz, `heading-order`) and F-07 (forum
+  discussion, `landmark-unique`). Theme findings were fixed (F-02, F-04, F-05).
 - **Manual review, screen readers, devices and EVAGD pre-production**: pending.
 - **Conformance claim**: none. The audit is incomplete until the manual part is
   done on the EVAGD pre-production sample.
@@ -21,7 +24,7 @@ checklist: `docs/accessibility.md`. A row marked **Pending** has not been done.
 | Item | Moodle 5.3 run | Moodle 4.5 run |
 |---|---|---|
 | Moodle | 5.3 (Build 20261005), `MOODLE_503_STABLE` | 4.5.15 (Build 20261005), `MOODLE_405_STABLE` |
-| PHP / DB | 8.4.26 / PostgreSQL 17.11 | 8.3 / PostgreSQL 17.11 |
+| PHP / DB | 8.4.26 / PostgreSQL 18.6 (0.3.0; 17.11 before) | 8.3.35 / PostgreSQL 18.6 (0.3.0; 17.11 before) |
 | Browser | Chromium 152 (selenium/standalone-chromium:152.0), headless | same |
 | axe-core | 4.13 (bundled with Moodle 5.3) | 4.10 (bundled with Moodle 4.5) |
 | Runner | `make test-a11y` / `make test-behat` (dev/ci, moodle-plugin-ci 4.5.11) | same |
@@ -46,6 +49,17 @@ best-practice rules on the scope shown.
 | Pictogram management page (teacher) | main region | Pass | Pass |
 | Pictogram edit form | main region | Pass | Pass |
 | Pictogram edit form with validation errors | main region | Pass | Pass |
+| Quiz attempt, first and second question (0.3.0), standard and high contrast | — (WCAG A/AA on the page and the main region; see F-06) | Pass | Pass |
+| Choice with option cards (0.3.0), standard and high contrast | main region | Pass | Pass |
+| Book chapter with chapter buttons (0.3.0), standard and high contrast | main region | Pass | Pass |
+| Forum with "More options" open (0.3.0), standard and high contrast | main region | Pass | Pass |
+| Forum discussion (0.3.0), standard and high contrast | — (WCAG A/AA on the page and the main region; see F-07) | Pass | Pass |
+
+Behaviour (`content_types.feature`, 4.5 and 5.3): activity verbs and the
+teacher's note on the course page; the assignment steps and the handed-in
+message; quiz answers and choice options selected by pressing the card; "More
+options" opens and closes and is absent for teachers; the book's next-chapter
+button; sizes of at least 56 px for the main actions and answer cards.
 
 Keyboard (Behat, Chromium): an assignment was reached from the course page,
 opened, filled in and submitted with Tab and Enter only (`keyboard_submission.feature`);
@@ -62,6 +76,8 @@ interface after a language switch: `language.feature`.
 | F-03 | Pages with primary and secondary navigation (Moodle 4.5) | axe `landmark-unique` (best practice, not a WCAG success criterion) | The primary navigation, the secondary navigation and the course index are `nav` landmarks without names. | Moodle core (Boost) | Same result with `?theme=boost` on the 4.5 development site once Boost's user tour was closed (axe-core 4.10.2, 2026-10-08). With the tour open, Boost hides the page from assistive technologies, which makes Boost look clean. | Not changed in the theme. Covered in Behat as F-01. |
 | F-04 | Pages rendered after the main region (4.5 and 5.3) | Layout (WCAG 2.4.11 risk) | The pictogram credits and the FEDER notice are printed by Boost outside `#page`, so an open drawer covered their left edge. | Theme | Behat on 4.5 (click intercepted by the course index drawer) | **Fixed**: the blocks follow Boost's drawer offsets. |
 | F-05 | Course page, encouragement after completion (version 0.2.0) | WCAG 1.4.3 (axe `color-contrast`) | The message faded in; axe measured the "Keep going" button half-way through the fade (3.76:1 on a run on 4.5). | Theme | Behat on 4.5 (passed on the automatic rerun) | **Fixed**: the message only slides in, without fading, so its colours have their full contrast from the first frame. |
+| F-06 | Quiz attempt (Moodle 5.3; same markup on 4.5) | axe `heading-order` (best practice, not a WCAG success criterion) | The question number (`h3.no`, "Question 1") follows the page's `h1` with no `h2` between them. | Moodle core (question engine) | Same result with `?theme=boost` and with Chinijo on the 5.3 development site, main region only (axe-core 4.10.2, 2026-10-12). Chinijo adds no heading to that region. | Not changed in the theme (heading levels come from core's renderers). Behat checks the quiz attempt against WCAG A/AA, page and main region. |
+| F-07 | Forum discussion (Moodle 5.3) | axe `landmark-unique` (best practice, not a WCAG success criterion) | The discussion has two `nav` landmarks named "Browse discussions" (above and below the posts). | Moodle core (mod_forum) | Same result with `?theme=boost` and with Chinijo on the 5.3 development site, main region only (axe-core 4.10.2, 2026-10-12). | Not changed in the theme. Behat checks the discussion against WCAG A/AA, page and main region. |
 
 ## Manual checks (to be done in EVAGD pre-production)
 

@@ -33,6 +33,33 @@ $chinijo-progress: #357a32 !default;
 $chinijo-focus-outline: #1d2125 !default;
 $chinijo-focus-gap: #fff !default;
 
+// The classroom: a chalkboard for "Up next", wooden frame, chalk text and a yellow chalk button.
+// Chalk on the board is 9.7:1, the yellow chalk 8.1:1, and dark text on the yellow button 11.5:1.
+$chinijo-board: #24463b !default;
+$chinijo-board-frame: #b98a5e !default;
+$chinijo-chalk: #f7f7f2 !default;
+$chinijo-chalk-yellow: #ffe27a !default;
+$chinijo-board-button: #ffd54f !default;
+$chinijo-board-button-edge: #c9a227 !default;
+
+// A teacher's note on the course page (labels). Dark text on it is 15:1.
+$chinijo-note: #fff6d8 !default;
+$chinijo-note-edge: #9a7b1c !default;
+
+// Bands at the top of the sections of the course page, one colour after another. Decorative only.
+$chinijo-section-bands: #f6c343, #5bb6e8, #7cc57a, #f28b82, #b39ddb !default;
+
+// Light tiles behind the activity icons, by Moodle's activity purpose. Boost's icon colours keep
+// at least 3:1 on them. The verb above the activity name uses the darker colour (6:1 or more on white).
+$chinijo-purposes: (
+    "administration": (#fcf4fd, #8e2ba0),
+    "assessment": (#feeff6, #b0005e),
+    "collaboration": (#f0edff, #4b2fd6),
+    "communication": (#fef3ea, #a64500),
+    "content": (#ecf8fa, #00707e),
+    "interactivecontent": (#f8efea, #8d3d1b),
+) !default;
+
 // High contrast palette.
 $chinijo-hc-text: #000 !default;
 $chinijo-hc-background: #fff !default;

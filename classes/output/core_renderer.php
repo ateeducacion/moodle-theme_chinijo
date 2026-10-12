@@ -17,6 +17,8 @@
 namespace theme_chinijo\output;
 
 use moodle_url;
+use theme_chinijo\local\activity_verbs;
+use theme_chinijo\local\assign_steps;
 use theme_chinijo\local\course_progress;
 use theme_chinijo\local\learning_path;
 use theme_chinijo\local\pictogram_display;
@@ -29,10 +31,12 @@ use theme_chinijo\local\theme;
  * course_header(), above the page heading, and course_content_header(), at the
  * top of the main region. Everything else is Boost's renderer.
  *
- * - Course page: a greeting above the heading, then "Next" (the next activity
- *   to do) and "My path" (the activities in order with what is done).
+ * - Course page: a greeting above the heading, then "Up next" (the next activity
+ *   to do) and "My path" (the activities in order with what is done), and the
+ *   verb of each activity ("Read", "Hand in") on its card.
  * - Activity pages: a bar with a link back to the course, the progress and a
- *   button that reads the page aloud.
+ *   button that reads the page aloud; on assignments, the steps read, do and
+ *   hand in; on forums, the less used controls behind "More options".
  *
  * @package    theme_chinijo
  * @copyright  2026 Área de Tecnología Educativa (ATE), Gobierno de Canarias
@@ -57,6 +61,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 'greeting' => get_string('greeting', 'theme_chinijo', $USER->firstname),
             ]);
         }
+        if ($this->is_course_home() && !$this->page->user_is_editing()) {
+            $modnames = array_keys(get_fast_modinfo($this->page->course)->get_used_module_names());
+            $this->page->requires->js_call_amd('theme_chinijo/activity_cards', 'init', [
+                activity_verbs::get_labels($modnames),
+            ]);
+        }
         $this->page->requires->js_call_amd('theme_chinijo/completion_feedback', 'init');
 
         return $output . pictogram_display::render_page_data($this->page);
@@ -79,7 +89,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             return $output . $this->render_learning_path();
         }
         if ($this->page->cm) {
-            return $output . $this->render_activity_bar();
+            return $output . $this->render_activity_bar() . $this->render_activity_extras();
         }
         return $output;
     }
@@ -147,6 +157,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 'name' => $item['name'],
                 'url' => $item['url'],
                 'modname' => $item['modname'],
+                'verb' => $item['verb'],
                 'iconurl' => $item['iconurl'],
                 'pictogramurl' => $item['pictogramurl'],
                 'section' => $item['section'],
@@ -154,6 +165,52 @@ class core_renderer extends \theme_boost\output\core_renderer {
             ], $path['items'])),
             'hasitems' => !empty($path['items']),
             'alldone' => $path['next'] === null && $path['total'] > 0 && $path['completed'] >= $path['total'],
+        ]);
+    }
+
+    /**
+     * What some kinds of activity add below the activity bar.
+     *
+     * Assignments show their steps to learners who can hand them in. Forums
+     * keep their less used controls behind "More options" for learners;
+     * teachers, who manage the activity, see every control as usual.
+     *
+     * @return string HTML.
+     */
+    protected function render_activity_extras(): string {
+        global $USER;
+
+        $cm = $this->page->cm;
+        if ($this->page->pagetype === 'mod-assign-view' && isloggedin() && !isguestuser()) {
+            $steps = assign_steps::get($this->page->course, $cm, (int) $USER->id);
+            return $steps === null ? '' : $this->render_assign_steps($steps);
+        }
+        if (
+            in_array($this->page->pagetype, ['mod-forum-view', 'mod-forum-discuss'], true)
+            && !has_capability('moodle/course:manageactivities', $this->page->context)
+        ) {
+            $this->page->requires->js_call_amd('theme_chinijo/more_options', 'init');
+        }
+        return '';
+    }
+
+    /**
+     * The steps of an assignment.
+     *
+     * @param array $steps As returned by assign_steps::get().
+     * @return string HTML.
+     */
+    protected function render_assign_steps(array $steps): string {
+        foreach ($steps['steps'] as $index => $step) {
+            $steps['steps'][$index] += [
+                'label' => get_string('step_' . $step['key'], 'theme_chinijo'),
+                'statelabel' => get_string('path_state_' . $step['state'], 'theme_chinijo'),
+                'iscurrent' => $step['state'] === learning_path::STATE_CURRENT,
+            ];
+        }
+        return $this->render_from_template('theme_chinijo/assign_steps', $steps + [
+            'statustext' => get_string('steps_status_' . $steps['status'], 'theme_chinijo'),
+            'issubmitted' => $steps['status'] === assign_steps::STATUS_SUBMITTED,
         ]);
     }
 

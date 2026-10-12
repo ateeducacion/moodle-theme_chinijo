@@ -27,6 +27,7 @@
     * name - Name of the next activity.
     * url - URL of the next activity.
     * modname - Type of activity, for example "Assignment".
+    * verb - What the learner does in it, for example "Hand in", or an empty string.
     * iconurl - URL of the activity icon, used when there is no pictogram.
     * pictogramurl - URL of the activity pictogram, or an empty string.
 
@@ -36,6 +37,7 @@
         "name": "Draw your family",
         "url": "https://moodle.example/mod/assign/view.php?id=3",
         "modname": "Assignment",
+        "verb": "Hand in",
         "iconurl": "https://moodle.example/theme/image.php/chinijo/assign/1/monologo",
         "pictogramurl": ""
     }
@@ -57,7 +59,7 @@
         {{/alldone}}
         {{^alldone}}
             <p class="theme-chinijo-next__name">{{name}}</p>
-            <p class="theme-chinijo-next__type">{{modname}}</p>
+            <p class="theme-chinijo-next__type">{{#verb}}{{verb}}{{/verb}}{{^verb}}{{modname}}{{/verb}}</p>
         {{/alldone}}
     </div>
     {{^alldone}}

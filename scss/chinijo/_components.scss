@@ -275,19 +275,27 @@
     margin: .25rem 0 1.75rem;
 }
 
+// "Up next" is the classroom chalkboard: chalk text on a green board in a wooden frame, with a
+// yellow chalk button. Its colours are fixed, so they do not change with Boost's colour modes.
 .theme-chinijo-next {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem 1.5rem;
     padding: 1.25rem 1.5rem;
-    border: 3px solid $primary;
+    border: .625rem solid $chinijo-board-frame;
     border-radius: 1.5rem;
-    background-color: var(--bs-body-bg, #{$white});
-}
+    background-color: $chinijo-board;
+    color: $chinijo-chalk;
+    box-shadow: inset 0 0 0 2px rgba($black, .25);
 
-.theme-chinijo-next--done {
-    border-color: $chinijo-progress;
+    // A dark focus ring would not show on the board: chalk white with a dark gap instead.
+    /* stylelint-disable declaration-no-important */
+    :focus-visible {
+        outline-color: $white !important;
+        box-shadow: 0 0 0 2px $chinijo-ink !important;
+    }
+    /* stylelint-enable declaration-no-important */
 }
 
 .theme-chinijo-next__picture {
@@ -298,7 +306,7 @@
     width: 6.5rem;
     height: 6.5rem;
     border-radius: 1.25rem;
-    background-color: var(--bs-tertiary-bg, #{$gray-100});
+    background-color: $chinijo-chalk;
 }
 
 .theme-chinijo-next__pictogram {
@@ -329,31 +337,52 @@
 
 .theme-chinijo-next__eyebrow {
     margin: 0;
-    color: var(--bs-link-color, #{$primary});
-    font-size: 1rem;
+    color: $chinijo-chalk-yellow;
+    font-size: 1.125rem;
     font-weight: 700;
-    letter-spacing: .06em;
+    letter-spacing: .08em;
     text-transform: uppercase;
 }
 
 .theme-chinijo-next__name {
     margin: 0;
-    font-size: 1.75rem;
+    color: $chinijo-chalk;
+    font-size: 2.25rem;
     font-weight: 700;
-    line-height: 1.25;
+    line-height: 1.2;
 }
 
 .theme-chinijo-next__type {
-    margin: 0;
-    color: var(--bs-secondary-color, #{$chinijo-muted});
+    margin: .25rem 0 0;
+    color: $chinijo-chalk;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
 }
 
+// The only yellow button of the theme: it is on the board. Every other primary action is blue.
 #region-main .theme-chinijo-next__start {
-    gap: .5rem;
-    min-height: 3.75rem;
-    padding: 0 2rem;
-    border-radius: 1rem;
-    font-size: 1.375rem;
+    gap: .625rem;
+    min-height: 4.75rem;
+    padding: 0 2.25rem;
+    border: 2px solid $chinijo-board-button-edge;
+    border-radius: 1.125rem;
+    background-color: $chinijo-board-button;
+    box-shadow: 0 .3125rem 0 $chinijo-board-button-edge;
+    color: $chinijo-ink;
+    font-size: 1.625rem;
+
+    &:hover,
+    &:focus {
+        background-color: lighten($chinijo-board-button, 6%);
+        color: $chinijo-ink;
+    }
+
+    &:active {
+        box-shadow: none;
+        transform: translateY(.3125rem);
+    }
 }
 
 .theme-chinijo-path__header {
@@ -693,41 +722,6 @@
     border-radius: 50%;
     background-color: var(--bs-body-bg, #{$white});
     color: var(--bs-body-color, #{$chinijo-ink});
-}
-
-// The course page for learners (not in edit mode): rounder section cards, large activity rows and
-// large completion buttons. Teachers editing the course keep Boost's own layout.
-body.path-course-view:not(.editing) .course-content {
-    // Boost already draws each section as a card; it only gets rounder corners.
-    .course-section .section-item {
-        border-radius: 1.5rem;
-    }
-
-    .course-section-header .sectionname {
-        font-size: 1.75rem;
-    }
-
-    .activity-item {
-        margin-bottom: .75rem;
-        padding: .75rem 1rem;
-        border: 2px solid $chinijo-boundary-light;
-        border-radius: 1.25rem;
-        background-color: var(--bs-tertiary-bg, #{$gray-100});
-    }
-
-    .activityname,
-    .activityname .instancename {
-        font-size: 1.25rem;
-        font-weight: 700;
-    }
-
-    .activity-completion .btn {
-        min-height: $chinijo-target-size;
-        padding: .25rem 1rem;
-        border-radius: 2rem;
-        font-size: 1rem;
-        font-weight: 700;
-    }
 }
 
 // Pictograms added next to section and activity names.

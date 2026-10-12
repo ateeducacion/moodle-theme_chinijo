@@ -16,7 +16,7 @@ Based on W3C **WCAG-EM 1.0**:
 1. **Scope**: pages rendered with Chinijo on EVAGD (pre-production as the
    reference), for learners, teachers and visitors who are not logged in; theme
    components (display settings control, dialogue and page, toolbar, greeting,
-   "Next" and "My path", activity bar and "Listen", pictograms and credits,
+   "Up next" and "My path", activity bar and "Listen", pictograms and credits,
    encouragement after completion, FEDER notice, pictogram management pages). Third-party content and other plugins are out of scope but reported
    when they affect a sampled page.
 2. **Representative sample** (structured sample, WCAG-EM step 3): login page (not

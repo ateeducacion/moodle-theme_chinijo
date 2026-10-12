@@ -6,6 +6,40 @@ semantic versioning (`$plugin->release`).
 
 ## [Unreleased]
 
+## [0.3.0] - not released yet (development version 2026101200, alpha)
+
+### Added
+- The course page as a primary classroom: "Up next" is a chalkboard with a
+  yellow chalk "Start" button (the only yellow button; every other main action
+  stays blue), each section has a coloured band at its top, activities are cards
+  with a large icon tile tinted by the activity purpose and a verb above the name
+  ("Read", "Hand in", "Answer", "Talk", "Choose", "Practise"), and labels look
+  like the teacher's notes. Only outside edit mode; nothing of the course page is
+  hidden.
+- Assignments: three steps above the instructions (Read, Do your work, Hand it in)
+  and a sentence that says whether the work has been handed in, both from the
+  learner's own submission status.
+- Quizzes: the question number on a line above the question, large question
+  text, each answer as a large card that can be pressed anywhere, and larger quiz
+  navigation buttons.
+- Choices: each option as a large card that can be pressed anywhere.
+- Forums: larger discussion names, posts as cards with large text and "Reply" as
+  a button; learners find search and subscription behind a "More options" button
+  on the same page (teachers see every control as before).
+- Books and pages: large text in lines of a comfortable length; the previous and
+  next chapter as large buttons with their name. Links and files: one large
+  button to open them. Previous and next activity (Moodle 5.x footer, Moodle 4.5
+  links) as large buttons.
+
+### Changed
+- Headings use Andika by default (Atkinson Hyperlegible when the easy-to-read
+  typeface is chosen).
+- The "Next" card is now called "Up next" ("Hoy toca" in Spanish).
+- Development: the Docker Compose files mount the PostgreSQL volume at
+  `/var/lib/postgresql`, as PostgreSQL 18 images require; the test runner
+  reinstalls Moodle when its database is missing and gives Behat the same
+  timeout allowance as the GitHub workflow.
+
 ## [0.2.0] - not released yet (development version 2026100801, alpha)
 
 ### Added

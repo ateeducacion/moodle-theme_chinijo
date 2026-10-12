@@ -13,16 +13,17 @@ years of Primary Education and for learners with specific educational support
 needs (NEAE): calm pages, larger text and targets, personal display settings,
 course progress and pictogram support, while keeping every Moodle feature.
 
-![Chinijo on Moodle 5.3: a demo course page greeting the learner, with "Next" (the next activity and a large Start button), "My path" for the current section with pictograms and the state of each activity, and the "Display settings" control in the navbar](docs/screenshots/chinijo-course.png)
+![Chinijo on Moodle 5.3: a demo course page greeting the learner, with "Up next" on a chalkboard (the next activity, what to do in it and a large Start button), "My path" for the current section with pictograms and the state of each activity, and the "Display settings" control in the navbar](docs/screenshots/chinijo-course.png)
 
 *Real screenshot of the theme on Moodle 5.3 with synthetic demo data
 (`make seed`, `make screenshot`). More:
-[activity page](docs/screenshots/chinijo-activity.png),
+[assignment with its steps](docs/screenshots/chinijo-activity.png),
+[quiz question](docs/screenshots/chinijo-quiz.png),
 [encouragement after marking an activity as done](docs/screenshots/chinijo-encouragement.png),
 [display settings dialogue](docs/screenshots/chinijo-display-settings.png),
 [high contrast with large text and school letters](docs/screenshots/chinijo-course-high-contrast.png).*
 
-> **Status:** development version 0.1.0 (alpha). Automated checks pass locally
+> **Status:** development version 0.3.0 (alpha). Automated checks pass locally
 > and in GitHub Actions on Moodle 4.5 to 5.3 (see [Verification](#verification)). Manual
 > accessibility checks with screen readers and devices, tests on EVAGD
 > pre-production and institutional acceptance are **pending**.
@@ -32,7 +33,8 @@ course progress and pictogram support, while keeping every Moodle feature.
 | Feature | Status |
 |---|---|
 | **Display settings** for each person: ready-made combinations (as usual, easier to read, easier to see, calmer); high contrast; text size (normal, large, extra large, huge); easy-to-read typeface (Atkinson Hyperlegible) or school letters (Andika); space between letters, words and lines up to the WCAG 2.2 text-spacing values; reduce animations (the system `prefers-reduced-motion` is always honoured); sounds (off by default). Large tiles that show what each choice does. Stored as the user's own Moodle preferences, session-only for guests; nobody can set them for someone else. Keyboard-accessible dialogue from the navbar (and the login page), and a page that works without JavaScript. | Implemented |
-| **Course page for learners**: a greeting, **Next** (the next activity to do, with a large Start link) and **My path** (the activities in course order with their pictograms and their state: done, now, to do, not yet), from Moodle's completion data, the same figures as the dashboard; updated only after Moodle confirms a change. Rounder section cards, large activity rows and completion buttons outside edit mode. | Implemented |
+| **Course page as a primary classroom**: a greeting, **Up next** on a chalkboard (the next activity to do, what to do in it and a large yellow Start button) and **My path** (the activities in course order with their pictograms and their state: done, now, to do, not yet), from Moodle's completion data, the same figures as the dashboard; updated only after Moodle confirms a change. Outside edit mode: sections with a band of colour, activities as cards with a large icon tile and a verb ("Read", "Hand in", "Answer", "Talk", "Choose", "Practise"), labels as the teacher's notes, headings in Andika. | Implemented |
+| **Moodle's activities for young learners**: assignments show three steps (read, do, hand in) and whether the work has been handed in; quiz answers and choice options are large cards that can be pressed anywhere; forum posts are large cards with a Reply button, and learners find search and subscription behind "More options" on the same page (no global "advanced mode"); books and pages in large text with large chapter buttons; links and files open with one large button; the page's main action is at least 60 px high. Nothing of Moodle's interface is removed. | Implemented |
 | **Activity pages**: a large "Back to the course" link, the progress and a **Listen** button that reads the page with a voice installed on the device (hidden when there is none; nothing is sent anywhere). | Implemented |
 | **Encouragement** after marking an activity as done, with a link to the next one; it does not take the focus or block the page; a short chime only if the learner turned sounds on. | Implemented |
 | **Pictograms** that teachers add to sections and activities (PNG, JPEG or WebP; text alternative; author and licence shown as credits; included in course backups). Names are always kept. No pictogram is bundled. | Implemented (sections and activities; not for buttons) |
@@ -115,7 +117,7 @@ language pack in Moodle as usual. The theme never forces a language.
 - [Portable demo](https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprint.json) (`blueprint.json`)
 - [Full demo with activities, completion data and demo pictograms](https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprints%2Fchinijo-full-demo.blueprint.json)
 
-Both demos open logged in as `admin`. To see what learners see ("Next", "My
+Both demos open logged in as `admin`. To see what learners see ("Up next", "My
 path"), log out and log in as `student1`. Accounts (disposable demo only, never
 on a real site): `admin`, `student1`, `student2` and `teacher1`, password
 `Chinijo-demo-1234`. The links install the theme

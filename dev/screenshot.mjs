@@ -38,7 +38,7 @@ const setPreferences = async(values) => {
 const openCourse = async() => {
     // Moodle finds the course by its short name, whatever its id is.
     await page.goto(`${base}/course/view.php?name=CHINIJO-DEMO`);
-    await page.waitForSelector('img.theme-chinijo-pictogram');
+    await page.waitForSelector('.course-content img.theme-chinijo-pictogram');
     await page.waitForLoadState('networkidle');
 };
 
@@ -62,6 +62,14 @@ await openCourse();
 await Promise.all([page.waitForNavigation(), page.click('.theme-chinijo-next__start')]);
 await page.waitForLoadState('networkidle');
 await page.screenshot({path: `${out}/chinijo-activity.png`});
+
+// A quiz question, with one answer chosen.
+await openCourse();
+await Promise.all([page.waitForNavigation(), page.locator('[data-activityname="Animals quiz"] a.aalink').first().click()]);
+await Promise.all([page.waitForNavigation(), page.locator('.quizstartbuttondiv button').click()]);
+await page.locator('.que .answer > div').first().click();
+await page.waitForLoadState('networkidle');
+await page.screenshot({path: `${out}/chinijo-quiz.png`});
 
 await openCourse();
 

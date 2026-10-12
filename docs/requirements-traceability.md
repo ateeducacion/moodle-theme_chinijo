@@ -51,17 +51,17 @@ available), **Process** (contractual or organisational, documented only).
 
 | Requirement | Implementation | Tests / evidence | Status |
 |---|---|---|---|
-| Simplified design, minimum cognitive load, core features kept | Calmer defaults (`_base.scss`), nothing hidden | Screenshots; Behat on core flows | Partial: needs UAT with the target users |
-| Targets ≥ 24×24 px (2.5.8) | 44 px buttons/controls in content and dialogues, 44 px radio options | `responsive.feature` measures ≥ 44×44 px at phone and tablet sizes with the largest text | Partial: real device testing pending |
+| Simplified design, minimum cognitive load, core features kept | Calmer defaults (`_base.scss`); the course page as a classroom and Moodle's activities as large cards with a verb (`_classroom.scss`, `_activities.scss`, `activity_cards.js`); assignment steps (`assign_steps`); forum controls one press away behind "More options" (`more_options.js`), no global mode; nothing hidden | Screenshots; `content_types.feature`, `activity_verbs_test`, `assign_steps_test`; Behat on core flows | Partial: needs UAT with the target users |
+| Targets ≥ 24×24 px (2.5.8) | 44 px buttons/controls in content and dialogues, 44 px radio options; on activity pages the main action ≥ 60 px, quiz answers and choice options as cards ≥ 72 px high, the "Start" button 76 px | `responsive.feature` measures ≥ 44×44 px at phone and tablet sizes with the largest text; `content_types.feature` measures ≥ 56 px for assignment, quiz, choice and book actions | Partial: real device testing pending |
 | Pictograms for sections, activities or main actions; third-party licences; served from EVAGD; attribution; outside the GPL | `pictograms.php`, `classes/local/pictogram*.php`, `amd/src/pictograms.js`, credits, backup/restore | `pictograms_test`, `pictogram_form_test`, `pluginfile_test`, `backup_test`, `pictograms.feature` | Done for sections and activities. Pictograms for "main actions" (buttons) are not implemented. No pictogram is bundled. |
-| Orientation: progress indicators and breadcrumbs | `course_progress`, `learning_path` ("Next" and "My path"), the activity bar ("Back to the course"), Boost breadcrumbs kept | `course_progress_test` (matches core on each branch), `learning_path_test`, `course_progress.feature` | Done |
+| Orientation: progress indicators and breadcrumbs | `course_progress`, `learning_path` ("Up next" and "My path"), the activity bar ("Back to the course"), Boost breadcrumbs kept | `course_progress_test` (matches core on each branch), `learning_path_test`, `course_progress.feature` | Done |
 
 ## L1E01.E Learner autonomy
 
 | Requirement | Implementation | Tests / evidence | Status |
 |---|---|---|---|
 | Non-intrusive visual reinforcement on completion; understandable errors; optional audio switchable in the panel | `completion_feedback.js` (after server confirmation: message of encouragement that does not take the focus, link to the next activity); "Sounds" setting in the panel (off by default; a short chime made by the browser); "Listen" on activity pages with on-device voices only; error styles; clear server-side messages | `course_progress.feature`, `preferences.feature`, `accessibility.feature` (encouragement), `pictogram_form_test` | Done (the "Listen" reading needs manual checks with real voices) |
-| Primary actions distinguished and in predictable positions | Bold, thicker primary buttons; high contrast inverts them; positions are Moodle's own | Screenshots | Partial: UAT pending |
+| Primary actions distinguished and in predictable positions | Bold, thicker primary buttons, larger on activity pages; one yellow "Start" button only on the course chalkboard (D20); high contrast inverts them; positions are Moodle's own | Screenshots; `content_types.feature` | Partial: UAT pending |
 | Compatible with NVDA, VoiceOver, TalkBack and EVAGD's TTS | No interference with page semantics | — | Pending: manual tests and EVAGD's TTS list |
 
 ## L1E01.F Technical

@@ -156,6 +156,69 @@ Andika (SIL International, OFL 1.1, no Reserved Font Name; Fontsource 5.3.0) has
 single-storey a and g, as in the letters children learn to write. Self-hosted,
 latin subset, downloaded only when chosen. Offered as a choice, not as a default.
 
+### D18. Moodle's activities for young learners: restyle and add, never remove (0.3.0)
+Sources checked on 2026-10-12: Moodle's design system and content guidelines
+(https://moodledev.io/general/designsystem/overview,
+https://moodledev.io/general/contentguidelines/productwriting/contentprinciples,
+https://moodledev.io/general/contentguidelines/productwriting/writingforaccessibility),
+Moodle HQ's activity cards user research behind the 4.0 course page
+(https://moodle.org/theme/moodleorg/pix/ux/activity_cards.pdf, MDL-74978),
+Nielsen Norman Group's research with children
+(https://www.nngroup.com/articles/childrens-websites-usability-issues/,
+https://www.nngroup.com/articles/kids-cognition/,
+https://www.nngroup.com/articles/children-ux-physical-development/), the
+University of Washington's study of children's understanding of interface
+symbols (https://depts.washington.edu/chilllab/research/childrens-understanding-of-symbolism-in-user-interfaces/)
+and W3C's guidance on cognitive accessibility (https://www.w3.org/TR/coga-usable/).
+What they agree on and what Chinijo does with it:
+- One clear main action per screen, large and labelled with a verb; status in
+  words and shape, never colour alone; icons with visible labels. NN/g's figure
+  for children's targets is about 2 cm (roughly 76 CSS px, our own conversion),
+  above Chinijo's general 44 px, so the page's primary action is at least 60 px
+  high and the chalkboard's "Start" button 76 px.
+- Moodle 4.0 introduced the activity cards and the activity header (release
+  notes, activity cards research, MDL-74978). Chinijo keeps them, with the
+  completion information and the course index, and adds a verb to each card;
+  nothing is hidden.
+- Assignments: the three steps (read, do, hand in) come from the learner's own
+  submission status (`local\assign_steps`), so they never contradict Moodle's
+  status table below them.
+- Quizzes and choices: answers become large cards; the label covers the card, so
+  a press anywhere selects it, and the radio button stays visible and above the
+  card.
+- Decorative classroom motifs (chalkboard, coloured bands, notes) stay in headers
+  and frames, never inside the content teachers write.
+Rejected: replacing Moodle's activity templates or renderers (they differ between
+4.5 and 5.3 and would multiply the override surface), and changing the text of
+Moodle's own controls.
+
+### D19. No "advanced mode" switch; "More options" on the page instead (0.3.0)
+A global "simple / advanced" switch was considered and rejected. Modes hide state
+(https://www.nngroup.com/articles/modes/): a child who turned it on by accident,
+or a classmate on a shared device, sees a different interface without knowing
+why, and teachers can no longer predict what a learner sees. Progressive
+disclosure (https://www.nngroup.com/articles/progressive-disclosure/) gives the
+same benefit without a mode: on forum pages, learners see the main action and
+find search and subscription one press away behind "More options", on that page
+only, with nothing remembered. Teachers (users who can manage activities) see
+every control as in Boost. The display settings remain the only personal
+settings, and they never hide content.
+
+### D20. Two colours of main action, one rule (0.3.0)
+The chalkboard's "Start" button is yellow chalk on dark green; every other main
+action is Moodle's blue primary button. The rule is that the yellow button only
+exists on the chalkboard, so "yellow" always means "start the next activity" and
+blue keeps meaning "do this" everywhere in Moodle. Identity is carried by shape,
+size, icon and verb as well as colour; in high contrast both become black with
+white text. Contrast: chalk text on the board 9.7:1, yellow chalk 8.1:1, dark
+text on the yellow button 11.5:1, blue primary 5.4:1 on white.
+
+### D21. Andika for headings by default (0.3.0)
+Headings use Andika by default (D17 kept it as a choice for all the text): its
+letters match the ones children learn to write, and only its bold style is
+needed for headings (about 19 KB, self-hosted). Body text keeps the chosen
+typeface; with "Easy to read" the headings use Atkinson Hyperlegible too.
+
 ## Known uncertainties
 
 - The PR preview action `v1` declares the `node20` runtime, which GitHub has

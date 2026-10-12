@@ -10,7 +10,7 @@ the override surface as small as possible, so that Moodle upgrades stay cheap.
 |---|---|---|
 | `config.php` (`$THEME->parents = ['boost']`) | Inherit every Boost layout, template and renderer. Only the SCSS callbacks and the renderer factory are Chinijo's own. | Boost's `config.php` is identical on MOODLE_405_STABLE and MOODLE_503_STABLE, so the child declares the same properties. |
 | SCSS: `theme_chinijo_get_main_scss_content()` | `scss/pre.scss` (variables) + Boost's `preset/default.scss` + `scss/post.scss` (rules). | Standard child-theme pattern; the Boost preset keeps the 5.3 colour-mode import order (`moodle/dark` last). |
-| `classes/output/core_renderer.php` | Overrides **only** `course_header()` (greeting on the course page, pictogram data, completion feedback script) and `course_content_header()` ("Next" and "My path" on the course page; the activity bar with "Back to the course", the progress and "Listen" on activity pages). Both call the parent first and add to its output. | Boost prints `course_header()` from `full_header()` above the page heading, and `course_content_header()` at the top of the main region (`drawers.mustache`), on every branch from 4.5 to 5.3. The parent's "already printed" guard is respected. No template is copied. |
+| `classes/output/core_renderer.php` | Overrides **only** `course_header()` (greeting on the course page, pictogram data, completion feedback script, verbs of the activity cards) and `course_content_header()` ("Up next" and "My path" on the course page; on activity pages the activity bar with "Back to the course", the progress and "Listen", the steps of an assignment for learners who can hand it in, and the "More options" script on forum pages for learners). Both call the parent first and add to its output. | Boost prints `course_header()` from `full_header()` above the page heading, and `course_content_header()` at the top of the main region (`drawers.mustache`), on every branch from 4.5 to 5.3. The parent's "already printed" guard is respected. No template is copied. |
 | Hooks (`db/hooks.php`, `classes/hook_callbacks.php`) | `before_html_attributes` (display preferences, priority 0 so it runs after Boost's colour mode listener), `before_standard_top_of_body_html_generation` (toolbar on the login page), `after_standard_main_region_html_generation` (FEDER notice, pictogram credits), `before_footer_html_generation` (FEDER notice on the login page). | Hooks API, available on all supported branches (4.4+). Every callback checks that Chinijo renders the page. |
 | `lib.php` callbacks | `render_navbar_output` (display settings control), `user_preferences` (validation of the preferences by core_user), `pluginfile` (FEDER emblem, pictograms), `extend_navigation_course` (Pictograms page), `extend_navigation_user_settings` (link in Preferences). | Documented plugin callbacks still used by core on 4.5–5.3; no hook replaces them. |
 | `db/events.php` | Remove pictograms when their course, section or activity is deleted. | Events API. |
@@ -28,6 +28,8 @@ classes/
 ├── local/pictograms.php       Pictogram records, files, permissions, visibility, credits, file serving
 ├── local/course_progress.php  Progress from Moodle's completion API (per-branch compatible)
 ├── local/learning_path.php    The learner's path: counted activities in course order, their state and the next one
+├── local/activity_verbs.php   The verb of each kind of activity ("Read", "Hand in") for cards and "Up next"
+├── local/assign_steps.php     The steps of an assignment (read, do, hand in) from the learner's submission status
 ├── local/feder.php            EU funding notice from the admin settings
 ├── local/theme.php            "Is Chinijo rendering this page?" checks
 ├── output/core_renderer.php   course_header() and course_content_header()
@@ -55,6 +57,16 @@ JavaScript (`amd/src`, built with Moodle's own Grunt into `amd/build`):
   landmark. It never takes the focus; while it is shown the page keeps focused
   elements clear of it (scroll padding, WCAG 2.4.11). With the "Sounds" setting
   on, it plays a short chime made with the Web Audio API (no sound file).
+- `theme_chinijo/activity_cards` adds the verb of each activity ("Read", "Hand
+  in") above its name on the course page, coloured like its icon, from the
+  verbs that the renderer sends for the kinds of activity used in the course. It
+  is hidden from screen readers, which already announce the type of activity
+  with the name, and is skipped in edit mode.
+- `theme_chinijo/more_options` puts the less used controls of the forum toolbar
+  (search, subscription) in a panel behind a "More options" button on the same
+  page (an `aria-expanded` disclosure). The controls are moved whole into a panel
+  in the same row, so Moodle's own scripts keep working on them. It is loaded for
+  learners only (users without `moodle/course:manageactivities`).
 - `theme_chinijo/read_aloud` shows the "Listen" button on activity pages only
   when the browser has a voice installed on the device (`localService`) for the
   page language, and reads the main region without controls or hidden text.
@@ -139,6 +151,32 @@ plain block inside the login layout, which has no region after the main one).
 General (unneeded blocks, brand colour), EU funding notice, Advanced (raw initial
 SCSS, raw SCSS). The brand colour only reaches the SCSS when it is a valid
 hexadecimal colour.
+
+## The classroom and Moodle's activities (0.3.0)
+
+Everything here is SCSS on Moodle's own markup (`scss/chinijo/_classroom.scss`,
+`scss/chinijo/_activities.scss`), plus the two scripts and the assignment steps
+above. Selectors use markup that is the same on 4.5 and 5.x, or list both (for
+example Moodle 5.x's course footer `.course-linear-navigation` and Moodle 4.5's
+`.activity-navigation` links). Nothing of Moodle's interface is hidden: controls
+are restyled, made larger or, on forums, put one press away.
+
+- Course page (learners and teachers who are not editing): "Up next" is a
+  chalkboard with a yellow chalk "Start" button, sections have a coloured band,
+  activities are cards with a large icon tile tinted by the activity purpose
+  (`$chinijo-purposes`) and the verb, labels are teacher's notes.
+- Two colours of main action, one rule: the yellow button exists only on the dark
+  chalkboard; every other main action is Moodle's blue primary button. In high
+  contrast both are black with white text.
+- Headings (page, sections, activities, questions, chapters, posts) use the
+  `--chinijo-heading-font` custom property: Andika by default, Atkinson
+  Hyperlegible with the easy-to-read typeface.
+- Activity pages: the main action (`.btn-primary`) is at least 60 px high;
+  assignments show their steps; quiz answers and choice options are cards whose
+  whole surface selects the answer (the label is stretched over the card and the
+  radio button stays above it, so it can still be pressed directly); books and
+  pages limit the line length; the book's chapter buttons show the label Moodle
+  gives to screen readers ("Next: The cat") as visible text.
 
 ## Styling principles
 
