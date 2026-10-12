@@ -113,6 +113,17 @@ body.path-mod #region-main {
 
 // Book: previous and next chapter as big buttons; "Next" looks like the main action. Moodle draws
 // them as icons with a label for screen readers; the same label is shown, for example "Next: The cat".
+// mod_book floats its small buttons over the edges of the chapter; large buttons would cover the text,
+// so they become a row above the chapter instead.
+#page-mod-book-view #mod_book-chaptersnavigation {
+    position: static;
+    margin: 0 0 1rem;
+
+    .navitem {
+        margin-bottom: 0;
+    }
+}
+
 #page-mod-book-view #region-main {
     .btn-previous,
     .btn-next {
@@ -128,6 +139,9 @@ body.path-mod #region-main {
         font-size: 1.25rem;
         font-weight: 700;
         text-decoration: none;
+        opacity: 1;
+        // Moodle 5.x moves them down beside the text.
+        transform: none;
 
         .icon {
             color: inherit;
