@@ -84,9 +84,10 @@ Procedimiento completo para EVAGD (preproducción, actualización y marcha atrá
 ## Probarlo
 
 [Demo en Moodle Playground](https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprint.json)
-(funciona cuando el tema esté publicado en la rama `main` de GitHub). Cuentas de
-demostración desechables: `student1`, `student2`, `teacher1`, `admin`; contraseña
-`Chinijo-demo-1234`.
+(funciona cuando el tema esté publicado en la rama `main` de GitHub). La demo
+entra como `admin`; para ver lo que ve el alumnado («Lo siguiente», «Mi camino»),
+cierra sesión y entra como `student1`. Cuentas de demostración desechables:
+`admin`, `student1`, `student2`, `teacher1`; contraseña `Chinijo-demo-1234`.
 
 ## Desarrollo
 

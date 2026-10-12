@@ -115,8 +115,10 @@ language pack in Moodle as usual. The theme never forces a language.
 - [Portable demo](https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprint.json) (`blueprint.json`)
 - [Full demo with activities, completion data and demo pictograms](https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprints%2Fchinijo-full-demo.blueprint.json)
 
-Accounts (disposable demo only, never on a real site): `student1`, `student2`,
-`teacher1` and `admin`, password `Chinijo-demo-1234`. The links install the theme
+Both demos open logged in as `admin`. To see what learners see ("Next", "My
+path"), log out and log in as `student1`. Accounts (disposable demo only, never
+on a real site): `admin`, `student1`, `student2` and `teacher1`, password
+`Chinijo-demo-1234`. The links install the theme
 from the `main` branch on GitHub, so they work once it is published there. Every
 pull request gets its own preview button. Details: [docs/playground.md](docs/playground.md).
 
