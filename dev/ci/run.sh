@@ -55,10 +55,16 @@ reset_database() {
     PGPASSWORD="$DB_PASS" psql -q -h "$DB_HOST" -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS \"$DB_NAME\";"
 }
 
+# Whether the Moodle database exists (it does not after the database volume is recreated).
+database_exists() {
+    PGPASSWORD="$DB_PASS" psql -tA -h "$DB_HOST" -U "$DB_USER" -d postgres \
+        -c "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME';" | grep -q 1
+}
+
 # Install Moodle and the plugin once per branch, then keep the installed copy up to date.
 ensure_installed() {
     sync_source
-    if [ ! -f "$MARKER" ] || [ ! -d "$MOODLE_DIR" ]; then
+    if [ ! -f "$MARKER" ] || [ ! -d "$MOODLE_DIR" ] || ! database_exists; then
         log "Installing Moodle ${MOODLE_BRANCH} with moodle-plugin-ci (first run, this takes a while)"
         rm -rf "$MOODLE_DIR" "$DATA_DIR" "$WORK"/.installed-*
         reset_database
@@ -85,6 +91,11 @@ ensure_phpunit() {
 }
 
 ensure_behat() {
+    # Same allowance as the GitHub workflow: core's axe step polls for its results without pausing.
+    if ! grep -q behat_increasetimeout "$MOODLE_DIR/config.php"; then
+        # shellcheck disable=SC2016 # A line of PHP for config.php, not a shell expansion.
+        (cd "$WORK" && moodle-plugin-ci add-config '$CFG->behat_increasetimeout = 3;')
+    fi
     if ! php "$(public_dir)/admin/tool/behat/cli/util.php" --diag >/dev/null 2>&1; then
         log "Initialising Behat"
         php "$(public_dir)/admin/tool/behat/cli/init.php"
