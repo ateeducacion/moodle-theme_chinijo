@@ -70,6 +70,62 @@ Feature: Automated accessibility checks of the pages Chinijo changes
     Then the page should meet accessibility standards
     And the "region-main" "region" should meet accessibility standards with "best-practice" extra tests
 
+  Scenario Outline: Quiz attempt, choice, book and forum pages in every contrast
+    Given the following "user preferences" exist:
+      | user     | preference             | value      |
+      | student1 | theme_chinijo_contrast | <contrast> |
+    And the following "activities" exist:
+      | activity | course | name                  | intro                          | idnumber | option   | section |
+      | quiz     | C1     | Animals quiz          | Answer two questions.          | quiz1    |          | 2       |
+      | choice   | C1     | Your favourite animal | Which animal do you like best? | choice1  | Cat, Dog | 2       |
+      | book     | C1     | Animals at home       | Two animals of the home.       | book1    |          | 2       |
+      | forum    | C1     | Show and tell         | Tell us about an animal.       | forum1   |          | 2       |
+    And the following "question categories" exist:
+      | contextlevel    | reference | name           |
+      | Activity module | quiz1     | Test questions |
+    And the following "questions" exist:
+      | questioncategory | qtype       | name | questiontext       |
+      | Test questions   | truefalse   | TF1  | The cat says miau. |
+      | Test questions   | multichoice | MC1  | Which one is a pet? |
+    And quiz "Animals quiz" contains the following questions:
+      | question | page |
+      | TF1      | 1    |
+      | MC1      | 2    |
+    And the following "mod_book > chapters" exist:
+      | book            | title   | content                           | pagenum |
+      | Animals at home | The dog | The dog likes to run in the park. | 1       |
+    And the following "mod_forum > discussions" exist:
+      | user     | forum  | name        | message                     |
+      | teacher1 | forum1 | My cat Luna | This is my cat. And yours? |
+    And I am on the "Animals quiz" "quiz activity" page logged in as "student1"
+    # The quiz attempt is checked against WCAG A/AA only: Moodle's question number is an h3 right
+    # after the page's h1, which fails the best-practice "heading-order" rule with theme_boost too (F-06).
+    When I press "Attempt quiz"
+    Then the page should meet accessibility standards
+    And the "region-main" "region" should meet accessibility standards
+    And I press "Next page"
+    And the page should meet accessibility standards
+    And I am on the "Your favourite animal" "choice activity" page
+    And the page should meet accessibility standards
+    And the "region-main" "region" should meet accessibility standards with "best-practice" extra tests
+    And I am on the "Animals at home" "book activity" page
+    And the page should meet accessibility standards
+    And the "region-main" "region" should meet accessibility standards with "best-practice" extra tests
+    And I am on the "Show and tell" "forum activity" page
+    And I press "More options"
+    And the page should meet accessibility standards
+    And the "region-main" "region" should meet accessibility standards with "best-practice" extra tests
+    # A discussion is checked against WCAG A/AA only: Moodle prints two "Browse discussions" navigation
+    # landmarks with the same name, which fails the best-practice "landmark-unique" rule with theme_boost too (F-07).
+    And I click on "My cat Luna" "link"
+    And the page should meet accessibility standards
+    And the "region-main" "region" should meet accessibility standards
+
+    Examples:
+      | contrast |
+      | default  |
+      | high     |
+
   Scenario Outline: Display settings dialogue in every contrast and size
     Given the following "user preferences" exist:
       | user     | preference             | value      |

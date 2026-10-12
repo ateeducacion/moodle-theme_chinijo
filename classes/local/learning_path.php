@@ -206,6 +206,7 @@ class learning_path {
             'cmid' => (int) $cm->id,
             'name' => $cm->get_formatted_name(),
             'modname' => $cm->modfullname,
+            'verb' => activity_verbs::get_label($cm->modname) ?? '',
             'url' => $canopen ? $cm->url->out(false) : '',
             'iconurl' => $cm->get_icon_url()->out(false),
             'pictogramurl' => $pictogram['url'] ?? '',

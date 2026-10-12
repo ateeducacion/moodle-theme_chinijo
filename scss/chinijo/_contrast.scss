@@ -37,8 +37,20 @@ html[data-chinijo-contrast="high"] {
     .theme-chinijo-next,
     .theme-chinijo-path__track,
     .theme-chinijo-path__marker,
-    .theme-chinijo-cheer__card {
+    .theme-chinijo-cheer__card,
+    .theme-chinijo-steps__number {
         background-color: $chinijo-hc-background !important;
+    }
+
+    // The chalkboard button keeps its shape without its coloured edge.
+    #region-main .theme-chinijo-next__start {
+        box-shadow: none !important;
+    }
+
+    // A chosen answer or option keeps a thicker black frame, as well as its checked radio button.
+    .que .answer > div:has(input:checked),
+    .choices .option:has(input:checked) {
+        box-shadow: inset 0 0 0 3px $chinijo-hc-text !important;
     }
 
     .form-control,
@@ -107,7 +119,9 @@ html[data-chinijo-contrast="high"] {
     .tooltip-inner,
     .theme-chinijo-prefs__radio:checked + .theme-chinijo-prefs__label,
     .theme-chinijo-path__badge,
-    [data-state="current"] > .theme-chinijo-path__state {
+    [data-state="current"] > .theme-chinijo-path__state,
+    [data-state="current"] > .theme-chinijo-steps__number,
+    [data-state="done"] > .theme-chinijo-steps__number {
         background-color: $chinijo-hc-text !important;
 
         &,
@@ -197,8 +211,21 @@ html[data-chinijo-contrast="high"] {
     .theme-chinijo-prefs-trigger__glyph,
     .theme-chinijo-next,
     .theme-chinijo-path__marker,
-    .theme-chinijo-cheer__card {
+    .theme-chinijo-cheer__card,
+    .theme-chinijo-steps__step,
+    .theme-chinijo-steps__number,
+    .theme-chinijo-more,
+    .que .answer > div,
+    .choices .option,
+    a.course-linear-navigation-link,
+    .urlworkaround a,
+    .resourceworkaround a {
         border: 2px solid buttontext !important;
+    }
+
+    .que .answer > div:has(input:checked),
+    .choices .option:has(input:checked) {
+        border-width: 4px !important;
     }
 
     :focus-visible {

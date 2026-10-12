@@ -1,0 +1,567 @@
+// Activity pages for young learners: larger reading text, one big main action, and Moodle's own
+// activity controls (answers, choices, posts, chapters) drawn as large cards. Every Moodle control
+// stays on the page. Selectors only use markup shared by Moodle 4.5 and 5.x.
+
+// The activity icon of the page heading, as a tile tinted with the colour of its purpose.
+.path-mod #page-header .activityiconcontainer {
+    width: 4rem;
+    height: 4rem;
+    max-width: 4rem;
+    max-height: 4rem;
+    padding: .75rem;
+    border-radius: 1rem;
+
+    .activityicon {
+        width: 2.5rem;
+        height: 2.5rem;
+        max-width: 2.5rem;
+        max-height: 2.5rem;
+    }
+}
+
+@each $purpose, $colours in $chinijo-purposes {
+    .path-mod #page-header .activityiconcontainer.#{$purpose} {
+        background-color: nth($colours, 1);
+    }
+}
+
+// The main action of the page (submit, start, save, reply) is big; other buttons are comfortable.
+// The :not() keeps these rules above the general button size of base.
+body.path-mod #region-main {
+    .btn.btn-primary:not(.btn-link) {
+        min-height: 3.75rem;
+        padding: .5rem 1.75rem;
+        border-radius: 1rem;
+        font-size: 1.25rem;
+    }
+
+    .btn.btn-secondary:not(.btn-link) {
+        min-height: 3.25rem;
+        border-radius: 1rem;
+        font-size: 1.125rem;
+    }
+
+    .activity-description {
+        font-size: 1.125rem;
+    }
+}
+
+// Previous and next activity: on Moodle 5.x the footer of the course, on Moodle 4.5 the links
+// below the activity. "Next" looks like the main action.
+.course-linear-navigation-footer-content {
+    gap: .5rem 1rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+}
+
+.course-linear-navigation a.course-linear-navigation-link,
+.activity-navigation #prev-activity-link,
+.activity-navigation #next-activity-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 3.25rem;
+    padding: .25rem 1.25rem;
+    border: 2px solid $chinijo-boundary;
+    border-radius: 1rem;
+    color: var(--bs-body-color, #{$chinijo-ink});
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: normal;
+}
+
+.course-linear-navigation [data-for="course-linear-navigation-footer"] a.course-linear-navigation-link,
+.activity-navigation #next-activity-link {
+    border-color: $primary;
+    background-color: $primary;
+    color: $white;
+
+    &:hover,
+    &:focus {
+        background-color: darken($primary, 7.5%);
+        color: $white;
+    }
+}
+
+.course-linear-navigation-completion .btn {
+    min-height: $chinijo-target-size;
+    padding: .25rem 1rem;
+    border: 2px solid $chinijo-boundary;
+    border-radius: 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+// Reading: pages and book chapters in large text, in lines that are not too long.
+#page-mod-page-view [role="main"] .generalbox,
+#page-mod-book-view .book_content {
+    max-width: 46rem;
+    font-size: 1.375rem;
+    line-height: 1.6;
+
+    h2,
+    h3,
+    h4 {
+        font-family: var(--chinijo-heading-font);
+    }
+}
+
+#page-mod-book-view .book_content h2 {
+    font-size: 2rem;
+}
+
+// Book: previous and next chapter as big buttons; "Next" looks like the main action. Moodle draws
+// them as icons with a label for screen readers; the same label is shown, for example "Next: The cat".
+#page-mod-book-view #region-main {
+    .btn-previous,
+    .btn-next {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        width: auto;
+        height: auto;
+        min-height: 3.75rem;
+        padding: 0 1.5rem;
+        border: 2px solid $primary;
+        border-radius: 1rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        text-decoration: none;
+
+        .icon {
+            color: inherit;
+        }
+    }
+
+    .btn-previous[aria-label]::after,
+    .btn-next[aria-label]::before {
+        content: attr(aria-label);
+    }
+
+    .btn-next {
+        background-color: $primary;
+        color: $white;
+
+        &:hover,
+        &:focus {
+            background-color: darken($primary, 7.5%);
+            color: $white;
+        }
+    }
+}
+
+// Links and files: the link to open is one big button.
+#page-mod-url-view .urlworkaround,
+#page-mod-resource-view .resourceworkaround {
+    font-size: 1.25rem;
+
+    a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 3.75rem;
+        margin: .5rem .25rem;
+        padding: .25rem 1.5rem;
+        border: 2px solid $primary;
+        border-radius: 1rem;
+        background-color: $primary;
+        color: $white;
+        font-weight: 700;
+        text-decoration: none;
+        overflow-wrap: anywhere;
+    }
+}
+
+// Assignment: the three steps added by the theme, and Moodle's status table in larger text.
+.theme-chinijo-steps {
+    margin: 0 0 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 2px solid $chinijo-boundary-light;
+    border-radius: 1.5rem;
+    background-color: var(--bs-body-bg, #{$white});
+}
+
+.theme-chinijo-steps__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.theme-chinijo-steps__step {
+    display: flex;
+    flex: 1 1 12rem;
+    align-items: center;
+    gap: .75rem;
+    padding: .625rem 1rem;
+    border: 2px dashed $chinijo-boundary;
+    border-radius: 1.25rem;
+
+    &[data-state="current"] {
+        border: 3px solid $primary;
+        background-color: rgba($primary, .06);
+    }
+
+    &[data-state="done"] {
+        border: 2px solid $chinijo-progress;
+    }
+}
+
+.theme-chinijo-steps__number {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 3px solid $chinijo-boundary;
+    border-radius: 50%;
+    background-color: var(--bs-body-bg, #{$white});
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    [data-state="current"] > & {
+        border-color: $primary;
+        background-color: $primary;
+        color: $white;
+    }
+
+    [data-state="done"] > & {
+        border-color: $chinijo-progress;
+        background-color: $chinijo-progress;
+        color: $white;
+    }
+}
+
+// A done step shows a tick instead of its number.
+.theme-chinijo-steps__check,
+[data-state="done"] .theme-chinijo-steps__digit {
+    display: none;
+}
+
+[data-state="done"] .theme-chinijo-steps__check {
+    display: block;
+    stroke-width: 3.5;
+}
+
+.theme-chinijo-steps__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.theme-chinijo-steps__label {
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.theme-chinijo-steps__state {
+    color: var(--bs-secondary-color, #{$chinijo-muted});
+    font-size: .9375rem;
+    font-weight: 700;
+}
+
+.theme-chinijo-steps__status {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 1rem 0 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+
+    [data-status="submitted"] > & {
+        color: $chinijo-progress;
+    }
+}
+
+#page-mod-assign-view .submissionstatustable {
+    h3 {
+        font-family: var(--chinijo-heading-font);
+        font-size: 1.5rem;
+    }
+
+    .generaltable {
+        font-size: 1.125rem;
+
+        th,
+        td {
+            padding: .75rem 1rem;
+        }
+    }
+}
+
+// Quiz: the number of the question on a line above it, large question text, and each answer
+// as a large card that can be pressed anywhere.
+.path-mod-quiz .que {
+    flex-direction: column;
+    gap: .75rem;
+
+    .info {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .25rem 1.25rem;
+        width: 100%;
+        padding: .5rem 1rem;
+        border-radius: 1rem;
+
+        > div {
+            margin-top: 0;
+            font-size: .9375rem;
+        }
+    }
+
+    h3.no {
+        font-family: var(--chinijo-heading-font);
+        font-size: 1.25rem;
+        line-height: 1.3;
+    }
+
+    .content {
+        width: 100%;
+    }
+
+    .formulation {
+        padding: 1.25rem 1.5rem;
+        border-radius: 1.5rem;
+    }
+
+    .qtext {
+        margin-bottom: 1.25rem;
+        font-family: var(--chinijo-heading-font);
+        font-size: 1.75rem;
+        line-height: 1.4;
+    }
+}
+
+.path-mod-quiz .que.truefalse .answer > div,
+.path-mod-quiz .que.multichoice .answer > div {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 4.5rem;
+    margin: 0 0 .75rem;
+    padding: .5rem 1.25rem;
+    border: 2px solid $chinijo-boundary;
+    border-radius: 1.25rem;
+    background-color: var(--bs-body-bg, #{$white});
+    color: var(--bs-body-color, #{$chinijo-ink});
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    &:has(input:checked) {
+        border-color: $primary;
+        background-color: rgba($primary, .08);
+        box-shadow: inset 0 0 0 2px $primary;
+    }
+
+    // The button itself stays above the layer that makes the rest of the card pressable.
+    input[type="radio"],
+    input[type="checkbox"] {
+        position: relative;
+        z-index: 1;
+        flex: 0 0 auto;
+        width: 1.75rem;
+        height: 1.75rem;
+        margin: 0;
+        accent-color: $primary;
+    }
+
+    // The label (or Moodle's answer text, which selects the answer when pressed) covers the whole card.
+    label,
+    [data-region="answer-label"] {
+        flex: 1 1 auto;
+        margin: 0;
+        cursor: pointer;
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    }
+
+    // Links inside an answer stay above that layer.
+    a {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+.path-mod-quiz #mod_quiz_navblock .qnbutton {
+    width: 2.75rem;
+    height: 3.5rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+
+    .trafficlight {
+        height: 1.75rem;
+        margin-top: 1.75rem;
+    }
+}
+
+#page-mod-quiz-summary .quizsummaryofattempt,
+.path-mod-quiz .quizreviewsummary {
+    font-size: 1.125rem;
+}
+
+// Choice: each option is a large card that can be pressed anywhere.
+#page-mod-choice-view .choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: .875rem;
+    margin-bottom: 1.5rem;
+    padding: 0;
+
+    .option {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-height: 5rem;
+        margin: 0;
+        padding: .75rem 1.25rem;
+        border: 2px solid $chinijo-boundary;
+        border-radius: 1.25rem;
+        background-color: var(--bs-body-bg, #{$white});
+
+        &:has(input:checked) {
+            border-color: $primary;
+            background-color: rgba($primary, .08);
+            box-shadow: inset 0 0 0 2px $primary;
+        }
+    }
+
+    // Boost's spacing utility between inline options is not needed in the grid.
+    /* stylelint-disable declaration-no-important */
+    .option.me-3 {
+        margin-right: 0 !important;
+    }
+    /* stylelint-enable declaration-no-important */
+
+    // The button itself stays above the layer that makes the rest of the card pressable.
+    input[type="radio"],
+    input[type="checkbox"] {
+        position: relative;
+        z-index: 1;
+        flex: 0 0 auto;
+        width: 1.75rem;
+        height: 1.75rem;
+        margin: 0;
+        accent-color: $primary;
+    }
+
+    label {
+        flex: 1 1 auto;
+        margin: 0;
+        font-family: var(--chinijo-heading-font);
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    }
+
+    .clearfloat {
+        display: none;
+    }
+}
+
+// Forum: discussions as large rows, posts as cards with large text, and "Reply" as a button.
+.path-mod-forum {
+    .discussionname {
+        font-family: var(--chinijo-heading-font);
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .discussion-list .topic a {
+        font-family: var(--chinijo-heading-font);
+        font-size: 1.375rem;
+        font-weight: 700;
+    }
+
+    .forumpost {
+        border-width: 2px;
+        border-radius: 1.5rem;
+    }
+
+    [data-region-content="forum-post-core-subject"] {
+        font-family: var(--chinijo-heading-font);
+        font-size: 1.5rem;
+    }
+
+    .post-content-container {
+        font-size: 1.25rem;
+        line-height: 1.6;
+    }
+
+    [data-region="post-actions-container"] a[data-region="post-action"] {
+        display: inline-flex;
+        align-items: center;
+        min-height: $chinijo-target-size;
+        padding: 0 .75rem;
+        border-radius: .75rem;
+    }
+
+    [data-region="post-actions-container"] a[data-region="post-action"][href*="reply="] {
+        min-height: 3.25rem;
+        padding: 0 1.25rem;
+        border: 2px solid $primary;
+        background-color: var(--bs-body-bg, #{$white});
+        color: var(--bs-link-color, #{$primary});
+        font-size: 1.125rem;
+        font-weight: 700;
+        text-decoration: none;
+    }
+}
+
+// "More options" (more_options.js): the less used controls of the row, one press away.
+#region-main .theme-chinijo-more {
+    align-self: center;
+    gap: .5rem;
+    min-height: 3.25rem;
+    border: 2px solid $chinijo-boundary;
+    border-radius: 1rem;
+    background-color: var(--bs-body-bg, #{$white});
+    color: var(--bs-body-color, #{$chinijo-ink});
+    font-weight: 700;
+
+    &[aria-expanded="true"] .theme-chinijo-more__chevron {
+        transform: rotate(90deg);
+    }
+}
+
+.theme-chinijo-more__panel {
+    display: flex;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .75rem 1.5rem;
+    margin-top: .75rem;
+    padding: .75rem 1rem;
+    border: 2px dashed $chinijo-boundary;
+    border-radius: 1rem;
+
+    &[hidden] {
+        display: none;
+    }
+
+    > .navitem {
+        margin: 0;
+    }
+}

@@ -205,6 +205,82 @@ final class course_progress_test extends \advanced_testcase {
     }
 
     /**
+     * The course page sends the verbs of the activities it has to the cards script, except in edit mode.
+     */
+    public function test_course_page_verbs(): void {
+        global $PAGE, $USER;
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $student = $generator->create_and_enrol($course, 'student');
+        $generator->create_module('assign', ['course' => $course->id]);
+        $generator->create_module('label', ['course' => $course->id]);
+
+        $this->setUser($student);
+        $output = $this->get_page_renderer($course, 'course-view-topics');
+        $output->course_header();
+        $code = $PAGE->requires->get_end_code();
+        $this->assertStringContainsString('theme_chinijo/activity_cards', $code);
+        $this->assertStringContainsString(json_encode(get_string('verb_handin', 'theme_chinijo')), $code);
+        $this->assertStringNotContainsString('"label"', $code);
+
+        // Teachers editing the course keep Boost's own cards.
+        $this->setAdminUser();
+        $USER->editing = 1;
+        $output = $this->get_page_renderer($course, 'course-view-topics');
+        $this->assertTrue($PAGE->user_is_editing());
+        $output->course_header();
+        $this->assertStringNotContainsString('theme_chinijo/activity_cards', $PAGE->requires->get_end_code());
+    }
+
+    /**
+     * Assignment pages show their steps to learners who can hand them in, not to teachers.
+     */
+    public function test_assignment_steps(): void {
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $student = $generator->create_and_enrol($course, 'student');
+        $teacher = $generator->create_and_enrol($course, 'editingteacher');
+        $assign = $generator->create_module('assign', ['course' => $course->id, 'assignsubmission_onlinetext_enabled' => 1]);
+        $cm = get_fast_modinfo($course)->get_cm($assign->cmid);
+
+        $this->setUser($student);
+        $html = $this->get_page_renderer($course, 'mod-assign-view', $cm)->course_content_header();
+        $this->assertStringContainsString('data-region="theme_chinijo-steps"', $html);
+        $this->assertStringContainsString(get_string('step_handin', 'theme_chinijo'), $html);
+        $this->assertStringContainsString(get_string('steps_status_none', 'theme_chinijo'), $html);
+        $this->assertStringContainsString('aria-current="step"', $html);
+
+        $this->setUser($teacher);
+        $html = $this->get_page_renderer($course, 'mod-assign-view', $cm)->course_content_header();
+        $this->assertStringContainsString('data-region="theme_chinijo-activity-bar"', $html);
+        $this->assertStringNotContainsString('theme_chinijo-steps', $html);
+    }
+
+    /**
+     * Forum pages load "More options" for learners only.
+     */
+    public function test_forum_more_options(): void {
+        global $PAGE;
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $student = $generator->create_and_enrol($course, 'student');
+        $teacher = $generator->create_and_enrol($course, 'editingteacher');
+        $forum = $generator->create_module('forum', ['course' => $course->id]);
+        $cm = get_fast_modinfo($course)->get_cm($forum->cmid);
+
+        $this->setUser($student);
+        $this->get_page_renderer($course, 'mod-forum-view', $cm)->course_content_header();
+        $this->assertStringContainsString('theme_chinijo/more_options', $PAGE->requires->get_end_code());
+
+        $this->setUser($teacher);
+        $this->get_page_renderer($course, 'mod-forum-view', $cm)->course_content_header();
+        $this->assertStringNotContainsString('theme_chinijo/more_options', $PAGE->requires->get_end_code());
+    }
+
+    /**
      * The site home has no course header additions.
      */
     public function test_course_header_site_home(): void {
