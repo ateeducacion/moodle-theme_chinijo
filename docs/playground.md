@@ -5,11 +5,15 @@ browser from a JSON blueprint. Chinijo ships two blueprints.
 
 | File | Runs on | Content |
 |---|---|---|
-| `blueprint.json` | Browser Playground and erseco/alpine-moodle's experimental runner | Moodle 5.3 (PHP 8.4) preferred; installs Chinijo from the `main` branch archive (`installMoodlePlugin`, critical); activates it (`setTheme`, critical); site completion on; a demo category and course; three disposable accounts; enrolments; logs in as `student1`. |
-| `blueprints/chinijo-full-demo.blueprint.json` | Browser Playground only | Same theme installation, plus the Spanish language pack, the demo users, course, enrolments and eight activities created with Playground's own steps, and `runPhpCode` running `chinijo_seed_playground()` from `dev/seedlib.php` (completion settings, section names, demo pictograms and the first student's progress). Logs in as `student1`. |
+| `blueprint.json` | Browser Playground and erseco/alpine-moodle's experimental runner | Moodle 5.3 (PHP 8.4) preferred; installs Chinijo from the `main` branch archive (`installMoodlePlugin`, critical); activates it (`setTheme`, critical); site completion on; a demo category and course; three disposable accounts; enrolments; logs in as `admin`. |
+| `blueprints/chinijo-full-demo.blueprint.json` | Browser Playground only | Same theme installation, plus the Spanish language pack, the demo users, course, enrolments and eight activities created with Playground's own steps, and `runPhpCode` running `chinijo_seed_playground()` from `dev/seedlib.php` (completion settings, section names, demo pictograms and the first student's progress). Logs in as `admin`. |
 
 Demo accounts (**disposable, demonstration only**, never use these on a real
 site): `admin`, `teacher1`, `student1`, `student2`, password `Chinijo-demo-1234`.
+Both demos open logged in as `admin`, to explore the settings and the
+Pictograms page. Learners' view ("Next", "My path", encouragement) is for users
+with completion tracking: log out and log in as `student1` (Leo, with progress in
+the full demo), or use "Log in as" from the course participants.
 
 ## One-click launch
 
@@ -53,8 +57,9 @@ blueprint.
   `$DB` do not exist until the code loads Moodle itself:
   `define('CLI_SCRIPT', true); require('/www/moodle/config.php');` (the same
   path Playground's own steps use). An error in this step is only a warning in
-  the Logs tab of the Playground panel, so the step that follows it (`login`) is
-  critical: a broken seed then stops the blueprint visibly.
+  the Logs tab of the Playground panel and does not stop the blueprint, so the
+  full demo creates its users, course and activities with Playground's own steps
+  and keeps `runPhpCode` for the finishing touches.
 - Playground ships Moodle without its `tests/` directories, so Moodle's test data
   generators (`testing_data_generator::create_module()` and the like) fail there.
   `chinijo_seed_run()` (used by `make seed`) relies on them;
