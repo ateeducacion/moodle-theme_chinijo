@@ -11,8 +11,8 @@ the override surface as small as possible, so that Moodle upgrades stay cheap.
 | `config.php` (`$THEME->parents = ['boost']`) | Inherit every Boost layout, template and renderer. Only the SCSS callbacks and the renderer factory are Chinijo's own. | Boost's `config.php` is identical on MOODLE_405_STABLE and MOODLE_503_STABLE, so the child declares the same properties. |
 | SCSS: `theme_chinijo_get_main_scss_content()` | `scss/pre.scss` (variables) + Boost's `preset/default.scss` + `scss/post.scss` (rules). | Standard child-theme pattern; the Boost preset keeps the 5.3 colour-mode import order (`moodle/dark` last). |
 | `classes/output/core_renderer.php` | Overrides **only** `course_header()` (greeting on the course page, pictogram data, completion feedback script, verbs of the activity cards) and `course_content_header()` ("Up next" and "My path" on the course page; on activity pages the activity bar with "Back to the course", the progress and "Listen", the steps of an assignment for learners who can hand it in, and the "More options" script on forum pages for learners). Both call the parent first and add to its output. | Boost prints `course_header()` from `full_header()` above the page heading, and `course_content_header()` at the top of the main region (`drawers.mustache`), on every branch from 4.5 to 5.3. The parent's "already printed" guard is respected. No template is copied. |
-| Hooks (`db/hooks.php`, `classes/hook_callbacks.php`) | `before_html_attributes` (display preferences, priority 0 so it runs after Boost's colour mode listener), `before_standard_top_of_body_html_generation` (toolbar on the login page), `after_standard_main_region_html_generation` (FEDER notice, pictogram credits), `before_footer_html_generation` (FEDER notice on the login page). | Hooks API, available on all supported branches (4.4+). Every callback checks that Chinijo renders the page. |
-| `lib.php` callbacks | `render_navbar_output` (display settings control), `user_preferences` (validation of the preferences by core_user), `pluginfile` (FEDER emblem, pictograms), `extend_navigation_course` (Pictograms page), `extend_navigation_user_settings` (link in Preferences). | Documented plugin callbacks still used by core on 4.5–5.3; no hook replaces them. |
+| Hooks (`db/hooks.php`, `classes/hook_callbacks.php`) | `before_html_attributes` (display preferences, priority 0 so it runs after Boost's colour mode listener), `before_standard_top_of_body_html_generation` (toolbar on the login page), `after_standard_main_region_html_generation` (pictogram credits). | Hooks API, available on all supported branches (4.4+). Every callback checks that Chinijo renders the page. |
+| `lib.php` callbacks | `render_navbar_output` (display settings control), `user_preferences` (validation of the preferences by core_user), `pluginfile` (pictograms), `extend_navigation_course` (Pictograms page), `extend_navigation_user_settings` (link in Preferences). | Documented plugin callbacks still used by core on 4.5–5.3; no hook replaces them. |
 | `db/events.php` | Remove pictograms when their course, section or activity is deleted. | Events API. |
 | `backup/moodle2/` | Include pictograms in course backups, imports and duplicates. | Moodle's `backup_theme_plugin`/`restore_theme_plugin`. |
 
@@ -30,7 +30,6 @@ classes/
 ├── local/learning_path.php    The learner's path: counted activities in course order, their state and the next one
 ├── local/activity_verbs.php   The verb of each kind of activity ("Read", "Hand in") for cards and "Up next"
 ├── local/assign_steps.php     The steps of an assignment (read, do, hand in) from the learner's submission status
-├── local/feder.php            EU funding notice from the admin settings
 ├── local/theme.php            "Is Chinijo rendering this page?" checks
 ├── output/core_renderer.php   course_header() and course_content_header()
 ├── hook_callbacks.php         Output hooks
@@ -138,17 +137,9 @@ visible to the user (`get_user_activities_with_completion()`), chosen with
 nothing. The figure is updated in the page only after core confirms a manual
 completion change.
 
-## FEDER (ERDF) notice
-
-Admin settings (`EU funding notice` tab): enable, pages (landing pages or every
-page), emblem file, its text alternative and the acknowledgement text. The theme
-ships no emblem and no wording. Without an emblem-with-alternative or a text,
-nothing is rendered. The notice is a labelled `<aside>` after the main region (a
-plain block inside the login layout, which has no region after the main one).
-
 ## Settings
 
-General (unneeded blocks, brand colour), EU funding notice, Advanced (raw initial
+General (unneeded blocks, brand colour), Advanced (raw initial
 SCSS, raw SCSS). The brand colour only reaches the SCSS when it is a valid
 hexadecimal colour.
 

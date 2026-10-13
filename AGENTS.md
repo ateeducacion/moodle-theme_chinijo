@@ -14,7 +14,9 @@ Order of authority when sources disagree:
 
 1. The definitive procurement specification (Markdown, `PPT-EDICI-Lote1_Tema_Moodle_EVAGD.md`).
    It is **not** in this repository and must not be committed. Its requirements are
-   mapped in `docs/requirements-traceability.md`.
+   mapped in `docs/requirements-traceability.md`. Chinijo is ATE's own development,
+   so its contractual items (FEDER publicity, warranty, transfer, reversibility
+   record) do not apply (decision D22).
 2. Decisions recorded in `docs/research-and-decisions.md`.
 3. This file and the other docs.
 
@@ -26,7 +28,7 @@ Supported: Moodle 4.5 LTS, 5.0, 5.1, 5.2 and 5.3 LTS (`$plugin->requires = 20241
 | Path | What it is | Shipped in the ZIP |
 |---|---|---|
 | `version.php`, `config.php`, `lib.php`, `settings.php` | Plugin entry points (callbacks only in `lib.php`) | yes |
-| `classes/` | All logic: `local/` (preferences, pictograms, progress, FEDER, theme checks), `output/core_renderer.php`, `hook_callbacks.php`, `observer.php`, `form/`, `privacy/` | yes |
+| `classes/` | All logic: `local/` (preferences, pictograms, progress, activity verbs and steps, theme checks), `output/core_renderer.php`, `hook_callbacks.php`, `observer.php`, `form/`, `privacy/` | yes |
 | `db/` | `install.xml`, `access.php`, `hooks.php`, `events.php` | yes |
 | `backup/moodle2/` | Course backup and restore of pictograms | yes |
 | `templates/`, `scss/`, `fonts/`, `pix/`, `lang/en`, `lang/es` | UI | yes |

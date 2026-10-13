@@ -219,6 +219,18 @@ letters match the ones children learn to write, and only its bold style is
 needed for headings (about 19 KB, self-hosted). Body text keeps the chosen
 typeface; with "Easy to read" the headings use Atkinson Hyperlegible too.
 
+### D22. ATE's own development: no contract formalities, no FEDER notice (0.3.1)
+Chinijo is developed by the Área de Tecnología Educativa itself, not delivered
+under the tendered contract (maintainers' decision, 2026-10-13). The
+specification stays the reference for functional and accessibility
+requirements, but its contractual items do not apply: FEDER publicity (the theme
+is not co-funded by FEDER), ATE's project template, the warranty and its service
+levels, the incident and patch log, the technology transfer plan and the
+reversibility record. The EU funding notice, its settings, template, styles,
+strings and tests were removed; an upgrade step deletes its stored settings and
+uploaded emblem. Version tags stay, because the release workflow builds the
+installable ZIP from them.
+
 ## Known uncertainties
 
 - The PR preview action `v1` declares the `node20` runtime, which GitHub has

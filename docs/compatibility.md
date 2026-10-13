@@ -83,7 +83,7 @@ These cannot be checked on a generic Moodle and are **pending** until EVAGD
 pre-production access is provided (see `docs/deployment-evagd.md`):
 
 - Corporate SSO: the theme does not touch authentication; the login page toolbar
-  and FEDER notice appear only in the `login` layout, which SSO may bypass.
+  appears only in the `login` layout, which SSO may bypass.
 - EVAGD's own blocks, local plugins and course formats: Chinijo inherits Boost's
   rendering; pictograms rely on the `data-for="cmitem"`, `data-for="section_title"`
   and course index attributes of Moodle's standard course formats.

@@ -67,7 +67,7 @@ final class pluginfile_test extends \advanced_testcase {
     }
 
     /**
-     * Unknown file areas and a missing FEDER emblem are not found.
+     * Unknown file areas are not found.
      */
     public function test_unknown_areas(): void {
         $this->resetAfterTest();
@@ -77,9 +77,6 @@ final class pluginfile_test extends \advanced_testcase {
 
         $e = $this->serve(get_site(), $system, 'secrets', ['0', 'x.png']);
         $this->assertInstanceOf(\moodle_exception::class, $e);
-        $this->assertSame('filenotfound', $e->errorcode);
-
-        $e = $this->serve(get_site(), $system, 'federlogo', ['0', 'emblem.png']);
         $this->assertSame('filenotfound', $e->errorcode);
 
         $e = $this->serve($course, \context_course::instance($course->id), 'other', ['1', 'x.png']);

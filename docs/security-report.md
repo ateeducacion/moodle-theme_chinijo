@@ -55,7 +55,7 @@ No false positives are suppressed: there are no `nosemgrep` annotations.
 |---|---|---|
 | Broken access control (A01, CWE-284/639 IDOR) | `pictograms.php`: `require_login($course)` + `require_capability('theme/chinijo:managepictograms')`; `pictograms::save()`/`delete()` check the capability again and refuse items of other courses; file serving checks the record belongs to the course and that the user can see the item. Preferences: only the current user, enforced by core's permission callback (`preferences::can_edit()`) and by `preferences.php`, which has no user parameter at all. | `pictograms_test`, `pluginfile_test`, `preferences_test::test_core_user_permissions` |
 | CSRF (CWE-352) | `require_sesskey()` on `preferences.php`; deletion confirmation carries `sesskey`; Moodle forms; core REST route for saved preferences. | Code, Behat |
-| XSS (A03, CWE-79) | Mustache escaping (`{{ }}`) for all user data; triple mustache only for strings and HTML produced by Moodle (`format_text`, rendered templates); FEDER text through `format_text()`; toast messages escaped before insertion; pictogram data passed as an escaped attribute and parsed with `JSON.parse`; images built with `createElement`, never `innerHTML`. | `feder_test::test_content`, `pictograms_test::test_render_page_data` |
+| XSS (A03, CWE-79) | Mustache escaping (`{{ }}`) for all user data; triple mustache only for strings and HTML produced by Moodle (`format_text`, rendered templates); toast messages escaped before insertion; pictogram data passed as an escaped attribute and parsed with `JSON.parse`; images built with `createElement`, never `innerHTML`. | `pictograms_test::test_render_page_data` |
 | Unrestricted upload (CWE-434) | PNG, JPEG or WebP only, ≤ 1 MB, one file, checked by name **and content** (`get_imageinfo()`); SVG refused; files stored with the File API and served by Moodle. | `pictograms_test::test_rejects_svg`, `test_rejects_disguised_file`, `pictogram_form_test` |
 | Injection (CWE-89) | Moodle DML with parameters only; no raw SQL. | Code |
 | SCSS/CSS injection from settings | The brand colour reaches the SCSS only if it is a hexadecimal colour. Raw SCSS settings are admin-only (as in Boost). | `lib_test::test_pre_and_extra_scss` |
@@ -67,5 +67,5 @@ No false positives are suppressed: there are no `nosemgrep` annotations.
 ## Vulnerability handling
 
 See `SECURITY.md` for reporting. High or critical vulnerabilities in the theme's
-code are patched within **5 working days** during the warranty (specification
-§L1E01.G.4); each patch is recorded in `docs/incident-and-patch-log.md`.
+code are fixed first on `main` and published as a patch release, described in
+`CHANGELOG.md`.

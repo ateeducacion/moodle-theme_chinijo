@@ -6,6 +6,16 @@ semantic versioning (`$plugin->release`).
 
 ## [Unreleased]
 
+## [0.3.1] - not released yet (development version 2026101300, alpha)
+
+### Removed
+- The EU (FEDER) funding notice and its settings: Chinijo is the Área de
+  Tecnología Educativa's own development and is not co-funded by FEDER.
+  Upgrading deletes the notice's settings and its uploaded emblem.
+- Documentation of contractual procedures that do not apply to an in-house
+  development: the transfer plan, the warranty incident log and the
+  reversibility record.
+
 ### Added
 - Development: the full Moodle Playground demo has the "Animals" section of
   `make seed` (a teacher's note, a book with two chapters, a quiz with two

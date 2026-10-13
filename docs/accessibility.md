@@ -17,13 +17,13 @@ Based on W3C **WCAG-EM 1.0**:
    reference), for learners, teachers and visitors who are not logged in; theme
    components (display settings control, dialogue and page, toolbar, greeting,
    "Up next" and "My path", activity bar and "Listen", pictograms and credits,
-   encouragement after completion, FEDER notice, pictogram management pages). Third-party content and other plugins are out of scope but reported
+   encouragement after completion, pictogram management pages). Third-party content and other plugins are out of scope but reported
    when they affect a sampled page.
 2. **Representative sample** (structured sample, WCAG-EM step 3): login page (not
    logged in), dashboard, course list, course page with progress and pictograms,
    section view, an activity (page), an assignment submission (form and success),
    a form error state, display settings dialogue in each mode, stand-alone display
-   settings page, pictogram management and edit form, FEDER notice, mobile/tablet
+   settings page, pictogram management and edit form, mobile/tablet
    viewport, Spanish interface. Random sample: two further activity pages chosen in
    pre-production.
 3. **Audit**: automated (axe-core through Moodle's Behat step, WCAG 2.0/2.1/2.2 A
@@ -68,7 +68,7 @@ Ratios computed with the WCAG 2.x relative luminance formula (2026-10-08).
 
 | Criterion | How Chinijo addresses it | Evidence |
 |---|---|---|
-| 1.1.1 Non-text content | Pictograms need a text alternative (form validation); decorative copies in the course index use `alt=""`; the "Aa" glyph is `aria-hidden`; the EU emblem is only shown with its alternative. | PHPUnit, Behat |
+| 1.1.1 Non-text content | Pictograms need a text alternative (form validation); decorative copies in the course index use `alt=""`; the "Aa" glyph is `aria-hidden`. | PHPUnit, Behat |
 | 1.3.1 Info and relationships | Radio groups in `<fieldset>` with `<legend>`; the ready-made combinations in a labelled group; tables with caption and `scope`; landmarks (`aside` with labels); "My path" is an ordered list whose current item has `aria-current="step"` and whose state is written out ("Done", "Now", "To do", "Not yet"); native `<progress>` labelled by its text. | Behat axe |
 | 1.3.2 Meaningful sequence / 2.4.3 Focus order | Nothing is reordered with CSS positioning; pictograms are inserted before names in DOM order. | Keyboard scenario |
 | 1.4.1 Use of colour | Links in text underlined; selected options bold with thicker border and a radio button; errors with a bar and bold text; high contrast inverts primary actions; on "My path" the state is text plus shape (solid ring with a tick, ring with a halo, dashed ring; solid or dotted line). | Manual |
@@ -101,7 +101,7 @@ For each sampled page, with the theme defaults and with each display setting:
 2. **Screen readers**: NVDA (latest) with Firefox and Chrome on Windows; VoiceOver
    with Safari on macOS and iPadOS; TalkBack with Chrome on Android. Repeat the
    keyboard path; check the dialogue's name, groups and announcements, the
-   progress text, pictogram alternatives and the FEDER notice.
+   progress text and pictogram alternatives.
 3. **Zoom and reflow**: 200 % and 400 % (320 CSS px width); text-spacing
    bookmarklet; no loss of content or function.
 4. **Devices**: 10" and 12" tablets, Android and iPadOS, portrait and landscape;

@@ -14,11 +14,8 @@ version 3 or later (see `LICENSE`). The following material is not original work.
 
 - **Pictograms.** No pictogram is bundled. Pictograms are uploaded by teachers to
   each course and are covered by their own licences (for example ARASAAC,
-  CC BY-NC-SA 4.0, © Gobierno de Aragón; author Sergio Palao), not by the GPL and
-  not by the assignment of rights of the contract. The theme records and displays
+  CC BY-NC-SA 4.0, © Gobierno de Aragón; author Sergio Palao), not by the GPL. The theme records and displays
   their author and licence.
-- **EU emblem and FEDER wording.** Provided by the institution through the admin
-  settings; not part of the theme.
 - **Dyslexia-specific fonts.** Not included (see `docs/research-and-decisions.md`, D5).
 
 ## Development-only tools (not distributed)

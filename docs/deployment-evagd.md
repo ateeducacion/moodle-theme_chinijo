@@ -11,13 +11,11 @@ yet: every EVAGD check below is **pending** until access is provided.
 
 ## 1. Prerequisites
 
-- Moodle 4.5 LTS or later, up to 5.3 LTS (`requires` 2024100700). Use the target
-  version communicated in the start-up record; see `docs/compatibility.md`.
+- Moodle 4.5 LTS or later, up to 5.3 LTS (`requires` 2024100700). Use EVAGD's target
+  version; see `docs/compatibility.md`.
 - Boost present and up to date (it ships with Moodle).
 - Administrator access to the server (CLI) and to Site administration.
 - A recent, tested backup of the database and of `moodledata`, and of the code tree.
-- The approved EU emblem file, its text alternative and the FEDER wording, if the
-  notice must be shown (§4.3).
 
 ## 2. Package
 
@@ -72,30 +70,20 @@ Site administration › Appearance › Themes › Chinijo:
 Raw SCSS settings, as in Boost. Changes must not reduce contrast, hide focus
 indicators or remove underlines from links in text.
 
-### 4.3 EU funding notice (FEDER)
-1. Ask the contract manager for the approved emblem file, its text alternative
-   (for example the funding statement shown in the image) and the wording of the
-   acknowledgement (Regulation (EU) 2021/1060, Article 47 and Annex IX). The theme
-   ships none of them.
-2. Upload the emblem (PNG, JPEG or WebP), fill in the text alternative and the
-   acknowledgement, choose the pages (landing pages or every page) and enable it.
-3. Check it on the login page, the site home and the dashboard, at 200 % zoom and
-   on a tablet. Without an emblem-with-alternative or a text, nothing is shown.
-
-### 4.4 Capabilities
+### 4.3 Capabilities
 `theme/chinijo:managepictograms` is given to editing teachers and managers. Review
 it against EVAGD's custom roles.
 
-### 4.5 Languages
+### 4.4 Languages
 The theme ships English and Spanish strings. The Spanish language pack must be
 installed in EVAGD as usual; the theme never forces a language.
 
 ## 5. Pre-production verification checklist (pending until done)
 
-Record results in `docs/accessibility-audit.md` and `docs/incident-and-patch-log.md`.
+Record results in `docs/accessibility-audit.md`.
 
-- [ ] Login through the corporate SSO; login page toolbar and FEDER notice when the
-      Moodle login page is shown.
+- [ ] Login through the corporate SSO; login page toolbar when the Moodle login
+      page is shown.
 - [ ] Dashboard, course list, course page, an activity, an assignment submission,
       grades, messaging and course editing work as with Boost.
 - [ ] EVAGD's own blocks, local plugins, course formats and filters render and work.
@@ -122,9 +110,7 @@ Record results in `docs/accessibility-audit.md` and `docs/incident-and-patch-log
 
 ## 7. Moodle or EVAGD upgrades
 
-Adapting the theme to Moodle/EVAGD versions released after acceptance is not
-covered by the warranty (specification §L1E01.G.2). Before upgrading EVAGD:
-check `version.php` (`supported`), run the CI matrix against the new branch
+Before upgrading EVAGD to a new Moodle version: check `version.php` (`supported`), run the CI matrix against the new branch
 (add it to `.github/workflows/ci.yml`), read Boost's `UPGRADING.md` for the new
 version and test in pre-production.
 
@@ -143,8 +129,6 @@ settings.
 - **Full removal**: switch theme, then Site administration › Plugins › Plugins
   overview › Chinijo › Uninstall. This deletes the table, files, settings and the
   theme's user preferences. Remove the directory afterwards.
-
-Every rollback must be recorded in `docs/incident-and-patch-log.md`.
 
 ## 9. Caches and performance
 

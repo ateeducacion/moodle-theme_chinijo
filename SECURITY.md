@@ -6,8 +6,8 @@
 |---|---|---|
 | 0.x (development) | 4.5 LTS – 5.3 LTS | Yes, on the `main` branch |
 
-During the warranty period of the accepted release, high and critical
-vulnerabilities in the theme's own code are fixed within 5 working days.
+High and critical vulnerabilities in the theme's own code are fixed first on
+`main` and published as a patch release.
 
 ## Reporting a vulnerability
 

@@ -39,8 +39,4 @@ $callbacks = [
         'hook' => \core\hook\output\after_standard_main_region_html_generation::class,
         'callback' => [\theme_chinijo\hook_callbacks::class, 'after_standard_main_region_html_generation'],
     ],
-    [
-        'hook' => \core\hook\output\before_footer_html_generation::class,
-        'callback' => [\theme_chinijo\hook_callbacks::class, 'before_footer_html_generation'],
-    ],
 ];
