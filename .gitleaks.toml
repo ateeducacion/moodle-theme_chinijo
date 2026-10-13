@@ -1,0 +1,11 @@
+# gitleaks configuration: the default rules, minus local tool output that is never committed.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Generated reports and local tool output"
+paths = [
+  '''^build/''',
+  '''^\.playwright-mcp/''',
+  '''(^|/)node_modules/''',
+]

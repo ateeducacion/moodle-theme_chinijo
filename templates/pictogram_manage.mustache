@@ -1,0 +1,72 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_chinijo/pictogram_manage
+
+    List of the sections and activities of a course with their pictograms.
+
+    Context variables required for this template:
+    * items - Sections and activities in course order, each with issection, name,
+      url (image URL or null), alt, editurl and deleteurl (or null).
+
+    Example context (json):
+    {
+        "items": [
+            {"issection": true, "name": "Week 1", "url": null, "alt": "", "editurl": "#", "deleteurl": null},
+            {"issection": false, "name": "Read the story", "url": "https://moodle.example/book.png", "alt": "Book", "editurl": "#", "deleteurl": "#"}
+        ]
+    }
+}}
+<div class="theme-chinijo-pictograms-manage">
+    <p>{{#str}}pictograms_intro, theme_chinijo{{/str}}</p>
+    <p class="theme-chinijo-pictograms-manage__notice">{{#str}}pictogram_licensenotice, theme_chinijo{{/str}}</p>
+    <div class="table-responsive">
+        <table class="generaltable theme-chinijo-pictogram-table">
+            <caption>{{#str}}pictograms_tablecaption, theme_chinijo{{/str}}</caption>
+            <thead>
+                <tr>
+                    <th scope="col">{{#str}}pictogram_item, theme_chinijo{{/str}}</th>
+                    <th scope="col">{{#str}}pictogram, theme_chinijo{{/str}}</th>
+                    <th scope="col">{{#str}}actions, core{{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#items}}
+                    <tr class="{{#issection}}theme-chinijo-pictogram-table__section{{/issection}}{{^issection}}theme-chinijo-pictogram-table__activity{{/issection}}">
+                        <th scope="row">
+                            {{#issection}}<span class="theme-chinijo-pictogram-table__type">{{#str}}pictogram_type_section, theme_chinijo{{/str}}</span>{{/issection}}
+                            {{^issection}}<span class="theme-chinijo-pictogram-table__type">{{#str}}pictogram_type_cm, theme_chinijo{{/str}}</span>{{/issection}}
+                            <span class="theme-chinijo-pictogram-table__name">{{name}}</span>
+                        </th>
+                        <td>
+                            {{#url}}<img class="theme-chinijo-pictogram-thumb" src="{{url}}" alt="{{alt}}">{{/url}}
+                            {{^url}}<span class="theme-chinijo-pictogram-table__none">{{#str}}pictogram_none, theme_chinijo{{/str}}</span>{{/url}}
+                        </td>
+                        <td class="theme-chinijo-pictogram-table__actions">
+                            <a class="btn btn-secondary" href="{{editurl}}">
+                                {{#url}}{{#str}}pictogram_change, theme_chinijo{{/str}}{{/url}}{{^url}}{{#str}}pictogram_choose, theme_chinijo{{/str}}{{/url}}<span class="theme-chinijo-visually-hidden">: {{name}}</span>
+                            </a>
+                            {{#deleteurl}}
+                                <a class="btn btn-outline-danger" href="{{deleteurl}}">{{#str}}pictogram_delete, theme_chinijo{{/str}}<span class="theme-chinijo-visually-hidden">: {{name}}</span></a>
+                            {{/deleteurl}}
+                        </td>
+                    </tr>
+                {{/items}}
+            </tbody>
+        </table>
+    </div>
+</div>

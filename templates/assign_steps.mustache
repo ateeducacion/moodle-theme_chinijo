@@ -1,0 +1,64 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_chinijo/assign_steps
+
+    The three steps of an assignment for a learner (read, do the work, hand it in)
+    and a sentence that says whether the work has been handed in. Each step shows
+    its state in words as well as by colour and shape.
+
+    Context variables required for this template:
+    * cmid - Course module id.
+    * status - none, draft or submitted.
+    * statustext - Sentence about the submission.
+    * issubmitted - Whether the work has been handed in.
+    * steps - Each with number, label, state (done, current or todo), statelabel and iscurrent.
+
+    Example context (json):
+    {
+        "cmid": 3,
+        "status": "none",
+        "statustext": "You have not handed it in yet.",
+        "issubmitted": false,
+        "steps": [
+            {"number": 1, "label": "Read", "state": "current", "statelabel": "Now", "iscurrent": true},
+            {"number": 2, "label": "Do your work", "state": "todo", "statelabel": "To do", "iscurrent": false},
+            {"number": 3, "label": "Hand it in", "state": "todo", "statelabel": "To do", "iscurrent": false}
+        ]
+    }
+}}
+<section class="theme-chinijo-steps" data-region="theme_chinijo-steps" data-status="{{status}}" aria-labelledby="theme-chinijo-steps-title-{{cmid}}">
+    <h2 class="theme-chinijo-visually-hidden" id="theme-chinijo-steps-title-{{cmid}}">{{#str}}steps_title, theme_chinijo{{/str}}</h2>
+    <ol class="theme-chinijo-steps__list">
+        {{#steps}}
+            <li class="theme-chinijo-steps__step" data-state="{{state}}"{{#iscurrent}} aria-current="step"{{/iscurrent}}>
+                <span class="theme-chinijo-steps__number" aria-hidden="true">
+                    <span class="theme-chinijo-steps__digit">{{number}}</span>
+                    <svg class="theme-chinijo-icon theme-chinijo-steps__check" viewBox="0 0 24 24" width="28" height="28" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                </span>
+                <span class="theme-chinijo-steps__text">
+                    <span class="theme-chinijo-steps__label">{{label}}</span>
+                    <span class="theme-chinijo-steps__state">{{statelabel}}</span>
+                </span>
+            </li>
+        {{/steps}}
+    </ol>
+    <p class="theme-chinijo-steps__status">
+        {{#issubmitted}}<svg class="theme-chinijo-icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>{{/issubmitted}}
+        {{statustext}}
+    </p>
+</section>

@@ -1,0 +1,59 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_chinijo/activity_bar
+
+    Bar at the top of an activity page: a large link back to the course (always
+    in the same place), the learner's progress and a "Listen" button. The button
+    stays hidden unless theme_chinijo/read_aloud finds a voice installed on the
+    device for the page language.
+
+    Context variables required for this template:
+    * backurl - URL of the course page, at the activity.
+    * progress - The learner's progress (completed, total, coursecomplete, courseid, cmidsjson, firstname), or null.
+
+    Example context (json):
+    {
+        "backurl": "https://moodle.example/course/view.php?id=2#module-11",
+        "progress": {"courseid": 2, "completed": 1, "total": 2, "coursecomplete": false, "cmidsjson": "[10,11]", "firstname": "Leo"}
+    }
+}}
+<div class="theme-chinijo-activity-bar" data-region="theme_chinijo-activity-bar">
+    <a class="btn theme-chinijo-activity-bar__back" href="{{backurl}}">
+        <svg class="theme-chinijo-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"></path></svg>
+        {{#str}}activity_back, theme_chinijo{{/str}}
+    </a>
+    {{#progress}}
+        <div class="theme-chinijo-activity-bar__progress" data-region="theme_chinijo-progress" data-courseid="{{courseid}}" data-cmids="{{cmidsjson}}" data-completed="{{completed}}" data-total="{{total}}" data-firstname="{{firstname}}">
+            <span class="theme-chinijo-activity-bar__summary" id="theme-chinijo-progress-label-{{courseid}}" data-region="theme_chinijo-progress-label">
+                {{#coursecomplete}}
+                    <span class="theme-chinijo-progress__done">{{#str}}progress_coursecomplete, theme_chinijo{{/str}}</span>
+                {{/coursecomplete}}
+                {{^coursecomplete}}
+                    {{#str}}path_summary, theme_chinijo, { "completed": {{completed}}, "total": {{total}} }{{/str}}
+                {{/coursecomplete}}
+            </span>
+            {{#total}}
+                <progress class="theme-chinijo-progress__bar" max="{{total}}" value="{{#coursecomplete}}{{total}}{{/coursecomplete}}{{^coursecomplete}}{{completed}}{{/coursecomplete}}" aria-labelledby="theme-chinijo-progress-label-{{courseid}}" data-region="theme_chinijo-progress-bar"></progress>
+            {{/total}}
+        </div>
+    {{/progress}}
+    <button type="button" class="btn theme-chinijo-activity-bar__listen" data-action="theme_chinijo-read-aloud" hidden>
+        <svg class="theme-chinijo-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M4 9h4l5-4v14l-5-4H4z"></path><path d="M16.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 6a8.5 8.5 0 0 1 0 12"></path></svg>
+        <span data-region="theme_chinijo-read-aloud-label">{{#str}}readaloud, theme_chinijo{{/str}}</span>
+    </button>
+</div>

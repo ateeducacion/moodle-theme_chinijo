@@ -1,0 +1,96 @@
+# Moodle Playground
+
+[Moodle Playground](https://moodle-playground.com/) (ATE) runs Moodle in the
+browser from a JSON blueprint. Chinijo ships two blueprints.
+
+| File | Runs on | Content |
+|---|---|---|
+| `blueprint.json` | Browser Playground and erseco/alpine-moodle's experimental runner | Moodle 5.3 (PHP 8.4) preferred; installs Chinijo from the `main` branch archive (`installMoodlePlugin`, critical); activates it (`setTheme`, critical); site completion on; a demo category and course; three disposable accounts; enrolments; logs in as `admin`. |
+| `blueprints/chinijo-full-demo.blueprint.json` | Browser Playground only | Same theme installation, plus the Spanish language pack, the demo users, course, enrolments and thirteen activities created with Playground's own steps (pages, an assignment and a link; in the fourth section, "Animals", a teacher's note, a book, a quiz, a choice and a forum, as with `make seed`), and `runPhpCode` running `chinijo_seed_playground()` from `dev/seedlib.php` (completion settings, section names, the content of the book, quiz, choice and forum, demo pictograms and the first student's progress). Logs in as `admin`. |
+
+Demo accounts (**disposable, demonstration only**, never use these on a real
+site): `admin`, `teacher1`, `student1`, `student2`, password `Chinijo-demo-1234`.
+Both demos open logged in as `admin`, to explore the settings and the
+Pictograms page. Learners' view ("Up next", "My path", encouragement) is for users
+with completion tracking: log out and log in as `student1` (Leo, with progress in
+the full demo), or use "Log in as" from the course participants.
+
+## One-click launch
+
+- Portable demo:
+  `https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprint.json`
+- Full demo:
+  `https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprints%2Fchinijo-full-demo.blueprint.json`
+
+Both links need this repository's `main` branch to be published on GitHub
+(the blueprint downloads `archive/refs/heads/main.zip`).
+
+## Pull request previews
+
+`.github/workflows/playground-preview.yml` uses
+`ateeducacion/action-moodle-playground-pr-preview@v1` (pinned to its commit).
+On every pull request from a branch of this repository it reads `blueprint.json`,
+replaces the URL of the `installMoodlePlugin` step that points to this repository
+with the archive of the pull request's branch, and appends a "Preview in Moodle
+Playground" button to the pull request description (no comments). The job has
+`pull-requests: write`; the rest of the workflow is read-only.
+
+Pull requests from forks get a read-only token, so the job is skipped. To preview
+a fork's branch by hand, download `blueprint.json`, change the URL to
+`https://github.com/<fork>/moodle-theme_chinijo/archive/refs/heads/<branch>.zip`
+and open it with an inline `?blueprint=` URL (raw JSON, base64 or gzip+base64url,
+as documented in the Playground's URL parameters).
+
+## Validation
+
+`make validate-blueprint` (and the CI job `repository`) downloads the official
+schema from
+`https://ateeducacion.github.io/moodle-playground/assets/blueprints/blueprint-schema.json`,
+validates every blueprint with ajv-cli, checks the project rules (theme installed
+from this repository and activated, both critical, Moodle 5.3 preferred) and runs
+`moodle-blueprint validate` from `erseco/alpine-moodle:v5.3.0` on the portable
+blueprint.
+
+## Writing PHP steps for Playground
+
+- `runPhpCode` runs the code as it is, without loading Moodle, so `$CFG` and
+  `$DB` do not exist until the code loads Moodle itself:
+  `define('CLI_SCRIPT', true); require('/www/moodle/config.php');` (the same
+  path Playground's own steps use). An error in this step is only a warning in
+  the Logs tab of the Playground panel and does not stop the blueprint, so the
+  full demo creates its users, course and activities with Playground's own steps
+  and keeps `runPhpCode` for the finishing touches.
+- Playground ships Moodle without its `tests/` directories, so Moodle's test data
+  generators (`testing_data_generator::create_module()` and the like) fail there.
+  `chinijo_seed_run()` (used by `make seed`) relies on them;
+  `chinijo_seed_playground()` does not.
+- Playground's `addModule` writes the activity records directly, without
+  `add_moduleinfo()` (its nested transactions fail on SQLite in WebAssembly), and
+  does not set completion; `chinijo_seed_playground()` sets it afterwards.
+- `addModule` writes only the activity's own record: a book without chapters, a
+  quiz without its first section, questions or grade item, a choice without
+  options, a forum without discussions. `chinijo_seed_playground_content()` adds
+  them, with the same helpers that `make seed` uses (the quiz questions are
+  saved through the question type into the quiz's own question bank). The quiz's
+  `addModule` step carries the settings that the quiz form would compute, such as
+  the review options.
+- To read the log of a run, open the panel (right of the toolbar) and its Logs
+  tab: every step is listed with its result.
+- To try a blueprint before it is on `main`, pass it inline (`?blueprint=` with
+  gzip+base64url). moodle-playground.com is served by GitHub Pages, which answers
+  414 when the URL is longer than about 8 KB; importing a file in the Blueprint
+  tab also puts it in the URL. A `runPhpCode` step that rewrites
+  `dev/seedlib.php` before running it tests seed changes against the theme
+  installed from `main`.
+
+## Playground versus the local Docker stack
+
+- `preferredVersions` chooses the browser runtime; in Docker the Moodle version is
+  the image's (`make up MOODLE_VERSION=…`).
+- `installMoodle` and `login` are markers that the Docker runner ignores.
+- The Docker runner cannot run `installLanguagePack`, `addModule` or `runPhpCode`;
+  that is why they are only in `blueprints/`.
+- erseco/alpine-moodle's blueprint runner fails on Moodle 5.3 (it looks for
+  `admin/cli` under `public/`). The local stack therefore does not use blueprints:
+  `make up` installs the bind-mounted repository with Moodle's CLI and `make seed`
+  creates the demo with `dev/seed.php`.

@@ -1,0 +1,242 @@
+# Research and decisions
+
+Log of what was checked, where, and why each choice was made. Dates are those of
+the check. Add new entries at the end of each section; do not rewrite history.
+
+## Sources checked (2026-10-08)
+
+| Source | Exact version / reference | What was checked |
+|---|---|---|
+| Definitive specification | `PPT-EDICI-Lote1_Tema_Moodle_EVAGD.md` (local copy, not committed) | Every requirement of L1E01, §2.3–2.10; mapped in `requirements-traceability.md`. The older PDF was not used. |
+| Moodle core | `MOODLE_405_STABLE` @ `215f443` (4.5.15, build 2024100715) and `MOODLE_503_STABLE` @ `4262229` (5.3, build 2026100500), shallow clones | Boost `config.php`, `lib.php`, layouts, templates, `UPGRADING.md`; `core_renderer`; output hooks; `core_user` preference definitions and REST route; `completion_info`; `core/modal`, `core/toast`, `core_course/events`; file serving; navigation callbacks; backup theme plugin classes; Behat accessibility steps. |
+| Moodle core (API checks) | `MOODLE_500_STABLE`, `MOODLE_501_STABLE`, `MOODLE_502_STABLE` (GitHub API) | `completion_info::get_user_activities_with_completion()` exists from 5.0; `cmactions::delete()` and `sectionactions::set_visibility()` from 5.2. |
+| Moodle release builds | Tags `v4.5.0` (2024100700), `v5.0.0` (2025041400), `v5.1.0` (2025100600), `v5.2.0` (2026042000), `v5.3.0` (2026100500) | `version.php` of each tag. |
+| Context7 | `/moodle/devdocs` | Boost child theme configuration (parents, SCSS callbacks) and the Hooks API (`db/hooks.php`, priorities). Answers were cross-checked in the source above (hook priority: higher runs first, default 100). |
+| moodledev.io | Theme, Hooks, Privacy, Testing (PHPUnit/Behat) pages, through Context7 | As above. |
+| moodle-plugin-ci | 4.5.11 (2026-08-07), `gha.dist.yml` at that release, `docs/CLI.md`, `CodeCoverage.md`, source of `GruntCommand`, `BehatCommand`, `PluginInstaller` | Commands and options, PostgreSQL 17 / MariaDB 11 recommendation for 5.3, how plugins are copied into Moodle, how Grunt detects stale builds, how Behat finds Selenium. |
+| erseco/alpine-moodle | Images `v4.5.15` (PHP 8.3.15) and `v5.3.0` (PHP 8.4.21), run locally | Entrypoint scripts, `SYNC_MOODLE_CODE`, theme mount paths, `public/` layout, CLI location, blueprint runner (`moodle-blueprint validate`). |
+| ATE Moodle Playground | Schema `assets/blueprints/blueprint-schema.json` (fetched by `make validate-blueprint`), `docs/blueprints/reference.md`, examples | Step names and shapes, `critical`, `preferredVersions`, `runPhpCode`, `installLanguagePack`, launch URL parameters. |
+| PR preview action | `ateeducacion/action-moodle-playground-pr-preview` `v1` (`bfa63e4`, 2026-05-13) | Inputs; only `installMoodlePlugin` URLs of this repository are rewritten to the PR branch archive; runtime `node20`. |
+| Third-party themes | gjbarnard/moodle-theme_adaptable (`ci.yml`), willianmano/moodle-theme_moove | CI patterns. Adaptable: matrix and release flow worth reusing; outdated pins avoided. Moove: no current CI. The local `moodle-theme-zagal` (a Moove fork) was only looked at for conventions. |
+| Semgrep | 1.180.0 (`semgrep/semgrep:1.180.0`) | Registry rulesets with PHP and JavaScript rules; `--config auto` does not work with `--metrics=off`. |
+| gitleaks | 8.30.1 (`ghcr.io/gitleaks/gitleaks:v8.30.1`) | The GitHub Action v3 needs a licence for organisation repositories, the CLI does not. |
+| Font | Atkinson Hyperlegible, Fontsource package 5.2.8 (OFL-1.1) | Licence and latin subset (covers Spanish). |
+| Font | Andika, Fontsource package 5.3.0 (OFL-1.1; package SHA-256 `4c96703f…5507d`) | Licence (no Reserved Font Name), latin subset. |
+| Canarian regulations | ATE index https://ateeducacion.github.io/normativa_educativa_canaria/llms.txt; Decreto 211/2022 read in the BOC (art. 6, 8, 9 and Anexo 4) | Areas and weekly timetable of 1.º–2.º, learning situations; summary and implications in `curriculum-canarias.md`. |
+
+## Decisions
+
+### D1. Boost child theme with a minimal override surface
+Inherit everything from Boost; override only `core_renderer::course_header()` and
+`core_renderer::course_content_header()` (both add to the parent's output); use
+output hooks and documented `lib.php` callbacks for the rest. Rejected: copying
+Boost layouts or `full_header`/navbar templates (they changed between 4.5 and 5.3:
+login form moved to core in 5.3, course index header in 5.3, colour mode menu in
+the navbar in 5.3).
+
+### D2. Preferences as core user preferences, validated by core
+Store `theme_chinijo_*` user preferences and declare them in
+`theme_chinijo_user_preferences()` with a permission callback that only accepts
+the user themself. The dialogue saves through `core_user/repository`, the same
+path Boost uses for its drawer preferences, so core validates names, values and
+ownership. Rejected: a custom AJAX endpoint (more attack surface, duplicated
+validation). Guests and visitors who are not logged in use the stand-alone page
+(POST + `sesskey`), which Moodle stores in the session only.
+Findings during implementation: `setUserPreferences()` needs `userid: 0` for each
+item; a `null` value (remove) returns HTTP 500 from the 5.3 route, so defaults are
+saved as the value `default`.
+
+### D3. Data attributes on `<html>` written by a hook
+`before_html_attributes` (priority 0, after Boost's colour mode listener) writes
+`data-chinijo-*` attributes, so the first paint already uses the user's choices.
+Rejected: classes (YUI adds `class` to `<html>`), client-side only application
+(flash of default styles).
+
+### D4. High contrast and Boost colour modes
+When high contrast is on, `data-bs-theme`/`data-colourmode` are pinned to `light`.
+A high contrast dark variant was not added: Boost's dark mode is still
+experimental and off by default; this can be revisited.
+
+### D5. Font
+Atkinson Hyperlegible (OFL 1.1), self-hosted, latin subset, 4 files of ~17 KB that
+browsers only download when the choice is active. No dyslexia-specific font is
+offered: the evidence that such fonts improve reading is weak, and the spacing
+controls address the same needs. No claim is made that any font "treats" dyslexia.
+
+### D6. Reduced motion
+System `prefers-reduced-motion` is always honoured; the preference can force it.
+Durations are 0.01 ms rather than 0: core modals and Boost drawers wait for
+`transitionend`, which is not fired for zero-length transitions.
+
+### D7. Pictograms inside the theme
+A theme can own a table (`db/install.xml`), a capability (`db/access.php`), files
+in the course context and a management page, all through documented APIs; no
+companion plugin is needed. Images are added by JavaScript next to the names
+(progressive enhancement) instead of overriding course format templates, which
+differ between formats and versions. Course formats keep the `data-for`
+attributes used for this on 4.5–5.3. SVG is not accepted (script risk); images are
+checked by content. Course backup and restore use Moodle's theme backup plugin
+classes; pictograms are restored in `after_restore_course()`, once section and
+course module ids are mapped.
+
+### D8. Progress figures
+Reproduce `\core_completion\progress` per branch (4.5 counts all activities with
+completion; 5.0+ counts those visible to the user), selected with
+`method_exists()`, and verify against core in PHPUnit.
+
+### D9. Local environment
+erseco/alpine-moodle with the repository bind-mounted **read-only**,
+`SYNC_MOODLE_CODE=never` and no code volume: the image's code sync uses
+`rsync --delete`, which deleted bind-mounted plugin files when tested.
+`REVERSEPROXY=true` because PHP sees port 8080 inside the container and Moodle's
+wwwroot check would redirect forever on any other host port (development only).
+The image's installer does not quote `MOODLE_SITENAME`, so it is a single word.
+Installation and activation use Moodle's CLI (`dev/install.sh`) because the
+image's blueprint runner fails on 5.3 (`admin/cli` is outside `public/`).
+
+### D10. Test runner
+A development-only image based on `moodlehq/moodle-php-apache` (PHP 8.3/8.4 with
+PCOV) plus Composer, nvm, Java (Mustache HTML validator), the PostgreSQL client
+and moodle-plugin-ci 4.5.11, running as a non-root user. Selenium runs as a
+separate `selenium/standalone-chromium` service; the runner starts PHP's built-in
+server itself (`MOODLE_START_BEHAT_SERVERS=NO`). The alpine production-like image
+is not modified.
+
+### D11. CI matrix
+Full runs (static, PHPUnit, Behat with axe) on 4.5 LTS (PHP 8.3) and 5.3 LTS
+(PHP 8.4); install, static checks and PHPUnit on 5.0, 5.1, 5.2 and on 5.3 with
+PHP 8.3; MariaDB 11.8 on both LTS. `amd/build` is produced with Moodle 5.3's Grunt;
+Moodle 4.5's Grunt produced identical files in the local run, so the "build is up
+to date" check runs on both LTS jobs. Actions are pinned
+to commit SHAs. PHPMD runs as a step; moodle-plugin-ci reports its findings but
+does not fail on them.
+
+### D12. Blueprint
+`installMoodlePlugin` (with `pluginType`/`pluginName`) instead of `installTheme`:
+the PR preview action only rewrites `installMoodlePlugin` URLs to the PR branch.
+The portable `blueprint.json` uses only steps implemented by both runners;
+`blueprints/chinijo-full-demo.blueprint.json` adds browser-only steps
+(`installLanguagePack`, `runPhpCode` calling `dev/seedlib.php`).
+
+### D13. Security scanning
+Semgrep CE with explicit rulesets (p/php, p/phpcs-security-audit, p/javascript,
+p/owasp-top-ten, p/cwe-top-25, p/secrets); the gate fails on ERROR severity.
+gitleaks CLI instead of the licensed GitHub Action.
+
+### D14. Course page for learners: "Next" and "My path"
+Inside `course_content_header()`, from the completion data that already feeds the
+progress: the next activity to do with one large Start link, and the activities
+of the current section (the section of the next activity) in course order, with
+their pictograms and their state written out. Grounded in the Canarian Primary
+curriculum (`docs/curriculum-canarias.md`): a course per area holds several
+learning situations, each usually a section, with 20 to 100 activities a year
+(inference), so the path is drawn per section and windowed to 7 activities.
+Progress is a count of activities, never a percentage or a mark, because grades
+in Primary are qualitative. Rejected: replacing the course format or overriding
+its templates (they change between 4.5 and 5.3), and a whole-course path of every
+activity (too long for 6-year-olds).
+
+### D15. Encouragement and sound
+After core confirms a manual completion, a message of encouragement in a
+`role="status"` region inside the main landmark, with a link to the next
+activity; it never takes the focus and stays until closed. Sounds are off by
+default; when the learner turns them on, a short chime is generated with the Web
+Audio API, so there is no audio file to license or download. Rejected: core's
+toast (it closes by itself and cannot hold a link to the next activity).
+
+### D16. "Listen" with on-device voices only
+The Web Speech API reads the main region of activity pages, using only voices
+with `localService` set, so no text leaves the device (specification 2.9: no
+external services without authorisation). The button is hidden when there is no
+such voice for the page language. It does not replace screen readers or EVAGD's
+text-to-speech tools.
+
+### D17. Andika as "School letters"
+Andika (SIL International, OFL 1.1, no Reserved Font Name; Fontsource 5.3.0) has
+single-storey a and g, as in the letters children learn to write. Self-hosted,
+latin subset, downloaded only when chosen. Offered as a choice, not as a default.
+
+### D18. Moodle's activities for young learners: restyle and add, never remove (0.3.0)
+Sources checked on 2026-10-12: Moodle's design system and content guidelines
+(https://moodledev.io/general/designsystem/overview,
+https://moodledev.io/general/contentguidelines/productwriting/contentprinciples,
+https://moodledev.io/general/contentguidelines/productwriting/writingforaccessibility),
+Moodle HQ's activity cards user research behind the 4.0 course page
+(https://moodle.org/theme/moodleorg/pix/ux/activity_cards.pdf, MDL-74978),
+Nielsen Norman Group's research with children
+(https://www.nngroup.com/articles/childrens-websites-usability-issues/,
+https://www.nngroup.com/articles/kids-cognition/,
+https://www.nngroup.com/articles/children-ux-physical-development/), the
+University of Washington's study of children's understanding of interface
+symbols (https://depts.washington.edu/chilllab/research/childrens-understanding-of-symbolism-in-user-interfaces/)
+and W3C's guidance on cognitive accessibility (https://www.w3.org/TR/coga-usable/).
+What they agree on and what Chinijo does with it:
+- One clear main action per screen, large and labelled with a verb; status in
+  words and shape, never colour alone; icons with visible labels. NN/g's figure
+  for children's targets is about 2 cm (roughly 76 CSS px, our own conversion),
+  above Chinijo's general 44 px, so the page's primary action is at least 60 px
+  high and the chalkboard's "Start" button 76 px.
+- Moodle 4.0 introduced the activity cards and the activity header (release
+  notes, activity cards research, MDL-74978). Chinijo keeps them, with the
+  completion information and the course index, and adds a verb to each card;
+  nothing is hidden.
+- Assignments: the three steps (read, do, hand in) come from the learner's own
+  submission status (`local\assign_steps`), so they never contradict Moodle's
+  status table below them.
+- Quizzes and choices: answers become large cards; the label covers the card, so
+  a press anywhere selects it, and the radio button stays visible and above the
+  card.
+- Decorative classroom motifs (chalkboard, coloured bands, notes) stay in headers
+  and frames, never inside the content teachers write.
+Rejected: replacing Moodle's activity templates or renderers (they differ between
+4.5 and 5.3 and would multiply the override surface), and changing the text of
+Moodle's own controls.
+
+### D19. No "advanced mode" switch; "More options" on the page instead (0.3.0)
+A global "simple / advanced" switch was considered and rejected. Modes hide state
+(https://www.nngroup.com/articles/modes/): a child who turned it on by accident,
+or a classmate on a shared device, sees a different interface without knowing
+why, and teachers can no longer predict what a learner sees. Progressive
+disclosure (https://www.nngroup.com/articles/progressive-disclosure/) gives the
+same benefit without a mode: on forum pages, learners see the main action and
+find search and subscription one press away behind "More options", on that page
+only, with nothing remembered. Teachers (users who can manage activities) see
+every control as in Boost. The display settings remain the only personal
+settings, and they never hide content.
+
+### D20. Two colours of main action, one rule (0.3.0)
+The chalkboard's "Start" button is yellow chalk on dark green; every other main
+action is Moodle's blue primary button. The rule is that the yellow button only
+exists on the chalkboard, so "yellow" always means "start the next activity" and
+blue keeps meaning "do this" everywhere in Moodle. Identity is carried by shape,
+size, icon and verb as well as colour; in high contrast both become black with
+white text. Contrast: chalk text on the board 9.7:1, yellow chalk 8.1:1, dark
+text on the yellow button 11.5:1, blue primary 5.4:1 on white.
+
+### D21. Andika for headings by default (0.3.0)
+Headings use Andika by default (D17 kept it as a choice for all the text): its
+letters match the ones children learn to write, and only its bold style is
+needed for headings (about 19 KB, self-hosted). Body text keeps the chosen
+typeface; with "Easy to read" the headings use Atkinson Hyperlegible too.
+
+### D22. ATE's own development: no contract formalities, no FEDER notice (0.3.1)
+Chinijo is developed by the Área de Tecnología Educativa itself, not delivered
+under the tendered contract (maintainers' decision, 2026-10-13). The
+specification stays the reference for functional and accessibility
+requirements, but its contractual items do not apply: FEDER publicity (the theme
+is not co-funded by FEDER), ATE's project template, the warranty and its service
+levels, the incident and patch log, the technology transfer plan and the
+reversibility record. The EU funding notice, its settings, template, styles,
+strings and tests were removed; an upgrade step deletes its stored settings and
+uploaded emblem. Version tags stay, because the release workflow builds the
+installable ZIP from them.
+
+## Known uncertainties
+
+- The PR preview action `v1` declares the `node20` runtime, which GitHub has
+  been retiring on hosted runners. It ran successfully on pull request #1
+  (2026-10-08); it may need an update when Node 20 is removed.
+- moodle-plugin-ci 4.5.11's own CI does not cover 5.2/5.3; the evidence is this
+  repository's own runs on the five branches, locally and in GitHub Actions.
+- The Moodle Playground run of `blueprint.json` needs the theme published on the
+  `main` branch of the GitHub repository; it has not been executed yet.

@@ -1,0 +1,234 @@
+# Chinijo — accessible Moodle theme
+
+[![CI](https://github.com/ateeducacion/moodle-theme_chinijo/actions/workflows/ci.yml/badge.svg)](https://github.com/ateeducacion/moodle-theme_chinijo/actions/workflows/ci.yml)
+[![Security](https://github.com/ateeducacion/moodle-theme_chinijo/actions/workflows/security.yml/badge.svg)](https://github.com/ateeducacion/moodle-theme_chinijo/actions/workflows/security.yml)
+[![Licence: GPL v3 or later](https://img.shields.io/badge/licence-GPL--3.0--or--later-blue.svg)](LICENSE)
+
+*Versión en español: [README.es.md](README.es.md).*
+
+**Chinijo** (`theme_chinijo`) is an accessible [Moodle](https://moodle.org) theme
+based on Boost, built for EVAGD, the virtual learning environment of the
+Consejería de Educación del Gobierno de Canarias. It is designed for the first
+years of Primary Education and for learners with specific educational support
+needs (NEAE): calm pages, larger text and targets, personal display settings,
+course progress and pictogram support, while keeping every Moodle feature.
+
+![Chinijo on Moodle 5.3: a demo course page greeting the learner, with "Up next" on a chalkboard (the next activity, what to do in it and a large Start button), "My path" for the current section with pictograms and the state of each activity, and the "Display settings" control in the navbar](docs/screenshots/chinijo-course.png)
+
+*Real screenshot of the theme on Moodle 5.3 with synthetic demo data
+(`make seed`, `make screenshot`). More:
+[assignment with its steps](docs/screenshots/chinijo-activity.png),
+[quiz question](docs/screenshots/chinijo-quiz.png),
+[encouragement after marking an activity as done](docs/screenshots/chinijo-encouragement.png),
+[display settings dialogue](docs/screenshots/chinijo-display-settings.png),
+[high contrast with large text and school letters](docs/screenshots/chinijo-course-high-contrast.png).*
+
+> **Status:** development version 0.3.1 (alpha). Automated checks pass locally
+> and in GitHub Actions on Moodle 4.5 to 5.3 (see [Verification](#verification)). Manual
+> accessibility checks with screen readers and devices and tests on EVAGD
+> pre-production are **pending**.
+
+## Features
+
+| Feature | Status |
+|---|---|
+| **Display settings** for each person: ready-made combinations (as usual, easier to read, easier to see, calmer); high contrast; text size (normal, large, extra large, huge); easy-to-read typeface (Atkinson Hyperlegible) or school letters (Andika); space between letters, words and lines up to the WCAG 2.2 text-spacing values; reduce animations (the system `prefers-reduced-motion` is always honoured); sounds (off by default). Large tiles that show what each choice does. Stored as the user's own Moodle preferences, session-only for guests; nobody can set them for someone else. Keyboard-accessible dialogue from the navbar (and the login page), and a page that works without JavaScript. | Implemented |
+| **Course page as a primary classroom**: a greeting, **Up next** on a chalkboard (the next activity to do, what to do in it and a large yellow Start button) and **My path** (the activities in course order with their pictograms and their state: done, now, to do, not yet), from Moodle's completion data, the same figures as the dashboard; updated only after Moodle confirms a change. Outside edit mode: sections with a band of colour, activities as cards with a large icon tile and a verb ("Read", "Hand in", "Answer", "Talk", "Choose", "Practise"), labels as the teacher's notes, headings in Andika. | Implemented |
+| **Moodle's activities for young learners**: assignments show three steps (read, do, hand in) and whether the work has been handed in; quiz answers and choice options are large cards that can be pressed anywhere; forum posts are large cards with a Reply button, and learners find search and subscription behind "More options" on the same page (no global "advanced mode"); books and pages in large text with large chapter buttons; links and files open with one large button; the page's main action is at least 60 px high. Nothing of Moodle's interface is removed. | Implemented |
+| **Activity pages**: a large "Back to the course" link, the progress and a **Listen** button that reads the page with a voice installed on the device (hidden when there is none; nothing is sent anywhere). | Implemented |
+| **Encouragement** after marking an activity as done, with a link to the next one; it does not take the focus or block the page; a short chime only if the learner turned sounds on. | Implemented |
+| **Pictograms** that teachers add to sections and activities (PNG, JPEG or WebP; text alternative; author and licence shown as credits; included in course backups). Names are always kept. No pictogram is bundled. | Implemented (sections and activities; not for buttons) |
+| Accessible defaults: 16 px text, 44 px targets, visible focus ring, underlined links in text, emphasised primary buttons, clear error messages, course index names that wrap, forced-colours support. | Implemented |
+| English and Spanish interface. | Implemented |
+
+What the theme does **not** do: it does not change Moodle's permissions,
+forms, gradebook, messaging or editing; it does not add services, external
+requests or tracking; it plays no sound unless the learner turns sounds on; it
+does not store anything about a person's needs.
+
+## Compatibility
+
+| Moodle | PHP | Install path | Tested |
+|---|---|---|---|
+| 4.5 LTS (`MOODLE_405_STABLE`) | 8.3 (8.1–8.3 supported; not 8.4) | `theme/chinijo` | Locally: lint, PHPUnit, Behat, coverage. CI job defined. |
+| 5.0 (`MOODLE_500_STABLE`) | 8.3 | `theme/chinijo` | CI job defined (install, static checks, PHPUnit) |
+| 5.1 (`MOODLE_501_STABLE`) | 8.3 | `public/theme/chinijo` | CI job defined |
+| 5.2 (`MOODLE_502_STABLE`) | 8.3 | `public/theme/chinijo` | CI job defined |
+| 5.3 LTS (`MOODLE_503_STABLE`) | 8.4 (also 8.3) | `public/theme/chinijo` | Locally: lint, PHPUnit, Behat, coverage. CI job defined. |
+
+Databases: PostgreSQL 17 (all) and MariaDB 11.8 (both LTS) in CI. Details:
+[docs/compatibility.md](docs/compatibility.md).
+
+## Installation
+
+From Moodle 5.1 the web root is `public/`, so the theme goes in
+`<moodle>/public/theme/chinijo`; on 4.5 and 5.0 it goes in `<moodle>/theme/chinijo`.
+
+**From a release ZIP** (contains a single `chinijo/` directory):
+
+```sh
+shasum -a 256 -c theme_chinijo-<release>-<version>.zip.sha256
+unzip theme_chinijo-<release>-<version>.zip -d <moodle>/public/theme/   # <moodle>/theme/ on 4.5 and 5.0
+php admin/cli/upgrade.php --non-interactive    # add --allow-unstable for alpha/beta releases
+php admin/cli/purge_caches.php
+```
+
+Or upload the ZIP in *Site administration › Plugins › Install plugins*.
+
+**From Git**:
+
+```sh
+git clone https://github.com/ateeducacion/moodle-theme_chinijo.git <moodle>/public/theme/chinijo
+```
+
+Then enable it in *Site administration › Appearance › Themes* (or
+`php admin/cli/cfg.php --name=theme --set=chinijo`), or for selected courses and
+categories with `allowcoursethemes`/`allowcategorythemes`. To disable it, choose
+another theme; to remove it, uninstall it from the plugins overview. EVAGD
+procedure, upgrade and rollback: [docs/deployment-evagd.md](docs/deployment-evagd.md).
+
+## Configuration
+
+*Site administration › Appearance › Themes › Chinijo*:
+
+- **General**: unneeded blocks; brand colour (keep 4.5:1 against white).
+- **Advanced**: raw SCSS, as in Boost.
+
+**Display settings** need no configuration: every user opens *Display
+settings* in the navbar (or *Preferences › Display settings*).
+
+**Pictograms**: teachers with `theme/chinijo:managepictograms` (editing
+teachers and managers by default) open *More › Pictograms* in the course. See
+the Spanish teacher guide: [docs/teacher-guide.es.md](docs/teacher-guide.es.md).
+
+**Languages**: English and Spanish strings are included; install the Spanish
+language pack in Moodle as usual. The theme never forces a language.
+
+## Try it in Moodle Playground
+
+[![Open in Moodle Playground](https://img.shields.io/badge/Moodle%20Playground-Chinijo%20demo-orange)](https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprint.json)
+
+- [Portable demo](https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprint.json) (`blueprint.json`)
+- [Full demo with activities, completion data and demo pictograms](https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprints%2Fchinijo-full-demo.blueprint.json)
+
+Both demos open logged in as `admin`. To see what learners see ("Up next", "My
+path"), log out and log in as `student1`. Accounts (disposable demo only, never
+on a real site): `admin`, `student1`, `student2` and `teacher1`, password
+`Chinijo-demo-1234`. The links install the theme
+from the `main` branch on GitHub, so they work once it is published there. Every
+pull request gets its own preview button. Details: [docs/playground.md](docs/playground.md).
+
+## Development
+
+Requirements: Docker with Compose v2, GNU Make and a POSIX shell. Everything
+else runs in containers.
+
+```sh
+cp .env.example .env            # optional: port, development credentials
+make up                         # Moodle 5.3 + PostgreSQL 17, theme installed and active
+make seed                       # synthetic users, Primary demo course, pictograms, progress
+open http://localhost:8080      # student1 / teacher1 / admin, password in .env.example or above
+make up MOODLE_VERSION=4.5      # previous LTS (separate data); also 5.0, 5.1, 5.2
+```
+
+The repository is bind-mounted **read-only** as the live theme
+(`theme/chinijo` before 5.1, `public/theme/chinijo` from 5.1), so edits to PHP,
+templates and SCSS show after `make install` (purges caches). JavaScript in
+`amd/src` must be rebuilt with `make fix`.
+
+| Target | What it does |
+|---|---|
+| `make up` / `down` / `logs` / `shell` | Start (waits until ready, installs, activates) / stop (keeps data) / follow logs / shell in Moodle |
+| `make install` | Install or upgrade the mounted theme, set it as site theme, purge caches |
+| `make seed` | Synthetic demo data (idempotent) |
+| `make lint` | moodle-plugin-ci: PHP lint, PHPCS (0 warnings), PHPDoc, PHPMD, validate, savepoints, Mustache, Grunt (ESLint, Stylelint, `amd/build` up to date); en/es string parity; blueprint validation |
+| `make fix` | PHPCBF and `amd/build` rebuild, applied to the working tree |
+| `make test` / `test-unit` / `test-behat` / `test-a11y` | PHPUnit + Behat / PHPUnit / Behat in Chromium / `@accessibility` (axe-core) scenarios |
+| `make coverage` | PHPUnit with PCOV; reports in `build/coverage/` (text, Clover, HTML); fails below 80 % |
+| `make test-matrix` | PHPUnit on 4.5, 5.0, 5.1, 5.2 and 5.3, one after the other |
+| `make security` | Semgrep (PHP, JS, OWASP, CWE, secrets rule sets) and gitleaks; reports in `build/security/` |
+| `make validate-blueprint` | Official Playground schema, project rules and alpine-moodle's validator |
+| `make package` | `build/theme_chinijo-<release>-<version>.zip` + SHA-256, contents checked |
+| `make screenshot` | Captures the README screenshots from the running site |
+| `make reset CONFIRM=yes` | Deletes the stack's volumes for `MOODLE_VERSION` |
+
+Tests run in a development-only container (`dev/ci/`: Moodle HQ's PHP image,
+moodle-plugin-ci 4.5.11, PostgreSQL 17, Selenium Chromium). The first run of each
+Moodle branch clones and installs Moodle (several minutes); later runs reuse it.
+
+**Troubleshooting**
+
+- *Port in use*: set `CHINIJO_HTTP_PORT` (for example `make up CHINIJO_HTTP_PORT=8085`).
+- *Redirect loop on another port*: the stack sets `REVERSEPROXY=true` (development only) because PHP sees the container's port.
+- *Changes not visible*: `make install` purges caches; rebuild JavaScript with `make fix`.
+- *Never* add a volume for `/var/www/html` or set `SYNC_MOODLE_CODE` to `always`/`auto`: the image's code sync deletes bind-mounted plugin files.
+- `make screenshot` uses Docker host networking (Docker Engine on Linux, or Docker Desktop with host networking enabled).
+
+Read [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md) before changing code.
+
+## Verification
+
+Version 0.3.1 (2026-10-13): local runs on the branch of its pull request; GitHub
+Actions run the full matrix (Moodle 4.5 to 5.3, PostgreSQL and MariaDB, all Behat
+features) on the pull request. Version 0.3.0 passed all 21 checks on pull request #8.
+
+| Check | Moodle / PHP / DB | Result | Evidence |
+|---|---|---|---|
+| `make lint` | 5.3 / 8.4 / PostgreSQL 18.6 | Pass (PHPMD: advisory notes only) | `build/lint-53.log` |
+| `make lint` | 4.5.15 / 8.3 / PostgreSQL 18.6 | Pass (PHPMD: advisory notes only) | `build/lint-45.log` |
+| `make test-unit` | 5.3 / 8.4 / PostgreSQL 18.6 | 85 tests, 890 assertions, pass | `build/test-unit-53.log` |
+| `make test-unit` | 4.5.15 / 8.3 / PostgreSQL 18.6 | 85 tests, 888 assertions, 1 skipped (Boost colour modes exist only in 5.3), pass | `build/test-unit-45.log` |
+| `make coverage` (PHPUnit 11.5 with PCOV) | 5.3 / 8.4 / PostgreSQL 18.6 | 96.61 % of 708 lines (`classes/`, `backup/`, `lib.php`) | `build/coverage-53.log` |
+| `make test-a11y` (axe-core scenarios) | 5.3 and 4.5.15 / Chromium 152 | 11 scenarios, 179 steps, pass on each | `build/a11y-53.log`, `build/a11y-45.log` |
+| Upgrade from 0.3.0 | 5.3 and 4.5.15 development sites | The upgrade deletes the FEDER settings and the uploaded emblem; the theme settings show the General and Advanced tabs | console |
+| `make security` | — | Semgrep: 0 findings (171 rules, 113 files); gitleaks 8.30.1: no leaks | `build/security/` |
+| `make validate-blueprint` | — | Both blueprints valid (official schema; alpine-moodle validator) | `build/lint-53.log` |
+| `make package` | — | `theme_chinijo-0.3.1-2026101300.zip`, 89 files, single `chinijo/` directory | `build/*.zip` |
+| Full Moodle Playground demo | moodle-playground.com, Moodle 5.3 / PHP 8.4 | The README link runs its 28 steps without errors, including the "Animals" section | browser |
+
+Not run locally for 0.3.1: the Behat features without the `@accessibility` tag and
+PHPUnit on 5.0–5.2 (GitHub Actions run them).
+
+Coverage measures PHP logic only. Templates, SCSS, JavaScript behaviour and
+accessibility are covered by Behat, axe-core and manual review, not by PHP line
+coverage.
+
+## Accessibility
+
+Target: WCAG 2.2 AA, EN 301 549 v3.2.1, RD 1112/2018, WAI-ARIA 1.2. Automated
+checks (axe-core) are part of CI; they do not prove conformance. Manual checks
+with NVDA, VoiceOver, TalkBack, tablets and EVAGD pre-production are pending.
+See [docs/accessibility.md](docs/accessibility.md),
+[docs/accessibility-audit.md](docs/accessibility-audit.md) and the draft
+statement [docs/accessibility-statement-draft.es.md](docs/accessibility-statement-draft.es.md).
+
+## Documentation
+
+[Architecture](docs/architecture.md) ·
+[Compatibility](docs/compatibility.md) ·
+[EVAGD deployment](docs/deployment-evagd.md) ·
+[Teacher guide (es)](docs/teacher-guide.es.md) ·
+[Security report](docs/security-report.md) ·
+[Requirements traceability](docs/requirements-traceability.md) ·
+[Research and decisions](docs/research-and-decisions.md) ·
+[Release and reversibility](docs/release-and-reversibility.md) ·
+[Third-party licences](docs/third-party-licenses.md) ·
+[Canarian curriculum and course size](docs/curriculum-canarias.md) ·
+[Changelog](CHANGELOG.md)
+
+## Security
+
+Report vulnerabilities privately: see [SECURITY.md](SECURITY.md).
+
+## Licence and credits
+
+Copyright © 2026 Área de Tecnología Educativa (ATE), Consejería de Educación,
+Gobierno de Canarias. Licensed under the [GNU GPL version 3 or later](LICENSE).
+
+- Based on Moodle's Boost theme (GPL v3 or later).
+- [Atkinson Hyperlegible](https://www.brailleinstitute.org/freefont/) by the
+  Braille Institute of America, SIL Open Font License 1.1 (`fonts/`).
+- Pictograms used in courses belong to their authors and keep their own licences
+  (for example ARASAAC, CC BY-NC-SA 4.0); they are not part of this theme.
+
+Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).

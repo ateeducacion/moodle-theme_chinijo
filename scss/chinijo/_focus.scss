@@ -1,0 +1,25 @@
+// A focus indicator that is visible on any background: a light gap and a dark outline (WCAG 2.4.7, 2.4.13).
+// It is applied with !important because several Bootstrap and Boost components set "outline: 0" on focus.
+/* stylelint-disable declaration-no-important */
+:focus-visible {
+    outline: 3px solid $chinijo-focus-outline !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 2px $chinijo-focus-gap !important;
+}
+
+// Items inside scrolling or clipping containers draw the indicator inside their own box.
+.courseindex .courseindex-item,
+.list-group-item,
+.dropdown-item,
+.nav-tabs .nav-link,
+.moremenu .nav-link {
+    &:focus-visible {
+        outline-offset: -3px !important;
+    }
+}
+
+[data-bs-theme="dark"] :focus-visible {
+    outline-color: #fff !important;
+    box-shadow: 0 0 0 2px #000 !important;
+}
+/* stylelint-enable declaration-no-important */

@@ -1,0 +1,819 @@
+// Chinijo's own components. Colours fall back to literal values on Moodle 4.5 (Bootstrap 4),
+// and follow Boost's colour modes through Bootstrap 5 custom properties on Moodle 5.x.
+
+// Display settings control in the navbar, and the toolbar used on the login page.
+.theme-chinijo-prefs-control {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.theme-chinijo-prefs-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: $chinijo-target-size;
+    padding: 0 .5rem;
+    border: 2px solid transparent;
+    border-radius: .5rem;
+    color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: inherit;
+        text-decoration: none;
+        border-color: currentColor;
+    }
+}
+
+.theme-chinijo-prefs-trigger__glyph {
+    display: inline-block;
+    min-width: 2rem;
+    padding: 0 .25rem;
+    border: 2px solid currentColor;
+    border-radius: .25rem;
+    font-weight: 700;
+    line-height: 1.5;
+    text-align: center;
+}
+
+// The visible label is kept for wide screens; narrow screens keep it for assistive technologies only.
+@media (max-width: 991.98px) {
+    .navbar .theme-chinijo-prefs-trigger__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+    }
+}
+
+.theme-chinijo-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: .5rem 1rem;
+    background-color: var(--bs-body-bg, #{$white});
+    color: var(--bs-body-color, #{$chinijo-ink});
+    border-bottom: 1px solid $chinijo-boundary;
+}
+
+// Icons drawn inline by the theme's templates: strokes by default, solid shapes on request.
+.theme-chinijo-icon {
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.theme-chinijo-icon--solid {
+    fill: currentColor;
+    stroke: none;
+}
+
+// Display settings panel, on its own page and inside the dialogue.
+.theme-chinijo-prefs {
+    max-width: 60rem;
+}
+
+.theme-chinijo-prefs__form {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1.5rem;
+
+    // Two columns where there is room for them; one on narrow screens.
+    > .theme-chinijo-prefs__group {
+        flex: 1 1 20rem;
+    }
+}
+
+.theme-chinijo-prefs__status,
+.theme-chinijo-prefs__actions {
+    flex: 1 1 100%;
+}
+
+.theme-chinijo-prefs__group {
+    min-width: 0;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    border: 0;
+}
+
+.theme-chinijo-prefs__legend {
+    margin-bottom: .5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.theme-chinijo-prefs__options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+    gap: .625rem;
+}
+
+.theme-chinijo-prefs__option {
+    position: relative;
+    display: flex;
+}
+
+.theme-chinijo-prefs__radio {
+    position: absolute;
+    top: .625rem;
+    left: .625rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    accent-color: $primary;
+}
+
+// Each choice is a large tile that shows what it does; the radio button stays visible in its corner.
+.theme-chinijo-prefs__label,
+.theme-chinijo-prefs__preset {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .375rem;
+    min-height: 5.75rem;
+    margin: 0;
+    padding: 1.75rem .625rem .75rem;
+    border: 2px solid $chinijo-boundary;
+    border-radius: 1rem;
+    background-color: var(--bs-body-bg, #{$white});
+    color: var(--bs-body-color, #{$chinijo-ink});
+    line-height: 1.25;
+    text-align: center;
+    cursor: pointer;
+}
+
+.theme-chinijo-prefs__preset {
+    padding-top: .75rem;
+    font-weight: 700;
+
+    &:hover {
+        border-color: $primary;
+    }
+}
+
+.theme-chinijo-prefs__radio:checked + .theme-chinijo-prefs__label {
+    border-color: $primary;
+    border-width: 3px;
+    background-color: rgba($primary, .08);
+    font-weight: 700;
+}
+
+.theme-chinijo-prefs__radio:focus-visible + .theme-chinijo-prefs__label {
+    outline: 3px solid $chinijo-focus-outline;
+    outline-offset: 2px;
+}
+
+.theme-chinijo-prefs__drawing {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.theme-chinijo-prefs__sample {
+    display: inline-block;
+    min-width: 3rem;
+    padding: 0 .375rem;
+    border: 1px solid $chinijo-boundary;
+    border-radius: .375rem;
+    background-color: $white;
+    color: $chinijo-ink;
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+
+    &[data-sample="contrast-high"],
+    &[data-sample="preset-seeing"] {
+        border: 3px solid #000;
+        background-color: #fff;
+        color: #000;
+        text-decoration: underline;
+    }
+
+    &[data-sample="fontsize-large"] {
+        font-size: 1.625rem;
+    }
+
+    &[data-sample="fontsize-xlarge"],
+    &[data-sample="preset-seeing"] {
+        font-size: 1.875rem;
+    }
+
+    &[data-sample="fontsize-xxlarge"] {
+        font-size: 2.25rem;
+    }
+
+    &[data-sample="font-legible"],
+    &[data-sample="preset-reading"],
+    &[data-sample="preset-seeing"] {
+        font-family: "Atkinson Hyperlegible", Verdana, sans-serif;
+    }
+
+    &[data-sample="font-school"] {
+        font-family: Andika, Verdana, sans-serif;
+    }
+
+    &[data-sample="letterspacing-wide"] {
+        letter-spacing: .06em;
+    }
+
+    &[data-sample="letterspacing-wider"],
+    &[data-sample="preset-reading"] {
+        letter-spacing: .12em;
+    }
+
+    &[data-sample="wordspacing-wide"],
+    &[data-sample="wordspacing-wider"],
+    &[data-sample="lineheight-wide"],
+    &[data-sample="lineheight-wider"] {
+        font-weight: 400;
+    }
+}
+
+.theme-chinijo-prefs__note {
+    padding: .5rem .75rem;
+    border-left: 4px solid $chinijo-boundary;
+}
+
+.theme-chinijo-prefs__status:not(:empty) {
+    margin-bottom: 1rem;
+    padding: .5rem .75rem;
+    border-left: 4px solid $chinijo-progress;
+    font-weight: 600;
+}
+
+.theme-chinijo-prefs__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+// Greeting above the course heading.
+.theme-chinijo-greeting {
+    width: 100%;
+    margin: .25rem 0 0;
+    color: var(--bs-secondary-color, #{$chinijo-muted});
+    font-size: 1.375rem;
+    font-weight: 700;
+}
+
+// The learner's path on the course page: "Next" and "My path".
+.theme-chinijo-path {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: .25rem 0 1.75rem;
+}
+
+// "Up next" is the classroom chalkboard: chalk text on a green board in a wooden frame, with a
+// yellow chalk button. Its colours are fixed, so they do not change with Boost's colour modes.
+.theme-chinijo-next {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border: .625rem solid $chinijo-board-frame;
+    border-radius: 1.5rem;
+    background-color: $chinijo-board;
+    color: $chinijo-chalk;
+    box-shadow: inset 0 0 0 2px rgba($black, .25);
+
+    // A dark focus ring would not show on the board: chalk white with a dark gap instead.
+    /* stylelint-disable declaration-no-important */
+    :focus-visible {
+        outline-color: $white !important;
+        box-shadow: 0 0 0 2px $chinijo-ink !important;
+    }
+    /* stylelint-enable declaration-no-important */
+}
+
+.theme-chinijo-next__picture {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 6.5rem;
+    height: 6.5rem;
+    border-radius: 1.25rem;
+    background-color: $chinijo-chalk;
+}
+
+.theme-chinijo-next__pictogram {
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: .75rem;
+    background-color: $white;
+    object-fit: contain;
+}
+
+.theme-chinijo-next__icon {
+    width: 3.5rem;
+    height: 3.5rem;
+}
+
+.theme-chinijo-next__star path,
+.theme-chinijo-cheer__star path {
+    fill: #ffc21a;
+    stroke: $chinijo-ink;
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+}
+
+.theme-chinijo-next__text {
+    flex: 1 1 16rem;
+    min-width: 0;
+}
+
+.theme-chinijo-next__eyebrow {
+    margin: 0;
+    color: $chinijo-chalk-yellow;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.theme-chinijo-next__name {
+    margin: 0;
+    color: $chinijo-chalk;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.theme-chinijo-next__type {
+    margin: .25rem 0 0;
+    color: $chinijo-chalk;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+// The only yellow button of the theme: it is on the board. Every other primary action is blue.
+#region-main .theme-chinijo-next__start {
+    gap: .625rem;
+    min-height: 4.75rem;
+    padding: 0 2.25rem;
+    border: 2px solid $chinijo-board-button-edge;
+    border-radius: 1.125rem;
+    background-color: $chinijo-board-button;
+    box-shadow: 0 .3125rem 0 $chinijo-board-button-edge;
+    color: $chinijo-ink;
+    font-size: 1.625rem;
+
+    &:hover,
+    &:focus {
+        background-color: lighten($chinijo-board-button, 6%);
+        color: $chinijo-ink;
+    }
+
+    &:active {
+        box-shadow: none;
+        transform: translateY(.3125rem);
+    }
+}
+
+.theme-chinijo-path__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .25rem 1rem;
+}
+
+.theme-chinijo-path__title {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.theme-chinijo-path__summary {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+// The current section (learning situation) of the path, with a link to it on the course page.
+.theme-chinijo-path__section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem .75rem;
+    margin: 0;
+}
+
+.theme-chinijo-path__section-pictogram {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: .5rem;
+    background-color: $white;
+    object-fit: contain;
+}
+
+.theme-chinijo-path__section-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.theme-chinijo-path__section-summary {
+    color: var(--bs-secondary-color, #{$chinijo-muted});
+    font-weight: 700;
+}
+
+// The path scrolls inside its own box on narrow screens, never the page.
+.theme-chinijo-path__track {
+    overflow-x: auto;
+    padding: 1.25rem .5rem 1rem;
+    border: 1px solid $chinijo-boundary-light;
+    border-radius: 1.5rem;
+    background-color: var(--bs-body-bg, #{$white});
+}
+
+.theme-chinijo-path__list {
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.theme-chinijo-path__stop,
+.theme-chinijo-path__more {
+    position: relative;
+    display: flex;
+    flex: 1 0 7.5rem;
+    flex-direction: column;
+    align-items: center;
+    gap: .375rem;
+    padding: 0 .25rem;
+    text-align: center;
+}
+
+// The line from the previous stop: solid once that stop is done, dotted before.
+.theme-chinijo-path__list > li + li::before {
+    content: "";
+    position: absolute;
+    top: 2.0625rem;
+    left: -50%;
+    right: 50%;
+    border-top: .375rem dotted $chinijo-boundary;
+}
+
+.theme-chinijo-path__list > [data-state="done"] + li::before {
+    border-top-style: solid;
+    border-top-color: $chinijo-progress;
+}
+
+.theme-chinijo-path__marker {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border: .1875rem dashed $chinijo-boundary;
+    border-radius: 50%;
+    background-color: var(--bs-body-bg, #{$white});
+
+    [data-state="done"] > & {
+        border: .25rem solid $chinijo-progress;
+    }
+
+    [data-state="current"] > & {
+        border: .25rem solid $primary;
+        box-shadow: 0 0 0 .375rem rgba($primary, .25);
+    }
+}
+
+.theme-chinijo-path__pictogram {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.theme-chinijo-path__icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.theme-chinijo-path__badge {
+    position: absolute;
+    right: -.375rem;
+    bottom: -.375rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.875rem;
+    height: 1.875rem;
+    border: .1875rem solid var(--bs-body-bg, #{$white});
+    border-radius: 50%;
+    background-color: $chinijo-progress;
+    color: $white;
+
+    [data-state="done"] & {
+        display: flex;
+    }
+
+    .theme-chinijo-icon {
+        stroke-width: 3.5;
+    }
+}
+
+.theme-chinijo-path__name {
+    font-weight: 700;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.theme-chinijo-path__state {
+    color: var(--bs-secondary-color, #{$chinijo-muted});
+    font-size: .9375rem;
+    font-weight: 700;
+
+    [data-state="done"] > & {
+        color: $chinijo-progress;
+    }
+
+    [data-state="current"] > & {
+        padding: 0 .75rem;
+        border-radius: 1rem;
+        background-color: $primary;
+        color: $white;
+    }
+}
+
+.theme-chinijo-path__more {
+    justify-content: center;
+    min-height: 4.5rem;
+    color: var(--bs-secondary-color, #{$chinijo-muted});
+    font-weight: 700;
+}
+
+// Progress bar of the activity bar.
+.theme-chinijo-progress__bar {
+    display: block;
+    width: 100%;
+    height: 1rem;
+    border: 1px solid $chinijo-boundary;
+    border-radius: .5rem;
+    background-color: $chinijo-track;
+    color: $chinijo-progress;
+    appearance: none;
+    overflow: hidden;
+
+    &::-webkit-progress-bar {
+        background-color: $chinijo-track;
+    }
+
+    &::-webkit-progress-value {
+        background-color: $chinijo-progress;
+    }
+
+    &::-moz-progress-bar {
+        background-color: $chinijo-progress;
+    }
+}
+
+// Bar at the top of activity pages.
+.theme-chinijo-activity-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .75rem 1rem;
+    margin: 0 0 1.25rem;
+}
+
+#region-main .theme-chinijo-activity-bar__back,
+#region-main .theme-chinijo-activity-bar__listen {
+    gap: .5rem;
+    min-height: 3.25rem;
+    border: 2px solid $chinijo-boundary;
+    border-radius: 1rem;
+    background-color: var(--bs-body-bg, #{$white});
+    color: var(--bs-body-color, #{$chinijo-ink});
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+#region-main .theme-chinijo-activity-bar__listen {
+    margin-left: auto;
+    border-color: $primary;
+    color: var(--bs-link-color, #{$primary});
+}
+
+.theme-chinijo-activity-bar__progress {
+    display: flex;
+    flex: 1 1 14rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem .75rem;
+    min-width: 0;
+
+    .theme-chinijo-progress__bar {
+        flex: 1 1 8rem;
+        max-width: 16rem;
+    }
+}
+
+.theme-chinijo-activity-bar__summary {
+    font-weight: 700;
+}
+
+// Encouragement after marking an activity as done. Bottom corner, above Boost's footer button,
+// and the page keeps focused elements clear of it while it is shown (see completion_feedback).
+.theme-chinijo-cheer {
+    position: fixed;
+    right: 1rem;
+    bottom: 5rem;
+    z-index: 1040;
+    width: 28rem;
+    max-width: calc(100vw - 2rem);
+}
+
+.theme-chinijo-cheer__card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 3px solid $chinijo-progress;
+    border-radius: 1.5rem;
+    background-color: var(--bs-body-bg, #{$white});
+    color: var(--bs-body-color, #{$chinijo-ink});
+    box-shadow: 0 .75rem 2rem rgba($black, .18);
+    animation: theme-chinijo-cheer-in .3s ease-out;
+}
+
+// Only a short slide: no fading, so the colours keep their full contrast from the first frame.
+@keyframes theme-chinijo-cheer-in {
+    from {
+        transform: translateY(1rem);
+    }
+
+    to {
+        transform: none;
+    }
+}
+
+.theme-chinijo-cheer__picture {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background-color: #fff4d6;
+}
+
+.theme-chinijo-cheer__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: .5rem;
+    min-width: 0;
+}
+
+.theme-chinijo-cheer__title {
+    margin: 0;
+    color: $chinijo-progress;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.theme-chinijo-cheer__text {
+    margin: 0;
+    font-size: 1.125rem;
+}
+
+.theme-chinijo-cheer__next {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: .5rem;
+    min-height: $chinijo-target-size;
+    padding: 0 1.25rem;
+    border-radius: .875rem;
+    font-size: 1.125rem;
+}
+
+.theme-chinijo-cheer__close {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: $chinijo-target-size;
+    height: $chinijo-target-size;
+    padding: 0;
+    border: 2px solid $chinijo-boundary;
+    border-radius: 50%;
+    background-color: var(--bs-body-bg, #{$white});
+    color: var(--bs-body-color, #{$chinijo-ink});
+}
+
+// Pictograms added next to section and activity names.
+.theme-chinijo-pictogram {
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4rem;
+    margin-right: .75rem;
+    border-radius: .5rem;
+    background-color: $white;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.activitytitle:has(.theme-chinijo-pictogram) {
+    display: flex;
+    align-items: center;
+}
+
+.theme-chinijo-pictogram--section {
+    width: 3rem;
+    height: 3rem;
+}
+
+.theme-chinijo-pictogram--index {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-right: .375rem;
+    border-radius: .25rem;
+}
+
+.theme-chinijo-pictogram-thumb {
+    width: 4rem;
+    height: 4rem;
+    object-fit: contain;
+}
+
+.theme-chinijo-pictogram-table__activity th {
+    padding-left: 2rem;
+    font-weight: 400;
+}
+
+.theme-chinijo-pictogram-table__type {
+    display: block;
+    color: $gray-700;
+    font-size: .875rem;
+    font-weight: 400;
+}
+
+.theme-chinijo-pictogram-table__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.theme-chinijo-pictograms-manage__notice {
+    padding: .5rem .75rem;
+    border-left: 4px solid $chinijo-boundary;
+}
+
+// Pictogram credits.
+.theme-chinijo-credits {
+    padding: 1rem;
+    background-color: var(--bs-body-bg, #{$white});
+    color: var(--bs-body-color, #{$chinijo-ink});
+}
+
+.theme-chinijo-credits__summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: $chinijo-target-size;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.theme-chinijo-credits__list {
+    margin-bottom: 0;
+}
+
+// Boost prints the region after the main content outside #page, so the credits do not follow the
+// drawers: mirror Boost's own offsets so that an open course index or block drawer never covers them.
+@include media-breakpoint-up(lg) {
+    #page.drawers.show-drawer-left ~ .theme-chinijo-credits {
+        margin-left: $drawer-left-width;
+    }
+
+    #page.drawers.show-drawer-right ~ .theme-chinijo-credits {
+        margin-right: $drawer-right-width;
+    }
+}
+
+// Keep the credits clear of Boost's floating footer button when they end the page.
+.theme-chinijo-credits:last-child {
+    padding-bottom: 4.5rem;
+}

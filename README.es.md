@@ -1,0 +1,129 @@
+# Chinijo — tema accesible para Moodle
+
+*English version: [README.md](README.md).*
+
+**Chinijo** (`theme_chinijo`) es un tema accesible para [Moodle](https://moodle.org)
+basado en Boost, creado para EVAGD, el entorno virtual de aprendizaje de la
+Consejería de Educación del Gobierno de Canarias. Está pensado para los primeros
+cursos de Educación Primaria y para el alumnado con necesidades específicas de
+apoyo educativo (NEAE): páginas tranquilas, texto y zonas de pulsación más
+grandes, ajustes de visualización personales, progreso del curso y apoyo con
+pictogramas, sin quitar ninguna función de Moodle.
+
+![Chinijo en Moodle 5.3: página de un curso de demostración que saluda al alumno, con «Lo siguiente» (la próxima actividad y un botón grande Empezar), «Mi camino» de la sección actual con pictogramas y el estado de cada actividad, y el control de ajustes de visualización en la barra superior](docs/screenshots/chinijo-course.png)
+
+*Captura real del tema en Moodle 5.3 con datos sintéticos de demostración. Más:
+[página de actividad](docs/screenshots/chinijo-activity.png),
+[ánimo al marcar una actividad como hecha](docs/screenshots/chinijo-encouragement.png),
+[ajustes de visualización](docs/screenshots/chinijo-display-settings.png),
+[alto contraste con texto grande y letra escolar](docs/screenshots/chinijo-course-high-contrast.png).*
+
+> **Estado:** versión de desarrollo 0.3.1 (alfa). Las comprobaciones automáticas
+> pasan en local y en GitHub Actions de Moodle 4.5 a 5.3 (Behat y axe-core en 4.5 y 5.3). Quedan **pendientes** las pruebas manuales
+> de accesibilidad con lectores de pantalla y dispositivos y las pruebas en la
+> preproducción de EVAGD.
+
+## Funciones
+
+- **Ajustes de visualización («Cómo lo veo»)** de cada persona: combinaciones
+  listas para usar (como siempre, leer mejor, ver mejor, más calma); alto
+  contraste; tamaño del texto (normal, grande, muy grande, enorme); letra fácil de
+  leer (Atkinson Hyperlegible) o letra escolar (Andika); espacio entre letras,
+  palabras y líneas hasta los valores de WCAG 2.2 (1.4.12); reducir animaciones
+  (siempre se respeta la preferencia del sistema); sonidos (desactivados por
+  defecto). Fichas grandes que muestran el efecto de cada opción. Se guardan como
+  preferencias propias de cada usuario (solo durante la sesión para invitados);
+  **nadie puede fijarlas a otra persona**. Diálogo accesible con teclado desde la
+  barra superior y la página de acceso, y una página que funciona sin JavaScript.
+- **Página del curso como un aula de Primaria**: saludo, **Hoy toca** en una
+  pizarra (la próxima actividad, qué hay que hacer en ella y un botón amarillo
+  grande «Empezar») y **Mi camino** (las actividades en el orden del curso, con
+  sus pictogramas y su estado: hecho, ahora, falta, todavía no), con los datos de
+  finalización de Moodle (las mismas cifras que el área personal) y actualizado
+  solo cuando Moodle confirma el cambio. Fuera del modo edición: secciones con una
+  franja de color, actividades como fichas con un icono grande y un verbo («Leer»,
+  «Entregar», «Responder», «Hablar», «Elegir», «Practicar»), etiquetas como notas
+  del profesorado y títulos en Andika.
+- **Actividades de Moodle para los más pequeños**: la tarea muestra tres pasos
+  (leer, hacer, entregar) y si ya se ha entregado; las respuestas del cuestionario
+  y las opciones de la consulta son fichas grandes que se pulsan en cualquier
+  parte; los mensajes del foro son fichas con un botón «Responder», y el alumnado
+  encuentra la búsqueda y la suscripción en «Más opciones», en la misma página;
+  libros y páginas con texto grande y botones de capítulo grandes. No se quita
+  nada de la interfaz de Moodle.
+- **Páginas de actividad**: un enlace grande «Volver al curso», el progreso y un
+  botón **Escuchar** que lee la página con una voz instalada en el dispositivo (no
+  aparece si no hay ninguna; no se envía nada a ningún servicio).
+- **Ánimo** al marcar una actividad como hecha, con un enlace a la siguiente; no
+  toma el foco ni bloquea la página; solo suena si el alumno activó los sonidos.
+- **Pictogramas** que el profesorado añade a secciones y actividades (PNG, JPEG o
+  WebP, texto alternativo, autoría y licencia en los créditos; se copian con las
+  copias de seguridad del curso). Los nombres se mantienen siempre. El tema no
+  incluye ningún pictograma.
+- Interfaz en inglés y en español.
+
+## Compatibilidad
+
+Moodle 4.5 LTS (PHP 8.3), 5.0, 5.1, 5.2 y 5.3 LTS (PHP 8.4). Desde Moodle 5.1 el
+tema se instala en `public/theme/chinijo`; en 4.5 y 5.0, en `theme/chinijo`.
+Detalles en [docs/compatibility.md](docs/compatibility.md).
+
+## Instalación
+
+```sh
+unzip theme_chinijo-<versión>.zip -d <moodle>/public/theme/   # <moodle>/theme/ en 4.5 y 5.0
+php admin/cli/upgrade.php --non-interactive
+php admin/cli/purge_caches.php
+```
+
+Después, elegir Chinijo en *Administración del sitio › Apariencia › Temas*.
+Procedimiento completo para EVAGD (preproducción, actualización y marcha atrás):
+[docs/deployment-evagd.md](docs/deployment-evagd.md).
+
+## Configuración
+
+- *Administración del sitio › Apariencia › Temas › Chinijo*: bloques
+  innecesarios, color de marca y SCSS avanzado.
+- Los **ajustes de visualización** no necesitan configuración.
+- **Pictogramas**: en el curso, *Más › Pictogramas* (docentes con edición).
+  Guía docente: [docs/teacher-guide.es.md](docs/teacher-guide.es.md).
+
+## Probarlo
+
+[Demo en Moodle Playground](https://moodle-playground.com/?blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fateeducacion%2Fmoodle-theme_chinijo%2Fmain%2Fblueprint.json)
+(funciona cuando el tema esté publicado en la rama `main` de GitHub). La demo
+entra como `admin`; para ver lo que ve el alumnado («Lo siguiente», «Mi camino»),
+cierra sesión y entra como `student1`. Cuentas de demostración desechables:
+`admin`, `student1`, `student2`, `teacher1`; contraseña `Chinijo-demo-1234`.
+
+## Desarrollo
+
+Requisitos: Docker con Compose v2, GNU Make y un intérprete POSIX.
+
+```sh
+make up                      # Moodle 5.3 + PostgreSQL 17 con el tema montado y activo
+make seed                    # datos sintéticos de demostración
+make up MOODLE_VERSION=4.5   # LTS anterior
+make lint && make test && make coverage
+make help                    # todas las órdenes
+```
+
+Antes de cambiar código, lee [AGENTS.md](AGENTS.md) y [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Accesibilidad
+
+Objetivo: WCAG 2.2 AA, EN 301 549 v3.2.1, RD 1112/2018 y WAI-ARIA 1.2. Las
+pruebas automáticas (axe-core) no demuestran por sí solas la conformidad; la
+revisión manual está pendiente. Ver [docs/accessibility.md](docs/accessibility.md),
+[docs/accessibility-audit.md](docs/accessibility-audit.md) y el borrador de
+[declaración de accesibilidad](docs/accessibility-statement-draft.es.md).
+
+## Licencia
+
+© 2026 Área de Tecnología Educativa (ATE), Consejería de Educación, Gobierno de
+Canarias. Licencia [GNU GPL versión 3 o posterior](LICENSE). Basado en el tema
+Boost de Moodle. Tipografía Atkinson Hyperlegible (Braille Institute of America,
+licencia SIL OFL 1.1). Los pictogramas que se usen en los cursos pertenecen a sus
+autores y conservan sus licencias (por ejemplo, ARASAAC, CC BY-NC-SA 4.0).
+
+Vulnerabilidades: [SECURITY.md](SECURITY.md).

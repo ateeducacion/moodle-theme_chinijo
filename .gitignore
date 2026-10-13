@@ -1,0 +1,8 @@
+# Local development state and generated reports (never committed or packaged).
+/build/
+/.env
+/node_modules/
+/.playwright-mcp/
+/coverage/
+*.zip
+.DS_Store
