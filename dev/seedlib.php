@@ -57,7 +57,26 @@ const CHINIJO_DEMO_COMPLETION = [
     'Show your drawing to the class' => ['completion' => COMPLETION_TRACKING_MANUAL],
     'Count to ten' => ['completion' => COMPLETION_TRACKING_MANUAL],
     'Numbers song (example link)' => ['completion' => COMPLETION_TRACKING_MANUAL],
+    'Animals at home' => ['completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => 1],
+    'Animals quiz' => ['completion' => COMPLETION_TRACKING_MANUAL],
+    'Your favourite animal' => ['completion' => COMPLETION_TRACKING_MANUAL],
+    'Show and tell' => ['completion' => COMPLETION_TRACKING_MANUAL],
 ];
+
+/** Chapters of the demo book: content by title. */
+const CHINIJO_DEMO_CHAPTERS = [
+    'The cat' => '<p>The cat says miau. It likes to sleep in the sun.</p>',
+    'The dog' => '<p>The dog says guau. It likes to run in the park.</p>',
+];
+
+/** True/false questions of the demo quiz: name, text and 1 when the statement is true. */
+const CHINIJO_DEMO_QUESTIONS = [
+    ['Cat', '<p>The cat says miau.</p>', 1],
+    ['Dog', '<p>Dogs can fly.</p>', 0],
+];
+
+/** Options of the demo choice. */
+const CHINIJO_DEMO_CHOICE_OPTIONS = ['Cat', 'Dog', 'Fish', 'Bird'];
 
 
 /**
@@ -319,6 +338,82 @@ function chinijo_seed_truefalse(stdClass $category, string $name, string $text, 
 }
 
 /**
+ * Add the chapters of the demo book, unless it has chapters already.
+ *
+ * @param stdClass $book The book record.
+ */
+function chinijo_seed_book_chapters(stdClass $book): void {
+    global $DB;
+
+    if ($DB->record_exists('book_chapters', ['bookid' => $book->id])) {
+        return;
+    }
+    $pagenum = 0;
+    foreach (CHINIJO_DEMO_CHAPTERS as $title => $content) {
+        $DB->insert_record('book_chapters', (object) ['bookid' => $book->id, 'pagenum' => ++$pagenum, 'subchapter' => 0,
+            'title' => $title, 'content' => $content, 'contentformat' => FORMAT_HTML, 'hidden' => 0, 'importsrc' => '',
+            'timecreated' => time(), 'timemodified' => time()]);
+    }
+    // The book's revision is part of the URLs of its files, as when a chapter is saved with the form.
+    $DB->execute('UPDATE {book} SET revision = revision + 1 WHERE id = ?', [$book->id]);
+}
+
+/**
+ * Add the true/false questions of the demo quiz in its own question bank, unless it has questions already.
+ *
+ * @param stdClass $quiz The quiz record, with its course module id in cmid.
+ */
+function chinijo_seed_quiz_questions(stdClass $quiz): void {
+    global $CFG, $DB;
+    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once($CFG->libdir . '/questionlib.php');
+
+    if ($DB->record_exists('quiz_slots', ['quizid' => $quiz->id])) {
+        return;
+    }
+    $context = context_module::instance($quiz->cmid);
+    // Moodle 5.0 creates a module's default category on request; 4.5 has question_make_default_categories().
+    $category = (int) $CFG->branch >= 500
+        ? question_get_default_category($context->id, true)
+        : question_make_default_categories([$context]);
+    // The question generator needs PHPUnit, so the questions are saved through the question type, as the form does.
+    foreach (CHINIJO_DEMO_QUESTIONS as $slot => [$name, $text, $correct]) {
+        $question = chinijo_seed_truefalse($category, $name, $text, $correct);
+        quiz_add_quiz_question($question->id, $quiz, $slot + 1);
+    }
+    \mod_quiz\quiz_settings::create($quiz->id)->get_grade_calculator()->recompute_quiz_sumgrades();
+}
+
+/**
+ * Start the teacher's discussion in the demo forum, unless the forum has discussions already.
+ *
+ * @param stdClass $forum The forum record.
+ * @param stdClass $teacher The teacher who starts the discussion.
+ */
+function chinijo_seed_forum_discussion(stdClass $forum, stdClass $teacher): void {
+    global $CFG, $DB;
+    require_once($CFG->dirroot . '/mod/forum/lib.php');
+
+    if ($DB->record_exists('forum_discussions', ['forum' => $forum->id])) {
+        return;
+    }
+    forum_add_discussion((object) [
+        'course' => $forum->course,
+        'forum' => $forum->id,
+        'name' => 'My cat Luna',
+        'message' => '<p>This is my cat Luna. What animal do you have?</p>',
+        'messageformat' => FORMAT_HTML,
+        'messagetrust' => 0,
+        'mailnow' => 0,
+        'groupid' => -1,
+        'timestart' => 0,
+        'timeend' => 0,
+        'pinned' => FORUM_DISCUSSION_UNPINNED,
+        'timelocked' => 0,
+    ], null, null, $teacher->id);
+}
+
+/**
  * Add a learning situation with Moodle's other common content types: a label, a book, a quiz
  * with two questions, a choice and a forum with a discussion. Idempotent.
  *
@@ -327,9 +422,7 @@ function chinijo_seed_truefalse(stdClass $category, string $name, string $text, 
  * @param stdClass $teacher The teacher who starts the forum discussion.
  */
 function chinijo_seed_more_content(testing_data_generator $generator, stdClass $course, stdClass $teacher): void {
-    global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-    require_once($CFG->libdir . '/questionlib.php');
+    global $DB;
 
     if ($DB->record_exists('quiz', ['course' => $course->id, 'name' => 'Animals quiz'])) {
         return;
@@ -340,41 +433,66 @@ function chinijo_seed_more_content(testing_data_generator $generator, stdClass $
         'intro' => '<p>This week we learn about the animals that live with us.</p>',
     ]);
 
-    $book = $generator->create_module('book', $common + ['name' => 'Animals at home',
+    chinijo_seed_book_chapters($generator->create_module('book', $common + ['name' => 'Animals at home',
         'intro' => '<p>Read about two animals that live at home.</p>',
-        'completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => 1]);
-    $bookgenerator = $generator->get_plugin_generator('mod_book');
-    $bookgenerator->create_chapter(['bookid' => $book->id, 'title' => 'The cat', 'pagenum' => 1,
-        'content' => '<p>The cat says miau. It likes to sleep in the sun.</p>']);
-    $bookgenerator->create_chapter(['bookid' => $book->id, 'title' => 'The dog', 'pagenum' => 2,
-        'content' => '<p>The dog says guau. It likes to run in the park.</p>']);
+        'completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionview' => 1]));
 
-    $quiz = $generator->create_module('quiz', $common + ['name' => 'Animals quiz',
+    chinijo_seed_quiz_questions($generator->create_module('quiz', $common + ['name' => 'Animals quiz',
         'intro' => '<p>Answer two questions about animals.</p>', 'questionsperpage' => 1,
-        'completion' => COMPLETION_TRACKING_MANUAL]);
-    // The question generator needs PHPUnit, so the questions are saved through the question type, as the form does.
-    $category = $generator->get_plugin_generator('core_question')->create_question_category([
-        'contextid' => context_module::instance($quiz->cmid)->id,
-    ]);
-    $questions = [
-        ['Cat', '<p>The cat says miau.</p>', 1],
-        ['Dog', '<p>Dogs can fly.</p>', 0],
-    ];
-    foreach ($questions as $slot => [$name, $text, $correct]) {
-        $question = chinijo_seed_truefalse($category, $name, $text, $correct);
-        quiz_add_quiz_question($question->id, $quiz, $slot + 1);
-    }
-    \mod_quiz\quiz_settings::create($quiz->id)->get_grade_calculator()->recompute_quiz_sumgrades();
+        'completion' => COMPLETION_TRACKING_MANUAL]));
 
     $generator->create_module('choice', $common + ['name' => 'Your favourite animal',
-        'intro' => '<p>Which animal do you like best?</p>', 'option' => ['Cat', 'Dog', 'Fish', 'Bird'],
+        'intro' => '<p>Which animal do you like best?</p>', 'option' => CHINIJO_DEMO_CHOICE_OPTIONS,
         'completion' => COMPLETION_TRACKING_MANUAL]);
 
-    $forum = $generator->create_module('forum', $common + ['name' => 'Show and tell', 'type' => 'general',
-        'intro' => '<p>Tell us about an animal you know.</p>', 'completion' => COMPLETION_TRACKING_MANUAL]);
-    $generator->get_plugin_generator('mod_forum')->create_discussion(['course' => $course->id, 'forum' => $forum->id,
-        'userid' => $teacher->id, 'name' => 'My cat Luna', 'message' => '<p>This is my cat Luna. What animal do you have?</p>']);
+    chinijo_seed_forum_discussion($generator->create_module('forum', $common + ['name' => 'Show and tell',
+        'type' => 'general', 'intro' => '<p>Tell us about an animal you know.</p>',
+        'completion' => COMPLETION_TRACKING_MANUAL]), $teacher);
     mtrace('Demo content types added.');
+}
+
+/**
+ * Complete the book, quiz, choice and forum that Playground's addModule step created: it writes
+ * only the activity record, so this adds the book's chapters, the quiz's first section, questions
+ * and grade item, the choice's options and the forum's discussion. Idempotent.
+ *
+ * @param stdClass $course The demo course.
+ * @param stdClass $teacher The teacher who starts the forum discussion.
+ */
+function chinijo_seed_playground_content(stdClass $course, stdClass $teacher): void {
+    global $CFG, $DB;
+    require_once($CFG->dirroot . '/mod/quiz/lib.php');
+
+    // By name: the course also has Moodle's announcements forum.
+    $activities = ['Animals at home' => 'book', 'Animals quiz' => 'quiz', 'Your favourite animal' => 'choice',
+        'Show and tell' => 'forum'];
+    foreach (get_fast_modinfo($course)->get_cms() as $cm) {
+        if (($activities[$cm->name] ?? null) !== $cm->modname) {
+            continue;
+        }
+        $instance = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
+        if ($cm->modname === 'book') {
+            chinijo_seed_book_chapters($instance);
+        } else if ($cm->modname === 'quiz') {
+            // As quiz_add_instance() does.
+            if (!$DB->record_exists('quiz_sections', ['quizid' => $instance->id])) {
+                $DB->insert_record('quiz_sections', (object) ['quizid' => $instance->id, 'firstslot' => 1,
+                    'heading' => '', 'shufflequestions' => 0]);
+            }
+            $instance->cmid = $cm->id;
+            chinijo_seed_quiz_questions($instance);
+            quiz_grade_item_update($instance);
+        } else if ($cm->modname === 'choice') {
+            if (!$DB->record_exists('choice_options', ['choiceid' => $instance->id])) {
+                foreach (CHINIJO_DEMO_CHOICE_OPTIONS as $text) {
+                    $DB->insert_record('choice_options', (object) ['choiceid' => $instance->id, 'text' => $text,
+                        'maxanswers' => 0, 'timemodified' => time()]);
+                }
+            }
+        } else {
+            chinijo_seed_forum_discussion($instance, $teacher);
+        }
+    }
 }
 
 /**
@@ -456,8 +574,8 @@ function chinijo_seed_run(): stdClass {
  * blueprint creates the users, the course, the enrolments and the activities
  * with Playground's own steps, which do not set completion; this adds what they
  * leave out: completion settings, section names, the assignment's online text
- * submissions, the demo pictograms and the completion data of student1.
- * Idempotent.
+ * submissions, the content of the book, quiz, choice and forum, the demo
+ * pictograms and the completion data of student1. Idempotent.
  */
 function chinijo_seed_playground(): void {
     global $DB;
@@ -490,5 +608,11 @@ function chinijo_seed_playground(): void {
         mtrace('Demo pictograms skipped: ' . $e->getMessage());
     }
     chinijo_seed_completion($course, $DB->get_record('user', ['username' => 'student1'], '*', MUST_EXIST));
+    try {
+        chinijo_seed_playground_content($course, $DB->get_record('user', ['username' => 'teacher1'], '*', MUST_EXIST));
+    } catch (\Throwable $e) {
+        // The rest of the demo works without the chapters, questions, options and discussion.
+        mtrace('Demo content skipped: ' . $e->getMessage());
+    }
     mtrace('Playground demo course ready.');
 }

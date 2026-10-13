@@ -47,7 +47,7 @@
       "shortname": "CHINIJO-DEMO",
       "category": "Primary education (demo)",
       "format": "topics",
-      "numsections": 3,
+      "numsections": 4,
       "summary": "Synthetic demonstration course for the Chinijo theme. No real people or data."
     },
     {
@@ -195,6 +195,69 @@
       "display": 0,
       "displayoptions": "a:1:{s:10:\"printintro\";i:1;}",
       "parameters": ""
+    },
+    {
+      "step": "addModule",
+      "module": "label",
+      "course": "CHINIJO-DEMO",
+      "section": 4,
+      "name": "This week we learn about the animals that live with us.",
+      "intro": "<p>This week we learn about the animals that live with us.</p>"
+    },
+    {
+      "step": "addModule",
+      "module": "book",
+      "course": "CHINIJO-DEMO",
+      "section": 4,
+      "name": "Animals at home",
+      "intro": "<p>Read about two animals that live at home.</p>",
+      "numbering": 1,
+      "navstyle": 1,
+      "customtitles": 0
+    },
+    {
+      "step": "addModule",
+      "module": "quiz",
+      "course": "CHINIJO-DEMO",
+      "section": 4,
+      "name": "Animals quiz",
+      "intro": "<p>Answer two questions about animals.</p>",
+      "preferredbehaviour": "deferredfeedback",
+      "questionsperpage": 1,
+      "navmethod": "free",
+      "shuffleanswers": 1,
+      "grade": 100,
+      "grademethod": 1,
+      "overduehandling": "autosubmit",
+      "graceperiod": 86400,
+      "reviewattempt": 69904,
+      "reviewcorrectness": 69904,
+      "reviewmaxmarks": 69904,
+      "reviewmarks": 69904,
+      "reviewspecificfeedback": 69904,
+      "reviewgeneralfeedback": 69904,
+      "reviewrightanswer": 69904,
+      "reviewoverallfeedback": 4368,
+      "password": "",
+      "subnet": "",
+      "browsersecurity": ""
+    },
+    {
+      "step": "addModule",
+      "module": "choice",
+      "course": "CHINIJO-DEMO",
+      "section": 4,
+      "name": "Your favourite animal",
+      "intro": "<p>Which animal do you like best?</p>"
+    },
+    {
+      "step": "addModule",
+      "module": "forum",
+      "course": "CHINIJO-DEMO",
+      "section": 4,
+      "name": "Show and tell",
+      "intro": "<p>Tell us about an animal you know.</p>",
+      "type": "general"
     },
     {
       "step": "runPhpCode",

@@ -6,6 +6,12 @@ semantic versioning (`$plugin->release`).
 
 ## [Unreleased]
 
+### Added
+- Development: the full Moodle Playground demo has the "Animals" section of
+  `make seed` (a teacher's note, a book with two chapters, a quiz with two
+  questions, a choice and a forum with a discussion), so the activity designs of
+  version 0.3.0 can be tried there.
+
 ## [0.3.0] - not released yet (development version 2026101200, alpha)
 
 ### Added

@@ -6,7 +6,7 @@ browser from a JSON blueprint. Chinijo ships two blueprints.
 | File | Runs on | Content |
 |---|---|---|
 | `blueprint.json` | Browser Playground and erseco/alpine-moodle's experimental runner | Moodle 5.3 (PHP 8.4) preferred; installs Chinijo from the `main` branch archive (`installMoodlePlugin`, critical); activates it (`setTheme`, critical); site completion on; a demo category and course; three disposable accounts; enrolments; logs in as `admin`. |
-| `blueprints/chinijo-full-demo.blueprint.json` | Browser Playground only | Same theme installation, plus the Spanish language pack, the demo users, course, enrolments and eight activities created with Playground's own steps, and `runPhpCode` running `chinijo_seed_playground()` from `dev/seedlib.php` (completion settings, section names, demo pictograms and the first student's progress). Logs in as `admin`. |
+| `blueprints/chinijo-full-demo.blueprint.json` | Browser Playground only | Same theme installation, plus the Spanish language pack, the demo users, course, enrolments and thirteen activities created with Playground's own steps (pages, an assignment and a link; in the fourth section, "Animals", a teacher's note, a book, a quiz, a choice and a forum, as with `make seed`), and `runPhpCode` running `chinijo_seed_playground()` from `dev/seedlib.php` (completion settings, section names, the content of the book, quiz, choice and forum, demo pictograms and the first student's progress). Logs in as `admin`. |
 
 Demo accounts (**disposable, demonstration only**, never use these on a real
 site): `admin`, `teacher1`, `student1`, `student2`, password `Chinijo-demo-1234`.
@@ -67,8 +67,21 @@ blueprint.
 - Playground's `addModule` writes the activity records directly, without
   `add_moduleinfo()` (its nested transactions fail on SQLite in WebAssembly), and
   does not set completion; `chinijo_seed_playground()` sets it afterwards.
+- `addModule` writes only the activity's own record: a book without chapters, a
+  quiz without its first section, questions or grade item, a choice without
+  options, a forum without discussions. `chinijo_seed_playground_content()` adds
+  them, with the same helpers that `make seed` uses (the quiz questions are
+  saved through the question type into the quiz's own question bank). The quiz's
+  `addModule` step carries the settings that the quiz form would compute, such as
+  the review options.
 - To read the log of a run, open the panel (right of the toolbar) and its Logs
   tab: every step is listed with its result.
+- To try a blueprint before it is on `main`, pass it inline (`?blueprint=` with
+  gzip+base64url). moodle-playground.com is served by GitHub Pages, which answers
+  414 when the URL is longer than about 8 KB; importing a file in the Blueprint
+  tab also puts it in the URL. A `runPhpCode` step that rewrites
+  `dev/seedlib.php` before running it tests seed changes against the theme
+  installed from `main`.
 
 ## Playground versus the local Docker stack
 
