@@ -17,10 +17,8 @@
 namespace theme_chinijo;
 
 use core\hook\output\after_standard_main_region_html_generation;
-use core\hook\output\before_footer_html_generation;
 use core\hook\output\before_html_attributes;
 use core\hook\output\before_standard_top_of_body_html_generation;
-use theme_chinijo\local\feder;
 use theme_chinijo\local\pictogram_display;
 use theme_chinijo\local\preferences;
 use theme_chinijo\local\preferences_ui;
@@ -77,7 +75,7 @@ class hook_callbacks {
     }
 
     /**
-     * Add the FEDER notice and the pictogram credits after the main region.
+     * Add the pictogram credits after the main region.
      *
      * @param after_standard_main_region_html_generation $hook The hook.
      */
@@ -89,19 +87,5 @@ class hook_callbacks {
             return;
         }
         $hook->add_html(pictogram_display::render_credits($hook->renderer, $page));
-        $hook->add_html(feder::render($hook->renderer, $page, true));
-    }
-
-    /**
-     * Add the FEDER notice to the login page, whose layout has no region after the main one.
-     *
-     * @param before_footer_html_generation $hook The hook.
-     */
-    public static function before_footer_html_generation(before_footer_html_generation $hook): void {
-        $page = $hook->renderer->get_page();
-        if (!theme::can_decorate($page) || $page->pagelayout !== 'login') {
-            return;
-        }
-        $hook->add_html(feder::render($hook->renderer, $page, false));
     }
 }

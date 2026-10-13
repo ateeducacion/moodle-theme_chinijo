@@ -4,10 +4,17 @@ Each mandatory requirement of the definitive specification
 (`PPT-EDICI-Lote1_Tema_Moodle_EVAGD.md`, lot 1, deliverable L1E01; not stored in
 this repository) mapped to its implementation, its tests and its status.
 
+Chinijo is the Área de Tecnología Educativa's own development, not a contracted
+delivery (decision D22). The specification remains the reference for the
+functional and accessibility requirements; its contractual items (FEDER
+publicity, ATE's project template, warranty and service levels, transfer plan,
+reversibility record) are marked **Not applicable**.
+
 Status values: **Done** (implemented and verified by the listed evidence),
 **Partial** (implemented, some verification pending), **Pending** (needs EVAGD
 pre-production, institutional assets, people or decisions that are not
-available), **Process** (contractual or organisational, documented only).
+available), **Process** (organisational, documented only), **Not applicable** (contractual
+item that does not apply to ATE's own development, D22).
 "Local runs" are the runs recorded in the README's verification table.
 
 ## General requirements (§2.2–2.10)
@@ -17,12 +24,12 @@ available), **Process** (contractual or organisational, documented only).
 | 2.2 / A | Boost child theme | `config.php` (`parents = ['boost']`), `classes/output/core_renderer.php` | `lib_test::test_installed_metadata`, local installs on 4.5 and 5.3 | Done |
 | 2.3 / 2.7 / 2.10.A | GPL v3 or later; LICENSE; README with installation and update instructions | `LICENSE`, file headers, `README.md`, `docs/deployment-evagd.md` | Package check (`dev/package.sh`) | Done |
 | 2.3 / 2.7 | Code in ATE's GitHub organisation with continuous, incremental history | Incremental commits on `feature/chinijo-theme`, reviewed in pull request #1 | Pull request #1 and its commits | Done |
-| 2.3 / 2.10.B.1 | Develop inside ATE's project template | Repository layout follows Moodle plugin conventions | — | Pending: the template is to be supplied with the start-up record |
+| 2.3 / 2.10.B.1 | Develop inside ATE's project template | Repository layout follows Moodle plugin conventions | — | Not applicable: developed by ATE itself (D22) |
 | 2.3 / 2.10.B.2–4 | Only Moodle/Boost technologies (PHP, Mustache, AMD/ES); no SPA frameworks; GPL-compatible libraries without telemetry; SASS allowed | PHP, Mustache, SCSS, ES modules built with Moodle's Grunt; only third-party asset: Atkinson Hyperlegible (OFL) | `thirdpartylibs.xml`, `docs/third-party-licenses.md`, `make package` contents | Done |
 | 2.3 / 2.9 | No external services or extra runtimes without written authorisation | No runtime external requests, no CDN, self-hosted font | Code review (`docs/security-report.md`) | Done |
-| 2.5 / G.4 | Service levels and incident log | `docs/incident-and-patch-log.md` | — | Process |
+| 2.5 / G.4 | Service levels and incident log | GitHub issues; private security reports (`SECURITY.md`) | — | Not applicable: contractual service levels (D22) |
 | 2.6 | Continuous integration, periodic pushes | `.github/workflows/ci.yml`, `security.yml` | GitHub Actions on pull request #1 (21 checks pass); actionlint | Done |
-| 2.7 | Technology transfer plan | `docs/transfer-plan.md` | — | Partial: sessions to be scheduled |
+| 2.7 | Technology transfer plan | — | — | Not applicable: developed by ATE itself (D22) |
 | 2.9 | moodle-plugin-ci checks: PHP syntax, PHPCS, PHPMD, Mustache, ESLint, Stylelint | CI and `make lint` | Local runs (4.5, 5.0, 5.1, 5.2, 5.3) | Done (PHPMD reports only Moodle-imposed callback signatures and test-class size, see security report) |
 | 2.9 | Static security analysis report (tool, rule sets, no critical/high) | `dev/security-scan.sh`, `docs/security-report.md` | Semgrep 1.180.0: 0 findings; gitleaks: no leaks | Done |
 | 2.9 / B | GDPR/LOPDGDD: only own display preferences; teachers cannot set them; no health data | `classes/local/preferences.php`, `classes/privacy/provider.php` | `preferences_test` (isolation, permissions, guests), `privacy/provider_test` | Done |
@@ -72,29 +79,29 @@ available), **Process** (contractual or organisational, documented only).
 | Compatible with the target Moodle/EVAGD version | 4.5 LTS – 5.3 LTS | CI matrix (GitHub Actions on pull request #1); local lint and PHPUnit on all five branches, Behat on 4.5 and 5.3 | Partial: target version to be communicated; EVAGD pre-production pending |
 | Responsive: 10" and 12" tablets both orientations, desktop; two latest Chrome, Firefox, Safari, Edge | Responsive Boost layout; wrapping index; navbar label hidden on narrow screens | `responsive.feature` in Chromium (phone, tablet portrait and landscape, no horizontal scrolling) | Partial: real devices and browser matrix pending |
 | Code security (2.9) | See above | — | Done |
-| FEDER visibility (Reg. (EU) 2021/1060 art. 47, annex IX); placement agreed with the contract manager | `classes/local/feder.php`, settings, template | `feder_test`, `hook_callbacks_test`, `feder.feature` | Partial: approved emblem, wording and placement pending |
+| FEDER visibility (Reg. (EU) 2021/1060 art. 47, annex IX); placement agreed with the contract manager | Removed in 0.3.1; the upgrade deletes its settings and emblem (`db/upgrade.php`) | `upgradelib_test` | Not applicable: not co-funded by FEDER (D22) |
 
 ## L1E01.G Warranty and EVAGD compatibility
 
 | Requirement | Implementation | Status |
 |---|---|---|
-| G.1/G.2 12-month warranty on the delivered target version; later upgrades excluded | `docs/incident-and-patch-log.md`, `docs/release-and-reversibility.md` | Process (start date: acceptance record, not yet set) |
+| G.1/G.2 12-month warranty on the delivered target version; later upgrades excluded | — | Not applicable (D22) |
 | G.3 Tests on EVAGD pre-production: SSO, EVAGD blocks/modules, language configuration, no conflicts | Checklist in `docs/deployment-evagd.md` §5 | Pending |
-| G.4 Security patches in 5 working days; A/AA fixes within service levels; change log | `SECURITY.md`, `docs/incident-and-patch-log.md` | Process |
-| G.5 Final tag, deployment documentation, reversibility record | `docs/release-and-reversibility.md` (template, unsigned) | Pending |
+| G.4 Security patches in 5 working days; A/AA fixes within service levels; change log | `SECURITY.md` (fixes first on `main`, patch releases), `CHANGELOG.md` | Not applicable as a contractual term (D22); change log kept |
+| G.5 Final tag, deployment documentation, reversibility record | Version tags and the release workflow (`docs/release-and-reversibility.md`), `docs/deployment-evagd.md` | Tags and documentation kept; reversibility record not applicable (D22) |
 
 ## L1E01.H Deliverables
 
 | # | Deliverable | Where | Status |
 |---|---|---|---|
 | 1 | Source code in ATE's GitHub with history | This repository (pull request #1) | Done |
-| 2 | Technical installation/configuration/upgrade manual and transfer plan | `docs/deployment-evagd.md`, `docs/compatibility.md`, `docs/transfer-plan.md` | Done (to be validated by the Consejería) |
+| 2 | Technical installation/configuration/upgrade manual and transfer plan | `docs/deployment-evagd.md`, `docs/compatibility.md` | Done (transfer plan not applicable, D22) |
 | 3 | Teacher guide | `docs/teacher-guide.es.md` | Done |
 | 4 | Accessibility audit report without A/AA errors | `docs/accessibility-audit.md` | Partial (automated part only) |
 | 5 | Draft accessibility statement and data | `docs/accessibility-statement-draft.es.md` | Done as a draft; data pending |
 | 6 | Code quality results and static security report | CI, `docs/security-report.md` | Done (local and GitHub Actions) |
-| 7 | Warranty incident and patch log | `docs/incident-and-patch-log.md` | Process |
-| 8 | Reversibility record | Template in `docs/release-and-reversibility.md` | Pending (signed at closure) |
+| 7 | Warranty incident and patch log | — | Not applicable (D22) |
+| 8 | Reversibility record | — | Not applicable (D22) |
 
 ## L1E01.I Acceptance tests
 
@@ -103,5 +110,5 @@ available), **Process** (contractual or organisational, documented only).
 | Accessibility audit (automated + manual, WCAG-EM sample) without theme A/AA errors | Partial: automated part done on a generic Moodle; manual and EVAGD pending |
 | Keyboard-only navigation and assignment submission; same with NVDA and VoiceOver | Partial: keyboard automated (Behat); screen readers pending |
 | Tablets 10" and 12", Android and iPadOS, both orientations | Pending |
-| Preferences panel, reduced motion and FEDER emblem in the required browsers and devices | Partial: Chromium automated; others pending; FEDER assets pending |
+| Preferences panel and reduced motion in the required browsers and devices | Partial: Chromium automated; others pending |
 | EVAGD pre-production with SSO and active modules | Pending |

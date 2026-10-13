@@ -12,9 +12,6 @@ Feature: Automated accessibility checks of the pages Chinijo changes
   Background:
     Given the following config values are set as admin:
       | theme | chinijo |
-    And the following config values are set as admin:
-      | federenabled | 1                            | theme_chinijo |
-      | federtext    | Project co-funded by the EU. | theme_chinijo |
     And the following "users" exist:
       | username | firstname | lastname |
       | student1 | Student   | One      |
@@ -35,10 +32,9 @@ Feature: Automated accessibility checks of the pages Chinijo changes
       | C1     | Read the story |         | Book    | Test pictograms | cc-nc-sa-4.0 |
       | C1     |                | 1       | Sun     |                 |              |
 
-  Scenario: Login page with the display settings toolbar and the EU funding notice
+  Scenario: Login page with the display settings toolbar
     When I visit "/login/index.php"
     Then I should see "Display settings"
-    And I should see "Project co-funded by the EU."
     And the page should meet accessibility standards with "best-practice" extra tests
 
   Scenario: Dashboard and course page of a learner

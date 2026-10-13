@@ -5,10 +5,10 @@
 - `version.php` → `$plugin->version`: `YYYYMMDDXX` (date of the change plus a
   two-digit counter), always increasing. Any database, capability, hook, event or
   setting change needs a new version.
-- `$plugin->release`: semantic version `MAJOR.MINOR.PATCH` (patches for warranty
-  fixes, minor for compatible features, major for breaking changes).
+- `$plugin->release`: semantic version `MAJOR.MINOR.PATCH` (patches for fixes,
+  minor for compatible features, major for breaking changes).
 - `$plugin->maturity`: `MATURITY_ALPHA` during development, `MATURITY_BETA` for
-  pre-production acceptance, `MATURITY_STABLE` from the accepted delivery.
+  the tests in EVAGD pre-production, `MATURITY_STABLE` once it runs in EVAGD.
 - Git tag: `v<release>` (for example `v1.0.0`), on `main`.
 - Package name: `theme_chinijo-<release>-<version>.zip` with
   `theme_chinijo-<release>-<version>.zip.sha256`.
@@ -26,8 +26,8 @@
    matches `$plugin->release`, builds the ZIP and its SHA-256 and creates a
    **draft** GitHub release with the changelog. A maintainer reviews and
    publishes it.
-6. Hand over the ZIP, checksum and changelog to the Consejería for pre-production;
-   record the validation (UAT) in `docs/incident-and-patch-log.md`.
+6. Install the ZIP in EVAGD pre-production (`docs/deployment-evagd.md`) and record
+   the checks in `docs/accessibility-audit.md`.
 
 The package never contains Docker files, tests, development scripts, reports,
 `.env` files, coverage data, dependencies or procurement documents
@@ -37,34 +37,9 @@ The package never contains Docker files, tests, development scripts, reports,
 
 - The theme changes no core table or file. Its data: user preferences
   `theme_chinijo_*`, table `theme_chinijo_pictogram`, pictogram files (component
-  `theme_chinijo`), settings (`theme_chinijo/*`) and the FEDER emblem file.
+  `theme_chinijo`), settings (`theme_chinijo/*`).
 - Switching back to Boost (or any theme) is immediate and keeps the data.
 - Uninstalling through Moodle's plugin manager removes all of the above.
 - Downgrades are not supported by Moodle: keep the backup taken before each
   upgrade (database, moodledata and code) to return to a previous release.
   See `docs/deployment-evagd.md` §8.
-
-## End of warranty or early termination (specification §L1E01.G.5)
-
-Within 30 calendar days of the formal notice, the supplier provides:
-
-1. A **tag** in ATE's repository with the last delivered version (target version
-   plus warranty patches), verified by the Consejería.
-2. **Up-to-date deployment documentation** (`docs/deployment-evagd.md`,
-   `docs/compatibility.md`, `README.md`, `AGENTS.md`).
-3. A **reversibility record** signed by both parties, using the template below.
-
-### Reversibility record (template — not signed)
-
-| Field | Value |
-|---|---|
-| Final version (tag, release, version build) | |
-| SHA-256 of the delivered ZIP | |
-| Moodle/EVAGD target version on which it was verified | |
-| Verification date and pre-production environment | |
-| Tests run (CI run URL, local runs, manual checks) | |
-| Documentation delivered (list and versions) | |
-| Open issues at handover | |
-| Statement: the last version works on the target version and the documentation is sufficient to operate without the supplier | |
-| For the Consejería (name, role, date, signature) | |
-| For the supplier (name, role, date, signature) | |

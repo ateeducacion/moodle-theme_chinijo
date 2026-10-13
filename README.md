@@ -23,10 +23,10 @@ course progress and pictogram support, while keeping every Moodle feature.
 [display settings dialogue](docs/screenshots/chinijo-display-settings.png),
 [high contrast with large text and school letters](docs/screenshots/chinijo-course-high-contrast.png).*
 
-> **Status:** development version 0.3.0 (alpha). Automated checks pass locally
+> **Status:** development version 0.3.1 (alpha). Automated checks pass locally
 > and in GitHub Actions on Moodle 4.5 to 5.3 (see [Verification](#verification)). Manual
-> accessibility checks with screen readers and devices, tests on EVAGD
-> pre-production and institutional acceptance are **pending**.
+> accessibility checks with screen readers and devices and tests on EVAGD
+> pre-production are **pending**.
 
 ## Features
 
@@ -38,7 +38,6 @@ course progress and pictogram support, while keeping every Moodle feature.
 | **Activity pages**: a large "Back to the course" link, the progress and a **Listen** button that reads the page with a voice installed on the device (hidden when there is none; nothing is sent anywhere). | Implemented |
 | **Encouragement** after marking an activity as done, with a link to the next one; it does not take the focus or block the page; a short chime only if the learner turned sounds on. | Implemented |
 | **Pictograms** that teachers add to sections and activities (PNG, JPEG or WebP; text alternative; author and licence shown as credits; included in course backups). Names are always kept. No pictogram is bundled. | Implemented (sections and activities; not for buttons) |
-| **EU (FEDER) funding notice**: approved emblem, text alternative and acknowledgement, on landing pages or every page. | Implemented; approved assets pending |
 | Accessible defaults: 16 px text, 44 px targets, visible focus ring, underlined links in text, emphasised primary buttons, clear error messages, course index names that wrap, forced-colours support. | Implemented |
 | English and Spanish interface. | Implemented |
 
@@ -93,11 +92,6 @@ procedure, upgrade and rollback: [docs/deployment-evagd.md](docs/deployment-evag
 *Site administration › Appearance › Themes › Chinijo*:
 
 - **General**: unneeded blocks; brand colour (keep 4.5:1 against white).
-- **EU funding notice**: enable; pages (login page, site home and dashboard, or
-  every page); emblem file; its text alternative; acknowledgement text. Nothing is
-  shown until an emblem with its alternative, or a text, is provided. The theme
-  ships no emblem or wording: use the ones approved by the institution
-  (Regulation (EU) 2021/1060, art. 47 and annex IX).
 - **Advanced**: raw SCSS, as in Boost.
 
 **Display settings** need no configuration: every user opens *Display
@@ -174,27 +168,26 @@ Read [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md) before changi
 
 ## Verification
 
-Version 0.2.0 (2026-10-08, branch `feature/kid-friendly-ui`): local runs; it has
-not been pushed, so GitHub Actions have not run on it yet. Version 0.1.0 passed
-GitHub Actions on pull request #1 (last row).
+Version 0.3.1 (2026-10-13): local runs on the branch of its pull request; GitHub
+Actions run the full matrix (Moodle 4.5 to 5.3, PostgreSQL and MariaDB, all Behat
+features) on the pull request. Version 0.3.0 passed all 21 checks on pull request #8.
 
 | Check | Moodle / PHP / DB | Result | Evidence |
 |---|---|---|---|
-| `make lint` | 5.3 / 8.4 / PostgreSQL 17 | Pass (PHPMD: advisory notes only) | `build/lint-53.log` |
-| `make lint` | 4.5.15 / 8.3 / PostgreSQL 17 | Pass (PHPMD: advisory notes only) | `build/lint-45.log` |
-| `make coverage` (PHPUnit 11.5 with PCOV) | 5.3 / 8.4 / PostgreSQL 17 | 79 tests, 819 assertions, pass; 96.14 % of 674 lines (`classes/`, `backup/`, `lib.php`) | `build/coverage-53.log`, `build/coverage/` |
-| `make coverage` (PHPUnit 9.6 with PCOV) | 4.5.15 / 8.3 / PostgreSQL 17 | 79 tests, 817 assertions, 1 skipped (Boost colour modes exist only in 5.3), pass; 96.14 % | `build/coverage-45.log` |
-| `make test-unit` | 5.2.4, 5.1.8, 5.0.11 / 8.3 / PostgreSQL 17 | 79 tests, 817 assertions, 1 skipped (same test), pass on each | `build/test-unit-5{0,1,2}.log` |
-| `make test-behat` (includes the axe-core scenarios) | 5.3 / 8.4 / PostgreSQL 17 / Chromium 152 | 36 scenarios, 510 steps, pass without reruns | `build/behat-53.log` |
-| `make test-behat` (includes the axe-core scenarios) | 4.5.15 / 8.3 / PostgreSQL 17 / Chromium 152 | 36 scenarios, 510 steps, pass without reruns (after fixing F-05, see the audit) | `build/behat-45.log` |
-| `make security` | — | Semgrep 1.180.0: 0 findings (171 rules, 108 files); gitleaks 8.30.1: no leaks | `build/security/` |
+| `make lint` | 5.3 / 8.4 / PostgreSQL 18.6 | Pass (PHPMD: advisory notes only) | `build/lint-53.log` |
+| `make lint` | 4.5.15 / 8.3 / PostgreSQL 18.6 | Pass (PHPMD: advisory notes only) | `build/lint-45.log` |
+| `make test-unit` | 5.3 / 8.4 / PostgreSQL 18.6 | 85 tests, 890 assertions, pass | `build/test-unit-53.log` |
+| `make test-unit` | 4.5.15 / 8.3 / PostgreSQL 18.6 | 85 tests, 888 assertions, 1 skipped (Boost colour modes exist only in 5.3), pass | `build/test-unit-45.log` |
+| `make coverage` (PHPUnit 11.5 with PCOV) | 5.3 / 8.4 / PostgreSQL 18.6 | 96.61 % of 708 lines (`classes/`, `backup/`, `lib.php`) | `build/coverage-53.log` |
+| `make test-a11y` (axe-core scenarios) | 5.3 and 4.5.15 / Chromium 152 | 11 scenarios, 179 steps, pass on each | `build/a11y-53.log`, `build/a11y-45.log` |
+| Upgrade from 0.3.0 | 5.3 and 4.5.15 development sites | The upgrade deletes the FEDER settings and the uploaded emblem; the theme settings show the General and Advanced tabs | console |
+| `make security` | — | Semgrep: 0 findings (171 rules, 113 files); gitleaks 8.30.1: no leaks | `build/security/` |
 | `make validate-blueprint` | — | Both blueprints valid (official schema; alpine-moodle validator) | `build/lint-53.log` |
-| `make package` | — | 78 files, single `chinijo/` directory; the ZIP installed on a fresh Moodle 5.3 site (version 2026100801, login page, styles) | `build/*.zip` |
-| `make up`, `make seed`, `make install` | 5.3 (`erseco/alpine-moodle:v5.3.0`) and 4.5 (`v4.5.15`) | Pass | console |
-| GitHub Actions on version 0.1.0 (`ci.yml`, `security.yml`, `playground-preview.yml`) | 4.5 to 5.3; PostgreSQL 17 and MariaDB 11.8; PHP 8.3 and 8.4 | All 21 checks pass | pull request #1 |
+| `make package` | — | `theme_chinijo-0.3.1-2026101300.zip`, 89 files, single `chinijo/` directory | `build/*.zip` |
+| Full Moodle Playground demo | moodle-playground.com, Moodle 5.3 / PHP 8.4 | The README link runs its 28 steps without errors, including the "Animals" section | browser |
 
-Behat and the axe-core checks ran on 4.5 and 5.3 only, as in CI; 5.0–5.2 had
-PHPUnit (and, for 0.1.0, static checks).
+Not run locally for 0.3.1: the Behat features without the `@accessibility` tag and
+PHPUnit on 5.0–5.2 (GitHub Actions run them).
 
 Coverage measures PHP logic only. Templates, SCSS, JavaScript behaviour and
 accessibility are covered by Behat, axe-core and manual review, not by PHP line
@@ -219,8 +212,6 @@ statement [docs/accessibility-statement-draft.es.md](docs/accessibility-statemen
 [Requirements traceability](docs/requirements-traceability.md) ·
 [Research and decisions](docs/research-and-decisions.md) ·
 [Release and reversibility](docs/release-and-reversibility.md) ·
-[Transfer plan](docs/transfer-plan.md) ·
-[Incident and patch log](docs/incident-and-patch-log.md) ·
 [Third-party licences](docs/third-party-licenses.md) ·
 [Canarian curriculum and course size](docs/curriculum-canarias.md) ·
 [Changelog](CHANGELOG.md)

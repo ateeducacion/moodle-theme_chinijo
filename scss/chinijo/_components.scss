@@ -782,9 +782,8 @@
     border-left: 4px solid $chinijo-boundary;
 }
 
-// Pictogram credits and the EU funding notice.
-.theme-chinijo-credits,
-.theme-chinijo-feder {
+// Pictogram credits.
+.theme-chinijo-credits {
     padding: 1rem;
     background-color: var(--bs-body-bg, #{$white});
     color: var(--bs-body-color, #{$chinijo-ink});
@@ -802,49 +801,19 @@
     margin-bottom: 0;
 }
 
-.theme-chinijo-feder {
-    border-top: 1px solid $chinijo-boundary;
-}
-
-.theme-chinijo-feder__inner {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem;
-    max-width: 75rem;
-    margin: 0 auto;
-}
-
-.theme-chinijo-feder__emblem {
-    width: auto;
-    max-width: 100%;
-    height: 3.5rem;
-}
-
-.theme-chinijo-feder__text {
-    flex: 1 1 20rem;
-
-    p:last-child {
-        margin-bottom: 0;
-    }
-}
-
-// Boost prints the region after the main content outside #page, so these blocks do not follow the
+// Boost prints the region after the main content outside #page, so the credits do not follow the
 // drawers: mirror Boost's own offsets so that an open course index or block drawer never covers them.
 @include media-breakpoint-up(lg) {
-    #page.drawers.show-drawer-left ~ .theme-chinijo-credits,
-    #page.drawers.show-drawer-left ~ .theme-chinijo-feder {
+    #page.drawers.show-drawer-left ~ .theme-chinijo-credits {
         margin-left: $drawer-left-width;
     }
 
-    #page.drawers.show-drawer-right ~ .theme-chinijo-credits,
-    #page.drawers.show-drawer-right ~ .theme-chinijo-feder {
+    #page.drawers.show-drawer-right ~ .theme-chinijo-credits {
         margin-right: $drawer-right-width;
     }
 }
 
-// Keep the last block of the page clear of Boost's floating footer button.
-.theme-chinijo-credits:last-child,
-.theme-chinijo-feder:last-child {
+// Keep the credits clear of Boost's floating footer button when they end the page.
+.theme-chinijo-credits:last-child {
     padding-bottom: 4.5rem;
 }

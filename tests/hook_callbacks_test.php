@@ -17,9 +17,9 @@
 namespace theme_chinijo;
 
 use core\hook\output\after_standard_main_region_html_generation;
-use core\hook\output\before_footer_html_generation;
 use core\hook\output\before_html_attributes;
 use core\hook\output\before_standard_top_of_body_html_generation;
+use theme_chinijo\local\pictograms;
 use theme_chinijo\local\preferences;
 use theme_chinijo\local\theme;
 
@@ -44,11 +44,22 @@ final class hook_callbacks_test extends \advanced_testcase {
      * @param string $themename Theme name.
      * @param string $layout Page layout.
      * @param string $pagetype Page type.
+     * @param \stdClass|null $course Course of the page; the site by default.
      * @return \moodle_page
      */
-    protected function create_page(string $themename, string $layout = 'standard', string $pagetype = 'course-view'): \moodle_page {
+    protected function create_page(
+        string $themename,
+        string $layout = 'standard',
+        string $pagetype = 'course-view',
+        ?\stdClass $course = null
+    ): \moodle_page {
         $page = new \moodle_page();
-        $page->set_context(\context_system::instance());
+        if ($course) {
+            // The course must be set before the theme.
+            $page->set_course($course);
+        } else {
+            $page->set_context(\context_system::instance());
+        }
         $page->set_url(new \moodle_url('/course/view.php', ['id' => SITEID]));
         $page->set_pagelayout($layout);
         $page->set_pagetype($pagetype);
@@ -182,31 +193,39 @@ final class hook_callbacks_test extends \advanced_testcase {
     }
 
     /**
-     * The FEDER notice is rendered after the main region, and on the login page before the footer.
+     * The pictogram credits of the course are added after the main region, only when Chinijo renders the page.
      */
-    public function test_feder_notice_placement(): void {
+    public function test_pictogram_credits_after_main_region(): void {
+        global $USER;
         $this->resetAfterTest();
-        set_config('federenabled', 1, 'theme_chinijo');
-        set_config('federtext', '<p>Funded by the European Union.</p>', 'theme_chinijo');
+        $this->setAdminUser();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $cm = $generator->create_module('page', ['course' => $course->id]);
 
-        $page = $this->create_page('chinijo', 'frontpage', 'site-index');
+        $page = $this->create_page('chinijo', 'course', 'course-view-topics', $course);
         $hook = new after_standard_main_region_html_generation($page->get_renderer('core'));
         hook_callbacks::after_standard_main_region_html_generation($hook);
-        $this->assertStringContainsString('<aside class="theme-chinijo-feder"', $hook->get_output());
-
-        $page = $this->create_page('chinijo', 'login', 'login-index');
-        $hook = new before_footer_html_generation($page->get_renderer('core'));
-        hook_callbacks::before_footer_html_generation($hook);
-        $this->assertStringContainsString('<div class="theme-chinijo-feder"', $hook->get_output());
-
-        // The footer hook only serves the login page.
-        $page = $this->create_page('chinijo', 'frontpage', 'site-index');
-        $hook = new before_footer_html_generation($page->get_renderer('core'));
-        hook_callbacks::before_footer_html_generation($hook);
         $this->assertSame('', $hook->get_output());
 
+        $draftitemid = file_get_unused_draft_itemid();
+        get_file_storage()->create_file_from_pathname([
+            'contextid' => \context_user::instance($USER->id)->id,
+            'component' => 'user',
+            'filearea' => 'draft',
+            'itemid' => $draftitemid,
+            'filepath' => '/',
+            'filename' => 'sun.png',
+        ], __DIR__ . '/fixtures/pictogram-sun.png');
+        $data = (object) ['pictogram' => $draftitemid, 'alttext' => 'Sun', 'author' => 'ARASAAC', 'license' => 'cc-nc-sa-4.0'];
+        pictograms::save($course, pictograms::TYPE_CM, (int) $cm->cmid, $data);
+
+        $hook = new after_standard_main_region_html_generation($page->get_renderer('core'));
+        hook_callbacks::after_standard_main_region_html_generation($hook);
+        $this->assertStringContainsString(get_string('pictogramcredits', 'theme_chinijo'), $hook->get_output());
+
         // Another theme gets nothing.
-        $page = $this->create_page('boost', 'frontpage', 'site-index');
+        $page = $this->create_page('boost', 'course', 'course-view-topics', $course);
         $hook = new after_standard_main_region_html_generation($page->get_renderer('core'));
         hook_callbacks::after_standard_main_region_html_generation($hook);
         $this->assertSame('', $hook->get_output());

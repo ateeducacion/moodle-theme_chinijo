@@ -18,10 +18,10 @@ pictogramas, sin quitar ninguna función de Moodle.
 [ajustes de visualización](docs/screenshots/chinijo-display-settings.png),
 [alto contraste con texto grande y letra escolar](docs/screenshots/chinijo-course-high-contrast.png).*
 
-> **Estado:** versión de desarrollo 0.1.0 (alfa). Las comprobaciones automáticas
+> **Estado:** versión de desarrollo 0.3.1 (alfa). Las comprobaciones automáticas
 > pasan en local y en GitHub Actions de Moodle 4.5 a 5.3 (Behat y axe-core en 4.5 y 5.3). Quedan **pendientes** las pruebas manuales
-> de accesibilidad con lectores de pantalla y dispositivos, las pruebas en la
-> preproducción de EVAGD y la recepción institucional.
+> de accesibilidad con lectores de pantalla y dispositivos y las pruebas en la
+> preproducción de EVAGD.
 
 ## Funciones
 
@@ -35,13 +35,22 @@ pictogramas, sin quitar ninguna función de Moodle.
   preferencias propias de cada usuario (solo durante la sesión para invitados);
   **nadie puede fijarlas a otra persona**. Diálogo accesible con teclado desde la
   barra superior y la página de acceso, y una página que funciona sin JavaScript.
-- **Página del curso para el alumnado**: saludo, **Lo siguiente** (la próxima
-  actividad, con un botón grande «Empezar») y **Mi camino** (las actividades en el
-  orden del curso, con sus pictogramas y su estado: hecho, ahora, falta, todavía
-  no), con los datos de finalización de Moodle (las mismas cifras que el área
-  personal) y actualizado solo cuando Moodle confirma el cambio. Fuera del modo
-  edición, tarjetas de sección más redondeadas, filas de actividad y botones de
-  finalización grandes.
+- **Página del curso como un aula de Primaria**: saludo, **Hoy toca** en una
+  pizarra (la próxima actividad, qué hay que hacer en ella y un botón amarillo
+  grande «Empezar») y **Mi camino** (las actividades en el orden del curso, con
+  sus pictogramas y su estado: hecho, ahora, falta, todavía no), con los datos de
+  finalización de Moodle (las mismas cifras que el área personal) y actualizado
+  solo cuando Moodle confirma el cambio. Fuera del modo edición: secciones con una
+  franja de color, actividades como fichas con un icono grande y un verbo («Leer»,
+  «Entregar», «Responder», «Hablar», «Elegir», «Practicar»), etiquetas como notas
+  del profesorado y títulos en Andika.
+- **Actividades de Moodle para los más pequeños**: la tarea muestra tres pasos
+  (leer, hacer, entregar) y si ya se ha entregado; las respuestas del cuestionario
+  y las opciones de la consulta son fichas grandes que se pulsan en cualquier
+  parte; los mensajes del foro son fichas con un botón «Responder», y el alumnado
+  encuentra la búsqueda y la suscripción en «Más opciones», en la misma página;
+  libros y páginas con texto grande y botones de capítulo grandes. No se quita
+  nada de la interfaz de Moodle.
 - **Páginas de actividad**: un enlace grande «Volver al curso», el progreso y un
   botón **Escuchar** que lee la página con una voz instalada en el dispositivo (no
   aparece si no hay ninguna; no se envía nada a ningún servicio).
@@ -51,8 +60,6 @@ pictogramas, sin quitar ninguna función de Moodle.
   WebP, texto alternativo, autoría y licencia en los créditos; se copian con las
   copias de seguridad del curso). Los nombres se mantienen siempre. El tema no
   incluye ningún pictograma.
-- **Aviso de financiación europea (FEDER)** configurable: emblema aprobado, texto
-  alternativo y texto de reconocimiento (pendiente de los recursos aprobados).
 - Interfaz en inglés y en español.
 
 ## Compatibilidad
@@ -75,8 +82,8 @@ Procedimiento completo para EVAGD (preproducción, actualización y marcha atrá
 
 ## Configuración
 
-- *Administración del sitio › Apariencia › Temas › Chinijo*: color de marca,
-  aviso FEDER (emblema, texto alternativo, texto, páginas) y SCSS avanzado.
+- *Administración del sitio › Apariencia › Temas › Chinijo*: bloques
+  innecesarios, color de marca y SCSS avanzado.
 - Los **ajustes de visualización** no necesitan configuración.
 - **Pictogramas**: en el curso, *Más › Pictogramas* (docentes con edición).
   Guía docente: [docs/teacher-guide.es.md](docs/teacher-guide.es.md).

@@ -50,59 +50,6 @@ if ($ADMIN->fulltree) {
 
     $settings->add($page);
 
-    // European Union emblem and FEDER acknowledgement.
-    $page = new admin_settingpage('theme_chinijo_feder', get_string('federsettings', 'theme_chinijo'));
-
-    $page->add(new admin_setting_heading(
-        'theme_chinijo/federheading',
-        '',
-        get_string('federsettings_desc', 'theme_chinijo')
-    ));
-
-    $page->add(new admin_setting_configcheckbox(
-        'theme_chinijo/federenabled',
-        get_string('federenabled', 'theme_chinijo'),
-        get_string('federenabled_desc', 'theme_chinijo'),
-        0
-    ));
-
-    $page->add(new admin_setting_configselect(
-        'theme_chinijo/federplacement',
-        get_string('federplacement', 'theme_chinijo'),
-        get_string('federplacement_desc', 'theme_chinijo'),
-        \theme_chinijo\local\feder::PLACEMENT_LANDING,
-        [
-            \theme_chinijo\local\feder::PLACEMENT_LANDING => get_string('federplacement_landing', 'theme_chinijo'),
-            \theme_chinijo\local\feder::PLACEMENT_ALL => get_string('federplacement_all', 'theme_chinijo'),
-        ]
-    ));
-
-    $page->add(new admin_setting_configstoredfile(
-        'theme_chinijo/federlogo',
-        get_string('federlogo', 'theme_chinijo'),
-        get_string('federlogo_desc', 'theme_chinijo'),
-        'federlogo',
-        0,
-        ['maxfiles' => 1, 'accepted_types' => ['.png', '.jpg', '.jpeg', '.webp']]
-    ));
-
-    $page->add(new admin_setting_configtext(
-        'theme_chinijo/federlogoalt',
-        get_string('federlogoalt', 'theme_chinijo'),
-        get_string('federlogoalt_desc', 'theme_chinijo'),
-        '',
-        PARAM_TEXT
-    ));
-
-    $page->add(new admin_setting_confightmleditor(
-        'theme_chinijo/federtext',
-        get_string('federtext', 'theme_chinijo'),
-        get_string('federtext_desc', 'theme_chinijo'),
-        ''
-    ));
-
-    $settings->add($page);
-
     // Advanced settings.
     $page = new admin_settingpage('theme_chinijo_advanced', get_string('advancedsettings', 'theme_chinijo'));
 

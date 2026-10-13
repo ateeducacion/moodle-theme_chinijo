@@ -86,7 +86,7 @@ function theme_chinijo_user_preferences(): array {
 }
 
 /**
- * Serve the theme's files: the FEDER emblem setting and course pictograms.
+ * Serve the theme's files: course pictograms.
  *
  * @param stdClass $course Course object.
  * @param stdClass|null $cm Course module object, unused.
@@ -98,13 +98,6 @@ function theme_chinijo_user_preferences(): array {
  * @return bool False when the file is not found; otherwise the file is sent and the script ends.
  */
 function theme_chinijo_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
-    if ($context->contextlevel == CONTEXT_SYSTEM && $filearea === 'federlogo') {
-        $theme = theme_config::load(theme::NAME);
-        if (!array_key_exists('cacheability', $options)) {
-            $options['cacheability'] = 'public';
-        }
-        return $theme->setting_file_serve($filearea, $args, $forcedownload, $options);
-    }
     if ($context->contextlevel == CONTEXT_COURSE && $filearea === pictograms::FILEAREA) {
         pictogram_display::serve_file($course, $context, $args, $forcedownload, $options);
     }
