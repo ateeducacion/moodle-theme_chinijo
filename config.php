@@ -34,7 +34,7 @@ $THEME->name = 'chinijo';
 $THEME->parents = ['boost'];
 $THEME->sheets = [];
 $THEME->editor_sheets = [];
-$THEME->editor_scss = ['editor'];
+$THEME->editor_scss = [];
 $THEME->usefallback = true;
 $THEME->scss = function ($theme) {
     return theme_chinijo_get_main_scss_content($theme);
