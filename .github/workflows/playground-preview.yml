@@ -33,7 +33,7 @@ jobs:
           persist-credentials: false
 
       - name: Add the preview button
-        uses: ateeducacion/action-moodle-playground-pr-preview@1a2d7264a2aefc780246d1cefc03fb8b8aae26da # v1
+        uses: ateeducacion/action-moodle-playground-pr-preview@bae3e82f3bb60974fec3292c6a7379a844c2661c # v1
         with:
           blueprint-file: blueprint.json
           moodle-version: '5.3'
